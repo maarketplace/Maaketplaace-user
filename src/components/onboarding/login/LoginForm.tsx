@@ -99,7 +99,7 @@ function UserLoginForm() {
                 <h4 className="">Don't have an account?</h4>
                 <h4
                     className="text-[#0c50af] cursor-pointer"
-                    onClick={() => navigate('/userSignup')}
+                    onClick={() => navigate('/create-account')}
                 >
                     Create an Account
                 </h4>   
