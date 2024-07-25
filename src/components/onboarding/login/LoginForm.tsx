@@ -1,7 +1,7 @@
 const { VITE_TOKEN_USER } = import.meta.env;
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash, } from "react-icons/fa";
+import { FaAngleDown, FaEye, FaEyeSlash, } from "react-icons/fa";
 import { useMutation } from 'react-query'
 import toast from 'react-hot-toast';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -29,7 +29,7 @@ function UserLoginForm() {
                 navigate(redirectPath);
                 localStorage.setItem(VITE_TOKEN_USER, data?.data?.data?.token)
             } else {
-                navigate('');
+                navigate('/home');
             }
         },
         onError: (err: any) => {
@@ -46,6 +46,9 @@ function UserLoginForm() {
     };
     return (
         <div className="h-[100vh] w-[55%] flex items-center justify-center flex-col gap-5 max-[650px]:w-[100%]">
+            <span className="w-[70%] h-[100px] max-[650px]:w-[90%] " >
+                <p className="p-[10px] bg-[#FFC300] w-[120px] rounded-lg flex gap-[5px] items-center justify-center" >Login as <FaAngleDown /></p>
+            </span>
             <div className="w-[70%] flex items-center justify-center flex-col gap-[10px] max-[650px]:w-[100%]" >
                 <img src="MARKET.svg" alt="" className="max-[650px]:w-[80px]" />
                 <span className="flex items-center justify-center flex-col gap-[10px] max-[650px]:w-[100%]" >
@@ -102,7 +105,7 @@ function UserLoginForm() {
                     onClick={() => navigate('/create-account')}
                 >
                     Create an Account
-                </h4>   
+                </h4>
             </div>
             <h4 className="text-[red] cursor-pointer" onClick={() => navigate('/userForgotPassword')}>Forgot Password?</h4>
         </div>

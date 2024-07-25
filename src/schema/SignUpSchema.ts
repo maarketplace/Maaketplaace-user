@@ -3,16 +3,16 @@ import * as yup from 'yup'
 
 export const SignUpSchema = yup.object(
     {
-        firstName: yup.string().required("Fullname is Required")
+        fullName: yup.string().required("Fullname is Required")
             .matches(
                 /^[A-Za-z ]+$/,
                 "Full name should not contain any special characters"
             ),
-        lastName: yup.string().required("Fullname is Required")
-            .matches(
-                /^[A-Za-z ]+$/,
-                "Full name should not contain any special characters"
-            ),
+        // lastName: yup.string().required("Fullname is Required")
+        //     .matches(
+        //         /^[A-Za-z ]+$/,
+        //         "Full name should not contain any special characters"
+        //     ),
         email: yup.string().email("Email must be a valid email format").required("Email is required"),
         phoneNumber: yup
             .string()

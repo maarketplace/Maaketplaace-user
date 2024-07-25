@@ -1,6 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom';
 import LazyImport from './LazyImport';
-import UserSignupForm from './components/onboarding/signup';
+import Signup from './components/onboarding/signup';
+import Home from './components/pages';
+import Product from './components/pages/product';
 
 const LoginLoader = () => import('./components/onboarding/login');
 
@@ -12,8 +14,24 @@ const router = createBrowserRouter([
   },
   {
     path: '/create-account',
-    element: <UserSignupForm />
-}
+    element: <Signup />
+  },
+  {
+    path: 'home',
+    element: <Home/>,
+    children: [
+      {
+        path: '',
+        element: <Product/>
+      },
+      {
+        path: 'home/quicks'
+      },
+      {
+        path: 'home/dashboard'
+      }
+    ]
+  }
 ]);
 
 
