@@ -95,11 +95,8 @@ function Product() {
                         <p>Loading Product....</p>
                     </div>
                     :
-                    allProduct?.length === 0 ?
-                        <div className='w-[100%] h-[80vh] flex items-center justify-center'>
-                            <p>No product available yet</p>
-                        </div>
-                        :
+                    allProduct?.length !== 0
+                        ?
                         <div className="w-[100%] h-[80vh] overflow-auto p-0 flex flex-wrap gap-[10px] justify-center">
                             {allProduct?.map((i: IProduct) => (
                                 <div className='w-[300px] h-[450px] border  rounded-lg p-[10px] flex flex-col gap-[10px] max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none ' key={i?._id} >
@@ -151,6 +148,10 @@ function Product() {
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                        :
+                        <div className='w-[100%] h-[80vh] flex items-center justify-center'>
+                            <p>No product available yet</p>
                         </div>
             }
         </div>

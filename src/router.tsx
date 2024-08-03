@@ -4,6 +4,7 @@ import Signup from './components/onboarding/signup';
 import Home from './components/pages';
 import Product from './components/pages/product';
 import Details from './components/pages/details';
+import Quicks from './components/pages/quicks';
 
 const LoginLoader = () => import('./components/onboarding/login');
 
@@ -30,7 +31,8 @@ const router = createBrowserRouter([
         element: <Details/>
       },
       {
-        path: 'home/quicks'
+        path: '/home/quicks',
+        element: <Quicks/>
       },
       {
         path: 'home/dashboard'
