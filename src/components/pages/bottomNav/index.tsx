@@ -22,7 +22,7 @@ const Bottom = () => {
     return (
         <div className="w-[100%] h-[100%] flex items-center justify-center ">
             <div className="w-[80%] h-[100%] flex items-center justify-between ">
-                <span className={location.pathname === '/home' ? 'text-[#FFC300] text-[20px]' : 'text-[20px]'}>
+                <span className={location.pathname === '/home' || '/home/details/:id' ? 'text-[#FFC300] text-[20px]' : 'text-[20px]'}>
                     <FiHome
                         className='BottomNav_Icons'
                         onClick={handleHomeClick} />

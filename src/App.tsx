@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast';
 function App() {
   const { darkMode, Toggle } = useContext(ThemeContext);
   return (
-    <div className={`${darkMode && "dark"}`}>
+    <div className={`${darkMode && "dark"} p-[0px] m-[0px]`}>
       <RouterProvider router={router} />
       <button className='fixed w-10 h-10 bottom-1 right-4 bg-[#FFC300]  rounded-full dark:text-black font-semibold flex items-center justify-center'
         onClick={Toggle}>

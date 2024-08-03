@@ -3,6 +3,7 @@ import LazyImport from './LazyImport';
 import Signup from './components/onboarding/signup';
 import Home from './components/pages';
 import Product from './components/pages/product';
+import Details from './components/pages/details';
 
 const LoginLoader = () => import('./components/onboarding/login');
 
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
       {
         path: '',
         element: <Product/>
+      },
+      {
+        path: '/home/details/:id',
+        element: <Details/>
       },
       {
         path: 'home/quicks'

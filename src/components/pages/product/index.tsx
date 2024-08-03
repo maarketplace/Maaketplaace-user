@@ -22,7 +22,7 @@ function Product() {
     const loggedInUserId = data?._id
     const navigate = useNavigate()
     const {
-        data: allProductData,
+        data: allProductData, isLoading
     } = useQuery(["getallproduct"], getAllProduct, {
         onSuccess: () => {
         },
@@ -35,7 +35,7 @@ function Product() {
             // Reverse the order of the data array received from the API
             const reversedData = [...allProductData?.data?.data]?.reverse();
             setAllProduct(reversedData);
-            console.log(reversedData);
+            // console.log(reversedData);
         }
     }, [data]);
 
@@ -90,72 +90,68 @@ function Product() {
     return (
         <div className="w-[100%]">
             {
-                allProduct?.length === 0 ?
-                    <div className='w-[100%] h-[90vh] flex items-center justify-center'>
-                        <p>No product available yet</p>
+                isLoading ?
+                    <div className="w-[100%] h-[80vh] flex items-center justify-center">
+                        <p>Loading Product....</p>
                     </div>
                     :
-
-                    <div className="w-[100%] h-[80vh] overflow-auto  flex flex-wrap gap-[10px] justify-center">
-                        {allProduct?.map((i: IProduct) => (
-                            <div className='w-[300px] h-[400px] ' key={i?._id} >
-                                {/* <div className=''>
+                    allProduct?.length === 0 ?
+                        <div className='w-[100%] h-[80vh] flex items-center justify-center'>
+                            <p>No product available yet</p>
+                        </div>
+                        :
+                        <div className="w-[100%] h-[80vh] overflow-auto p-0 flex flex-wrap gap-[10px] justify-center">
+                            {allProduct?.map((i: IProduct) => (
+                                <div className='w-[300px] h-[450px] border  rounded-lg p-[10px] flex flex-col gap-[10px] max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none ' key={i?._id} >
+                                    <div className='w-[100%] h-[250px] flex items-center justify-center'>
+                                        <img src={i.productImage} className='w-[100%] h-[100%] object-fill ' onClick={() => navigate(`/home/details/${i._id}`)} />
+                                    </div>
                                     <span >
-                                        <img src={i?.merchant.image} alt="" className='w-[250px] h-[100px]' />
-                                        <span onClick={() => navigate(`/userhome/admin_store/${i?.merchant?._id}`)}>
-                                            <p className=''>{i?.merchant?.fullName}</p>
-                                        </span>
+                                        <p className='text-[20px]'>{i?.productName?.slice(0, 50)}</p>
                                     </span>
-                                    <button className=''>Follow</button>
-                                </div> */}
-                                <span >
-                                    <p>{i?.productName?.slice(0, 50)}</p>
-                                </span>
-                                <div className='w-[200px] h-[200px]'>
-                                    <img src={i.productImage} className='w-[100%] h-[100%] object-cover ' onClick={() => navigate(`/user_details/${i._id}`)} />
-                                </div>
-                                <span className='flex gap-[10px]'>
-                                    <p className=''>₦{i?.productPrice}</p>
-                                    <p>₦{i?.paymentPrice}</p>
-                                </span>
-                                <div className='w-[100%] flex flex-col'>
-                                    <div className='flex'>
-                                        <span className='flex '>
-                                            {i.user_likes && i.user_likes.includes(loggedInUserId) ?
-                                                <IoHeart
-                                                    size={23}
-                                                    className='liked'
-                                                    onClick={() => handleLikeClick(i._id)}
-                                                />
-                                                :
-                                                <IoHeartOutline
-                                                    size={23}
-                                                    style={{ color: "#ecdc51" }}
-                                                    onClick={() => handleLikeClick(i._id)}
-                                                />
-                                            }
-                                            <p >{i.total_likes}</p>
-                                        </span>
-                                        <span className='flex'>
-                                            <FaRegComment size={20} className='Icons' onClick={() => navigate(`/user_details/${i._id}`)} style={{ color: "#ecdc51" }} />
-                                            <p>{i?.comments?.length}</p>
-                                        </span>
-                                        <span className=''>
-                                            <IoLink size={25} className='Icons' onClick={() => copyToClipboard(`https://maarketplaace.com/#/user_details/${i._id}`)} style={{ color: "#ecdc51" }} />
-                                        </span>
-                                    </div>
-                                    <div className=''>
-                                        <button
-                                            className=''
-                                            onClick={() => handleCartAddingAuth(i._id)}
-                                        >
-                                            Add to cart
-                                        </button>
+                                    <span className='flex gap-[10px]'>
+                                        <p className='text-[15px] line-through text-[lightgrey]'>₦{i?.productPrice}</p>
+                                        <p className='text-[15px]'>₦{i?.paymentPrice}</p>
+                                    </span>
+                                    <span className='flex gap-[10px] text-[12px] '>
+                                        <div dangerouslySetInnerHTML={{ __html: i?.productDescription.slice(0, 30) }} />
+                                    </span>
+                                    <div className='w-[100%] flex flex-col'>
+                                        <div className='flex items-center w-[100%] h-[50px]'>
+                                            <span className='flex items-center gap-[5px] w-[20%]'>
+                                                {i.user_likes && i.user_likes.includes(loggedInUserId) ?
+                                                    <IoHeart
+                                                        size={23}
+                                                        className='text-[#FFC300]'
+                                                        onClick={() => handleLikeClick(i._id)}
+                                                    />
+                                                    :
+                                                    <IoHeartOutline
+                                                        size={23}
+                                                        className='text-[#FFC300]'
+                                                        onClick={() => handleLikeClick(i._id)}
+                                                    />
+                                                }
+                                                <p >{i.total_likes}</p>
+                                            </span>
+                                            <span className='flex items-center gap-[5px] w-[20%]'>
+                                                <FaRegComment size={20} className='text-[#FFC300]' onClick={() => navigate(`/user_details/${i._id}`)} />
+                                                <p>{i?.comments?.length}</p>
+                                            </span>
+                                            <span className='w-[20%]'>
+                                                <IoLink size={25} className='text-[#FFC300]' onClick={() => copyToClipboard(`https://maarketplaace.com/#/user_details/${i._id}`)} />
+                                            </span>
+                                            <button
+                                                className='w-[40%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]'
+                                                onClick={() => handleCartAddingAuth(i._id)}
+                                            >
+                                                Buy Now
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
-                    </div>
+                            ))}
+                        </div>
             }
         </div>
     )
