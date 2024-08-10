@@ -73,9 +73,9 @@ export const userResetPassword = async (data: { id: string | undefined, password
     return await axios.patch(`${VITE_ENDPOINT}/user/ps-change/${id}`, { password })
 }
 
-export const userCheckout = async (data: any)=>{
+export const userBuyNow = async (id: string)=>{
     const userToken = localStorage.getItem(VITE_TOKEN_USER)
-    return await axios.post(`${VITE_ENDPOINT}/order`,data, {
+    return await axios.post(`${VITE_ENDPOINT}/orders/products/${id}/buy`, {}, {
         headers: {
             'Authorization': `Bearer ${userToken}`
         }
@@ -83,10 +83,10 @@ export const userCheckout = async (data: any)=>{
 }
 
 export const userPayWithKora = async (id: string)=>{
-    // const userToken = localStorage.getItem(VITE_TOKEN_USER)
-    return await axios.post(`${VITE_ENDPOINT}/init-kora/orders/${id}`, {
-        // headers: {
-        //     'Authorization': `Bearer ${userToken}`
-        // }
+    const userToken = localStorage.getItem(VITE_TOKEN_USER)
+    return await axios.post(`${VITE_ENDPOINT}/init-kora/orders/${id}/single`,{}, {
+        headers: {
+            'Authorization': `Bearer ${userToken}`
+        }
     })
 }

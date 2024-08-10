@@ -9,7 +9,7 @@ const Home = () => {
     const isQuicksPage = location.pathname === '/home/quicks';
 
     return (
-        <div className="w-[100%] p-[0px] ">
+        <div className="w-[100%] p-[0px] dark:bg-black">
             <div className="w-[100%] h-[10vh] bg-black flex items-center justify-center fixed top-0 left-0 z-50">
                 <div className="w-[98%] h-[80%] flex">
                     <img src={Logo} alt="image" className="w-[180px] h-[50px] " />

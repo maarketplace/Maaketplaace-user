@@ -1,86 +1,136 @@
-import 'swiper/css';
-import 'swiper/css/pagination';
-import { IoHeart, IoHeartOutline, IoLink } from "react-icons/io5";
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { IoHeart, IoHeartOutline, IoLink } from "react-icons/io5";
 import { FaRegComment } from 'react-icons/fa';
-import { useCart } from '../../../context/Cart';
+import { useAuth } from '../../../context/Auth';
 import { getAllProduct } from '../../../api/query';
-import { userLike } from '../../../api/mutation';
+import { userBuyNow, userLike, userPayWithKora } from '../../../api/mutation';
 import { IProduct } from '../../../interface/ProductInterface';
 import { useUser } from '../../../context/GetUser';
 import { copyToClipboard } from '../../../utils/CopytoClip';
+import PaymentModal from '../../../utils/PaymentModal';
 
 function Product() {
-    const { userHandleAddToCart, isUserAuthenticated } = useCart()
-    const { data } = useUser()
-    const queryClient = useQueryClient()
-    const [allProduct, setAllProduct] = useState<any>([])
-    // console.log(allProduct);
+    const { isUserAuthenticated } = useAuth();
+    const { data } = useUser();
+    const queryClient = useQueryClient();
+    const [allProduct, setAllProduct] = useState<any>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [paymentDetails, setPaymentDetails] = useState(
+        {
+            amount: '',
+            fee: '',
+            paymentID: '',
+            paymentAPI: '',
+            payeeName: '',
+            payeeEmail: '',
+            checkoutURL: '',
+            source: '',
+        });
+    const loggedInUserId = data?._id;
+    const navigate = useNavigate();
 
-    const loggedInUserId = data?._id
-    const navigate = useNavigate()
     const {
         data: allProductData, isLoading
-    } = useQuery(["getallproduct"], getAllProduct, {
-        onSuccess: () => {
-        },
-        onError: () => {
-        },
-    });
+    } = useQuery(["getallproduct"], getAllProduct);
 
     useEffect(() => {
-        if (allProductData && allProductData?.data && allProductData?.data?.data?.products) {
-            // Reverse the order of the data array received from the API
-            const reversedData = [...allProductData?.data?.data?.products]?.reverse();
+        if (allProductData?.data?.data?.products) {
+            const reversedData = [...allProductData.data.data.products].reverse();
             setAllProduct(reversedData);
-            console.log(reversedData);
         }
-
     }, [allProductData]);
 
     const { mutate } = useMutation(
         ['userlike'],
         userLike,
         {
-            onSuccess: async () => {
-                queryClient.invalidateQueries('getallproduct')
-            },
-            onError: (err) => {
-                console.log('Error:', err);
-            },
+            onSuccess: () => queryClient.invalidateQueries('getallproduct'),
+            onError: (err) => console.log('Error:', err),
         }
     );
 
     const handleLikeClick = async (productId: string) => {
-        const updateLikeProduct = [...allProduct]
-        const existingItem = updateLikeProduct?.findIndex((product: { _id: string; }) => product?._id === productId)
+        const updateLikeProduct = [...allProduct];
+        const existingItem = updateLikeProduct.findIndex((product: { _id: string; }) => product._id === productId);
+
         if (existingItem !== -1 && !updateLikeProduct[existingItem]?.user_likes?.includes(loggedInUserId)) {
-            updateLikeProduct[existingItem].total_likes += 1
-            updateLikeProduct[existingItem]?.user_likes?.push(loggedInUserId)
-            mutate(productId)
+            updateLikeProduct[existingItem].total_likes += 1;
+            updateLikeProduct[existingItem]?.user_likes?.push(loggedInUserId);
+            mutate(productId);
         } else if (existingItem !== -1 && updateLikeProduct[existingItem]?.user_likes?.includes(loggedInUserId)) {
-            updateLikeProduct[existingItem].total_likes -= 1
-            updateLikeProduct[existingItem]?.user_likes?.pop(loggedInUserId)
-            mutate(productId)
+            updateLikeProduct[existingItem].total_likes -= 1;
+            updateLikeProduct[existingItem]?.user_likes?.pop(loggedInUserId);
+            mutate(productId);
         }
-        // console.log(updateLikeProduct);
-        setAllProduct(updateLikeProduct)
+        setAllProduct(updateLikeProduct);
     };
 
+    const { mutate: buyMutate, isLoading:buyNowLoading } = useMutation(['buynow'],
+        userBuyNow,
+        {
+            onSuccess: (data: any) => {
+                console.log(data?.data?.data?.data);
+                // Extract payment details from the successful response
+                const paymentAmount = data?.data?.data?.data?.amount || '₦0';
+                const paymentFee = data?.data?.data?.data?.transaction_fee || '₦0';
+                const paymentID = data?.data?.data?.data?._id
+                const paymentAPI = data?.data?.data?.paymentData?.payment_type
+                setPaymentDetails({
+                    amount: paymentAmount,
+                    fee: paymentFee,
+                    paymentID: paymentID,
+                    paymentAPI: paymentAPI,
+                    payeeName: '',
+                    payeeEmail: '',
+                    checkoutURL: '',
+                    source: 'buyNow',
+                });
+
+                setIsModalOpen(true);
+            },
+            onError: (error) => {
+                console.log('Error:', error);
+            }
+        }
+    );
 
     const handleCartAddingAuth = (id: string) => {
-        useEffect(() => {
-            if (isUserAuthenticated) {
-                userHandleAddToCart(id)
-            } else {
-                navigate('/')
-            }
-        }, [])
-    }
+        if (isUserAuthenticated) {
+            buyMutate(id);
+        } else {
+            navigate('/');
+        }
+    };
+    const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora, {
+        onSuccess: (data) => {
+            // console.log(data);
+            const paymentAmount = data?.data?.data?.data?.paymentData?.amount || '₦0';
+            const payeeName = data?.data?.data?.data?.payamentData?.customer?.name
+            const payeeEmail = data?.data?.data?.data?.payamentData?.customer?.email
+            const paymentAPI = data?.data?.data?.data?.paymentData?.payment_type
+            const checkoutURL = data?.data?.data?.data?.data?.data?.checkout_url
+            setPaymentDetails({
+                amount: paymentAmount,
+                fee: '',
+                paymentID: '',
+                paymentAPI: paymentAPI,
+                payeeName: payeeName,
+                payeeEmail: payeeEmail,
+                checkoutURL: checkoutURL,
+                source: 'payNow',
+            });
+            setIsModalOpen(true)
+        },
+        onError: (error) => {
+            setIsModalOpen(false)
+            console.log(error);
+
+        }
+    })
     return (
-        <div className="w-[100%] mt-[20px] dark:bg-black dark:text-white">
+        <div className="w-[100%] mt-[30px] dark:bg-black dark:text-white">
             {
                 isLoading ?
                     <div className="w-[100%] h-[80vh] flex items-center justify-center">
@@ -133,8 +183,9 @@ function Product() {
                                             <button
                                                 className='w-[40%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]'
                                                 onClick={() => handleCartAddingAuth(i?._id)}
+                                                disabled={buyNowLoading}
                                             >
-                                                Buy Now
+                                                {buyNowLoading ? 'Buying': 'Buy Now'}
                                             </button>
                                         </div>
                                     </div>
@@ -146,9 +197,40 @@ function Product() {
                             <p>No product available yet</p>
                         </div>
             }
+
+            <PaymentModal
+                isOpen={isModalOpen}
+                setIsOpen={setIsModalOpen}
+                title="Proceed to Payment"
+                amount={paymentDetails.amount}
+                fee={paymentDetails.fee}
+                paymentAPI={paymentDetails.paymentAPI}
+                payeeEmail={paymentDetails.payeeEmail}
+                payeeName={paymentDetails.payeeName}
+                primaryButton={{
+                    text: paymentDetails.source === 'payNow' ? (
+                        <a href={paymentDetails.checkoutURL} rel="noopener noreferrer">
+                            <button className="w-[70%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]">
+                                Pay Now
+                            </button>
+                        </a>
+                    ) : (
+                        <button className="w-[70%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]" onClick={() => payNowMutate(paymentDetails.paymentID)}>
+                            Buy Now
+                        </button>
+                    ),
+                    display: true,
+                    primary: true,
+                }}
+                secondaryButton={{
+                    text: "Cancel",
+                    onClick: () => setIsModalOpen(false),
+                    display: true,
+                    primary: true,
+                }}
+            />
         </div>
-    )
+    );
 }
 
-export default Product
-
+export default Product;

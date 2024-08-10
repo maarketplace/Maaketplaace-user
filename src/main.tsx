@@ -9,7 +9,7 @@ import {
 } from 'react-query'
 import { ThemeProvider } from './context/DarkTheme.tsx';
 import { UserProvider } from './context/GetUser.tsx';
-import { CartProvider } from './context/Cart.tsx';
+import { CartProvider } from './context/Auth.tsx';
 
 const queryClient = new QueryClient()
 ReactDOM.createRoot(document.getElementById('root')!).render(
