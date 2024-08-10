@@ -64,7 +64,7 @@ function UserLoginForm() {
                     type="email"
                     {...register('email')}
                     placeholder="Email"
-                    className="w-[100%] h-[50px] outline-none p-2 border border-[#999BA1] max-[650px]:h-[40px]"
+                    className="w-[100%] h-[50px] outline-none p-2 border border-[#999BA1] max-[650px]:h-[40px] bg-transparent"
                 />
             </div>
             <b className='w-[70%] text-[red] text-sm max-[650px]:w-[90%]'>{errors.email?.message}</b>
@@ -74,7 +74,7 @@ function UserLoginForm() {
                     <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
-                        className="w-[90%] h-[50px] outline-none p-2 max-[650px]:h-[40px] "
+                        className="w-[90%] h-[50px] outline-none p-2 max-[650px]:h-[40px] bg-transparent "
                         {...register('password')}
                     />
                     <span
@@ -82,7 +82,7 @@ function UserLoginForm() {
                         className=""
                         style={{ background: "none", border: "none" }}
                     >
-                        {!showPassword ? <FaEye size={25} style={{ color: 'black' }} className="w-[15px]" /> : <FaEyeSlash size={25} style={{ color: 'black' }} className="w-[15px]" />}
+                        {!showPassword ? <FaEye   className="text-[30px] w-[15px]" /> : <FaEyeSlash   className="text-[30px] w-[15px]" />}
                     </span>
                 </div>
                 <b className='w-[70%] text-[red] text-sm'>{errors.password?.message}</b>

@@ -16,11 +16,11 @@ const Home = () => {
                 </div>
             </div>
             <div className="w-[100%] flex h-[90vh] ">
-                <div className={isDetailsPage || isQuicksPage ? "hidden" : "w-[15%] h-[100%] bg-slate-50 max-[650px]:hidden"}>
+                <div className={isDetailsPage || isQuicksPage ? "hidden" : "w-[15%] h-[100%] bg-slate-50 max-[650px]:hidden mt-[60px]"}>
                     <SideBar />
                 </div>
                 <div className={isDetailsPage || isQuicksPage ? 'w-[100%]' : "w-[85%] flex flex-col items-center justify-center h-[100%] max-[650px]:w-[100%] "}>
-                    <div className="w-[100%] h-[92%] p-[10px] mt-[80px] ">
+                    <div className="w-[100%] h-[92%] p-[10px] mt-[60px] max-[650px]:p-[0px] ">
                         <Layout />
                     </div>
                     <div className={isQuicksPage ? "w-[100%] h-[8%] bg-black text-white fixed left-0 bottom-0 z-50" : "w-[100%] h-[8%] bg-black text-white fixed left-0 bottom-0 z-50"}>

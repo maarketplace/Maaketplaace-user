@@ -31,9 +31,8 @@ function UserSignupForm() {
 
     const { mutate, isLoading } = useMutation(['userSignup'], userSignup, {
         onSuccess: async (data: any) => {
-            console.log(data)
             toast.success(data?.data?.data?.message)
-            navigate('/userverify')
+            navigate('/verify')
         },
         onError: (err: IErrorResponse) => {
             toast.error(err?.response?.data?.message || err?.response?.data?.error?.message || err?.message)

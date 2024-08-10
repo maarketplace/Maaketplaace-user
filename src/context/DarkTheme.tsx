@@ -1,16 +1,16 @@
 import React, { createContext, useState, useEffect } from 'react';
 
 interface ThemeContextProps {
-  darkMode: boolean;
-  Toggle: () => void;
+  userDarkeMode: boolean;
+  ToggleDarkMode: () => void;
 }
 
 const initialThemeContext: ThemeContextProps = {
-  darkMode: false,
-  Toggle: () => {} // Placeholder function
+  userDarkeMode: false,
+  ToggleDarkMode: () => {} // Placeholder function
 };
 
-export const ThemeContext = createContext<ThemeContextProps>(initialThemeContext);
+export const UserThemeContext = createContext<ThemeContextProps>(initialThemeContext);
 
 interface ThemeProviderProps {
   children: React.ReactNode;
@@ -18,7 +18,7 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   // Check system theme preference
-  const getSystemTheme = () => {
+  const getUserSystemTheme = () => {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       return true;
     }
@@ -26,26 +26,26 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   };
 
   // Initialize state from localStorage or system theme
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    const savedState = localStorage.getItem('toggleState');
-    return savedState ? JSON.parse(savedState) : getSystemTheme();
+  const [userDarkeMode, setUserDarkMode] = useState<boolean>(() => {
+    const savedMode = localStorage.getItem('userTogleState');
+    return savedMode ? JSON.parse(savedMode) : getUserSystemTheme();
   });
 
   // Update localStorage whenever toggleState changes
   useEffect(() => {
-    localStorage.setItem('toggleState', JSON.stringify(darkMode));
-  }, [darkMode]);
+    localStorage.setItem('userTogleState', JSON.stringify(userDarkeMode));
+  }, [userDarkeMode]);
 
-  const Toggle = () => setDarkMode((prevState) => !prevState);
+  const ToggleDarkMode = () => setUserDarkMode((prevState) => !prevState);
 
   const contextValue: ThemeContextProps = {
-    darkMode,
-    Toggle
+    userDarkeMode,
+    ToggleDarkMode
   };
 
   return (
-    <ThemeContext.Provider value={contextValue}>
+    <UserThemeContext.Provider value={contextValue}>
       {children}
-    </ThemeContext.Provider>
+    </UserThemeContext.Provider>
   );
 };

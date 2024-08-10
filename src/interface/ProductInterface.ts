@@ -26,6 +26,7 @@ export interface IProduct {
     productPrice: number;
     discountPrice: number;
     merchant: {
+        business_name: string;
         _id: string;
         fullName: string;
         email: string;
