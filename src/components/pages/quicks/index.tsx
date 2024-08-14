@@ -12,7 +12,7 @@ import { FaRegComment } from "react-icons/fa";
 import { userLike } from "../../../api/mutation";
 import { useUser } from "../../../context/GetUser";
 import { IoMdAdd } from "react-icons/io";
-// ,
+
 const Quicks = () => {
     const [allProduct, setAllProduct] = useState<any>([])
     const { data } = useUser()
@@ -28,10 +28,8 @@ const Quicks = () => {
     const loggedInUserId = data?._id
     useEffect(() => {
         if (allProductData && allProductData?.data && allProductData?.data?.data?.products) {
-            // Reverse the order of the data array received from the API
             const reversedData = [...allProductData?.data?.data?.products]?.reverse();
             setAllProduct(reversedData);
-            // console.log(reversedData);
         }
 
     }, [allProductData]);
@@ -79,7 +77,7 @@ const Quicks = () => {
                             spaceBetween={30}
                             mousewheel={true}
                             modules={[Mousewheel, Pagination]}
-                            className='w-[100%] h-[80vh] mt-[25px] max-[650px]:h-[90vh] max-[650px]:mt-[0px]'>
+                            className='w-[100%] h-[80vh] mt-[20px] max-[650px]:h-[90vh] max-[650px]:mt-[0px]'>
                             {
                                 allProduct?.map((i: IProduct) => (
                                     <SwiperSlide key={i?._id} style={{ display: 'flex', height: '100%', gap: 20, justifyContent: 'center', overflow: 'hidden' }}>
@@ -128,7 +126,7 @@ const Quicks = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="w-[40%] h-[100%] flex flex-col gap-[20px] max-[650px]:hidden">
+                                        <div className="w-[40%] h-[100%] flex flex-col gap-[20px] max-w-[650px]:hidden">
                                             <div className="flex items-center justify-between">
                                                 <span className="flex items-center gap-[10px]">
                                                     <img src={i?.merchant?.image} alt="" className="w-[40px] h-[40px] rounded-[100%] object-cover " />

@@ -9,15 +9,15 @@ function App() {
   return (
     <div className={`${userDarkeMode && "dark"} bg-white dark:bg-black`}>
       <RouterProvider router={router} />
-      <button className='fixed w-10 h-10 top-5 right-2 bg-[#FFC300]  rounded-full dark:text-black font-semibold flex items-center justify-center z-[1000]'
+      <button className='fixed w-10 h-10 botttom-8 right-0 bg-[#FFC300] rounded-full dark:text-black font-semibold flex items-center justify-center z-[1000] max-[650px]:w-[18px] max-[650px]:h-[18px]'
         onClick={ToggleDarkMode}>
         {userDarkeMode ?
           <MdOutlineLightMode
-            className='w-[20px] h-[20px] text-center'
+            className='w-[15px] h-[15px] text-center'
           />
           :
           <MdOutlineNightlight
-            className='w-[20px] h-[20px] text-center'
+            className='w-[15px] h-[15px] text-center'
           />}
       </button>
       <Toaster />

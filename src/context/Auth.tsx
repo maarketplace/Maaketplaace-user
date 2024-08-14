@@ -20,7 +20,6 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     const isUserAuthenticated = !!userToken;
 
     useEffect(() => {
-        // Add any additional setup logic here, such as checking the validity of the token
     }, [ userToken]);
     useEffect(() => {
         const storedUserToken = localStorage.getItem(VITE_TOKEN_USER);

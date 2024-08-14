@@ -28,6 +28,7 @@ function Product() {
             checkoutURL: '',
             source: '',
         });
+    const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
     const loggedInUserId = data?._id;
     const navigate = useNavigate();
 
@@ -67,28 +68,10 @@ function Product() {
         setAllProduct(updateLikeProduct);
     };
 
-    const { mutate: buyMutate, isLoading:buyNowLoading } = useMutation(['buynow'],
+    const { mutate: buyMutate } = useMutation(['buynow'],
         userBuyNow,
         {
-            onSuccess: (data: any) => {
-                console.log(data?.data?.data?.data);
-                // Extract payment details from the successful response
-                const paymentAmount = data?.data?.data?.data?.amount || '₦0';
-                const paymentFee = data?.data?.data?.data?.transaction_fee || '₦0';
-                const paymentID = data?.data?.data?.data?._id
-                const paymentAPI = data?.data?.data?.paymentData?.payment_type
-                setPaymentDetails({
-                    amount: paymentAmount,
-                    fee: paymentFee,
-                    paymentID: paymentID,
-                    paymentAPI: paymentAPI,
-                    payeeName: '',
-                    payeeEmail: '',
-                    checkoutURL: '',
-                    source: 'buyNow',
-                });
-
-                setIsModalOpen(true);
+            onSuccess: () => {
             },
             onError: (error) => {
                 console.log('Error:', error);
@@ -98,37 +81,86 @@ function Product() {
 
     const handleCartAddingAuth = (id: string) => {
         if (isUserAuthenticated) {
-            buyMutate(id);
+            setLoadingStates(prevState => ({
+                ...prevState,
+                [id]: true,
+            }));
+
+            buyMutate(id, {
+                onSuccess: (response) => {
+                    const paymentAmount = response?.data?.data?.data?.amount || '₦0';
+                    const paymentFee = response?.data?.data?.data?.transaction_fee || '₦0';
+                    const paymentID = response?.data?.data?.data?._id;
+                    const paymentAPI = response?.data?.data?.paymentData?.payment_type;
+
+                    setPaymentDetails({
+                        amount: paymentAmount,
+                        fee: paymentFee,
+                        paymentID: paymentID,
+                        paymentAPI: paymentAPI,
+                        payeeName: '',
+                        payeeEmail: '',
+                        checkoutURL: '',
+                        source: 'buyNow',
+                    });
+
+                    setTimeout(() => {
+                        setIsModalOpen(true);
+                    }, 2000);
+
+                    setLoadingStates(prevState => ({
+                        ...prevState,
+                        [id]: false,  // Reset the loading state for this product
+                    }));
+                },
+                onError: (error) => {
+                    console.log('Error:', error);
+                    setLoadingStates(prevState => ({
+                        ...prevState,
+                        [id]: false,  // Reset the loading state for this product
+                    }));
+                }
+            });
         } else {
             navigate('/');
         }
     };
+
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora, {
         onSuccess: (data) => {
-            // console.log(data);
-            const paymentAmount = data?.data?.data?.data?.paymentData?.amount || '₦0';
-            const payeeName = data?.data?.data?.data?.payamentData?.customer?.name
-            const payeeEmail = data?.data?.data?.data?.payamentData?.customer?.email
-            const paymentAPI = data?.data?.data?.data?.paymentData?.payment_type
-            const checkoutURL = data?.data?.data?.data?.data?.data?.checkout_url
-            setPaymentDetails({
-                amount: paymentAmount,
-                fee: '',
-                paymentID: '',
-                paymentAPI: paymentAPI,
-                payeeName: payeeName,
-                payeeEmail: payeeEmail,
-                checkoutURL: checkoutURL,
-                source: 'payNow',
-            });
-            setIsModalOpen(true)
+            const paymentData = data?.data?.data?.data;
+            const innerData = data?.data?.data?.data;
+            console.log(paymentData);
+            console.log(innerData);
+
+
+            const paymentAmount = paymentData?.amount || '₦0';
+            const payeeName = paymentData?.customer?.name || '';
+            const payeeEmail = paymentData?.customer?.email || '';
+            const paymentAPI = paymentData?.payment_type || '';
+            // const checkoutURL = innerData?.checkout_url || '';
+
+            // setPaymentDetails({
+            //     amount: paymentAmount,
+            //     fee: '',
+            //     paymentID: paymentData?._id || '',
+            //     paymentAPI: paymentAPI,
+            //     payeeName: payeeName,
+            //     payeeEmail: payeeEmail,
+            //     checkoutURL: checkoutURL,
+            //     source: 'payNow',
+            // });
+
+            // setTimeout(() => {
+            //     setIsModalOpen(true);
+            // }, 2000);
         },
         onError: (error) => {
-            setIsModalOpen(false)
+            setIsModalOpen(false);
             console.log(error);
-
         }
-    })
+    });
+
     return (
         <div className="w-[100%] mt-[30px] dark:bg-black dark:text-white">
             {
@@ -174,7 +206,7 @@ function Product() {
                                                 <p >{i?.total_likes}</p>
                                             </span>
                                             <span className='flex items-center gap-[5px] w-[20%]'>
-                                                <FaRegComment size={20} className='text-[#FFC300]' onClick={() => navigate(`/user_details/${i?._id}`)} />
+                                                <FaRegComment size={20} className='text-[#FFC300]' onClick={() => navigate(`/home/comments/${i?._id}`)} />
                                                 <p>{i?.comments?.length}</p>
                                             </span>
                                             <span className='w-[20%]'>
@@ -183,9 +215,9 @@ function Product() {
                                             <button
                                                 className='w-[40%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]'
                                                 onClick={() => handleCartAddingAuth(i?._id)}
-                                                disabled={buyNowLoading}
+                                                disabled={loadingStates[i?._id]}
                                             >
-                                                {buyNowLoading ? 'Buying': 'Buy Now'}
+                                                {loadingStates[i?._id] ? 'Buying' : 'Buy Now'}
                                             </button>
                                         </div>
                                     </div>
@@ -197,38 +229,43 @@ function Product() {
                             <p>No product available yet</p>
                         </div>
             }
+            {
+                isModalOpen &&
+                <div className='absolute w-full h-full top-0 bottom-0 left-0 right-0'>
+                    <PaymentModal
+                        isOpen={isModalOpen}
+                        setIsOpen={setIsModalOpen}
+                        title={paymentDetails.source === 'payNow' ? "Complete Your Payment" : "Proceed to Payment"}
+                        amount={paymentDetails.amount}
+                        fee={paymentDetails.source === 'buyNow' ? paymentDetails.fee : ''}
+                        paymentAPI={paymentDetails.source === 'payNow' ? paymentDetails.paymentAPI : ''}
+                        payeeEmail={paymentDetails.source === 'payNow' ? paymentDetails.payeeEmail : ''}
+                        payeeName={paymentDetails.source === 'payNow' ? paymentDetails.payeeName : ''}
+                        primaryButton={{
+                            text: paymentDetails.source === 'payNow' ? (
+                                <a href={paymentDetails.checkoutURL} rel="noopener noreferrer">
+                                    <button className="w-[70%] h-[30px] bg-[#FFC300] rounded-[8px] text-[14px]">
+                                        Pay Now
+                                    </button>
+                                </a>
+                            ) : (
+                                <button className="w-[70%] h-[30px] bg-[#FFC300] rounded-[8px] text-[14px] " onClick={() => payNowMutate(paymentDetails.paymentID)}>
+                                    Buy Now
+                                </button>
+                            ),
+                            display: true,
+                            primary: true,
+                        }}
+                        secondaryButton={{
+                            text: "Cancel",
+                            onClick: () => setIsModalOpen(false),
+                            display: true,
+                            primary: true,
+                        }}
+                    />
+                </div>
+            }
 
-            <PaymentModal
-                isOpen={isModalOpen}
-                setIsOpen={setIsModalOpen}
-                title="Proceed to Payment"
-                amount={paymentDetails.amount}
-                fee={paymentDetails.fee}
-                paymentAPI={paymentDetails.paymentAPI}
-                payeeEmail={paymentDetails.payeeEmail}
-                payeeName={paymentDetails.payeeName}
-                primaryButton={{
-                    text: paymentDetails.source === 'payNow' ? (
-                        <a href={paymentDetails.checkoutURL} rel="noopener noreferrer">
-                            <button className="w-[70%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]">
-                                Pay Now
-                            </button>
-                        </a>
-                    ) : (
-                        <button className="w-[70%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]" onClick={() => payNowMutate(paymentDetails.paymentID)}>
-                            Buy Now
-                        </button>
-                    ),
-                    display: true,
-                    primary: true,
-                }}
-                secondaryButton={{
-                    text: "Cancel",
-                    onClick: () => setIsModalOpen(false),
-                    display: true,
-                    primary: true,
-                }}
-            />
         </div>
     );
 }

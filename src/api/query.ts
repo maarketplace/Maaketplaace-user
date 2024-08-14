@@ -21,14 +21,9 @@ export const getOneProduct = async (id: any) => {
     return await axios.get(`${VITE_ENDPOINT}/product/${id}`)
 }
 
-// export const getMyCart = async ()=>{
-//     const usertoken = localStorage.getItem(VITE_TOKEN_USER)
-//     return await axios.get(`${VITE_ENDPOINT}/orders/carts`, {
-//         headers: {
-//             'Authorization': `Bearer ${usertoken}`
-//         }
-//     })
-// }
+export const getAllComment = async () =>{
+    return await axios.get(``)
+}
 
 export const getUserOrders = async ()=>{
     const usertoken = localStorage.getItem(VITE_TOKEN_USER)

@@ -9,15 +9,15 @@ import { Mousewheel, Pagination } from 'swiper/modules';
 const Details = () => {
     const { id: productIdParam } = useParams<{ id?: any }>();
     const { data } = useQuery(['getoneproduct', productIdParam], () => getOneProduct(productIdParam), {})
-    console.log(data?.data?.data?.data?.related_product);
+    // console.log(data?.data?.data?.data?.related_product);
     const relatedProduct = data?.data?.data?.data?.related_product
     const product = data?.data?.data?.data?.product?.[0];
     return (
-        <div className="w-full h-full  mt-[20px] flex flex-col items-center">
-            <div className="w-full flex gap-[10px] justify-center">
-                <div className="w-[20%] bg-red-400 flex flex-col items-center p-[10px] gap-[10px]">
+        <div className="w-full h-full mt-[20px] flex flex-col items-center max-[650px]:mt-[40px]">
+            <div className="w-full flex gap-[10px] justify-center max-[650px]:flex-col">
+                <div className="w-[20%] bg-red-400 flex flex-col items-center p-[10px] gap-[10px] max-[650px]:w-full max-[650px]:mt-[40px]">
                     <div className='w-full h-[250px] flex items-center justify-center '>
-                        <img src={product?.productImage} className='w-[100%] object-cover aspect-square ' />
+                        <img src={product?.productImage} className='w-[100%] object-cover aspect-square max-[650px]:h-[90%] ' />
                     </div>
                     <div className="flex w-full items-center gap-[10px]">
                         <img src={product?.merchant?.image} alt="" className="w-[50px] h-[50px] rounded-[100%] object-cover" />
@@ -27,16 +27,16 @@ const Details = () => {
                         <p>{product?.productDescription}</p>
                     </div>
                 </div>
-                <div className="w-[50%] h-[300px] bg-red-400">
+                <div className="w-[50%] h-[300px] bg-red-400 max-[650px]:w-full">
 
                 </div>
-                <div className="w-[20%] h-[300px] bg-red-400">
+                <div className="w-[20%] h-[300px] bg-red-400 max-[650px]:w-full">
 
                 </div>
             </div>
             <div className="w-[100%] mt-[50px] h-[400px] mb-[200px] flex flex-col items-center gap-[20px]">
                 <p className=" w-[90%] text-[20px]">Recommended Product</p>
-                <div className="w-[100%] p-0 flex flex-wrap gap-[10px]">
+                <div className="w-[100%] p-0 flex flex-wrap gap-[10px] max-[650px]:w-full">
                     <Swiper
                         direction='horizontal'
                         slidesPerView={4}
@@ -47,8 +47,8 @@ const Details = () => {
                         style={{padding: '10px'}}
                         >
                         {relatedProduct?.map((i: IProduct) => (
-                            <SwiperSlide key={i?._id} className='w-[150px] h-[300px] border  rounded-lg p-[10px] flex flex-col gap-[10px] max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none '  >
-                                <div className=' h-[250px] flex items-center justify-center mb-[10px]'>
+                            <SwiperSlide key={i?._id} className='w-[150px] h-[300px] border  rounded-lg p-[10px] flex flex-col gap-[10px] max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none  '  >
+                                <div className=' h-[250px] flex items-center justify-center mb-[10px] max-[650px]:w-full'>
                                     <img src={i?.productImage} className='w-[100%] object-cover aspect-square ' />
                                 </div>
                                 <span >
