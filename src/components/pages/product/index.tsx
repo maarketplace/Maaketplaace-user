@@ -179,7 +179,7 @@ function Product() {
                                     </div>
                                     <div className='flex items-center gap-[5px]' onClick={()=> navigate(`/home/store/${i?.merchant._id}`)}>
                                         {
-                                            !i?.merchant?.image ? <FaUser className='w-[40px] h-[40px] rounded-full object-cover'/> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
+                                            !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover'/> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
                                         }
                                         
                                         <p className='text-[20px]'>{i?.merchant?.business_name || i?.merchant.fullName}</p>
