@@ -24,9 +24,8 @@ function UserLoginForm() {
             toast.success(data?.data?.message);
             const redirectPath = localStorage.getItem('redirectPath');
             if (redirectPath) {
-                // Clear the stored location from session storage
-                localStorage.removeItem('redirectPath');
                 navigate(redirectPath);
+                localStorage.removeItem('redirectPath');
                 localStorage.setItem(VITE_TOKEN_USER, data?.data?.data?.token)
             } else {
                 navigate('/home');

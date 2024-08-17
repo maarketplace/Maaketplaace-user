@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { IoHeart, IoHeartOutline, IoLink } from "react-icons/io5";
-import { FaRegComment } from 'react-icons/fa';
+import { FaRegComment, FaUser } from 'react-icons/fa';
 import { useAuth } from '../../../context/Auth';
 import { getAllProduct } from '../../../api/query';
 import { userBuyNow, userLike, userPayWithKora } from '../../../api/mutation';
@@ -40,6 +40,7 @@ function Product() {
         if (allProductData?.data?.data?.products) {
             const reversedData = [...allProductData.data.data.products].reverse();
             setAllProduct(reversedData);
+            // console.log(allProduct);
         }
     }, [allProductData]);
 
@@ -128,32 +129,31 @@ function Product() {
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora, {
         onSuccess: (data) => {
-            const paymentData = data?.data?.data?.data;
-            const innerData = data?.data?.data?.data;
+            const innerData = data?.data?.data?.data?.data?.data;
+            const paymentData = data?.data?.data?.data?.paymentData;
             console.log(paymentData);
             console.log(innerData);
-
-
             const paymentAmount = paymentData?.amount || '₦0';
             const payeeName = paymentData?.customer?.name || '';
             const payeeEmail = paymentData?.customer?.email || '';
             const paymentAPI = paymentData?.payment_type || '';
-            // const checkoutURL = innerData?.checkout_url || '';
+            const checkoutURL = innerData?.checkout_url || '';
 
-            // setPaymentDetails({
-            //     amount: paymentAmount,
-            //     fee: '',
-            //     paymentID: paymentData?._id || '',
-            //     paymentAPI: paymentAPI,
-            //     payeeName: payeeName,
-            //     payeeEmail: payeeEmail,
-            //     checkoutURL: checkoutURL,
-            //     source: 'payNow',
-            // });
+            setPaymentDetails({
+                amount: paymentAmount,
+                fee: '',
+                paymentID: paymentData?._id || '',
+                paymentAPI: paymentAPI,
+                payeeName: payeeName,
+                payeeEmail: payeeEmail,
+                checkoutURL: checkoutURL,
+                source: 'payNow',
+            });
+            console.log(paymentDetails);
 
-            // setTimeout(() => {
-            //     setIsModalOpen(true);
-            // }, 2000);
+            setTimeout(() => {
+                setIsModalOpen(true);
+            }, 2000);
         },
         onError: (error) => {
             setIsModalOpen(false);
@@ -177,12 +177,19 @@ function Product() {
                                     <div className='w-[100%]  flex items-center justify-center mb-[10px]'>
                                         <img src={i?.productImage} className='w-[100%] object-cover aspect-square ' onClick={() => navigate(`/home/details/${i?._id}`)} />
                                     </div>
+                                    <div className='flex items-center gap-[5px]' onClick={()=> navigate(`/home/store/${i?.merchant._id}`)}>
+                                        {
+                                            !i?.merchant?.image ? <FaUser className='w-[40px] h-[40px] rounded-full object-cover'/> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
+                                        }
+                                        
+                                        <p className='text-[20px]'>{i?.merchant?.business_name || i?.merchant.fullName}</p>
+                                    </div>
                                     <span >
-                                        <p className='text-[20px]'>{i?.productName?.slice(0, 50)}</p>
+                                        <p className='text-[15px]'>{i?.productName?.slice(0, 50)}</p>
                                     </span>
                                     <span className='flex gap-[10px]'>
-                                        <p className='text-[15px] line-through text-[lightgrey]'>₦{i?.productPrice}</p>
-                                        <p className='text-[15px]'>₦{i?.paymentPrice}</p>
+                                        <p className='text-[12px] line-through text-[lightgrey]'>₦{i?.productPrice}</p>
+                                        <p className='text-[12px]'>₦{i?.paymentPrice}</p>
                                     </span>
                                     <span className='flex gap-[10px] text-[12px] '>
                                         <div dangerouslySetInnerHTML={{ __html: i?.productDescription?.slice(0, 30) }} />

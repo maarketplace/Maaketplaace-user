@@ -32,4 +32,7 @@ export const getUserOrders = async ()=>{
             'Authorization': `Bearer ${usertoken}`
         }
     })
+};
+export const getOneMerchantStoreProduct = async (data: any) => {
+    return await axios.get(`${VITE_ENDPOINT}/merchants/${data?.queryKey[1]}/products`)
 }

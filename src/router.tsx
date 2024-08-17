@@ -7,6 +7,7 @@ import Details from './components/pages/details';
 import Quicks from './components/pages/quicks';
 import Verify from './components/onboarding/verify';
 import Comment from './components/pages/comment';
+import Store from './components/pages/store';
 
 const LoginLoader = () => import('./components/onboarding/login');
 
@@ -45,7 +46,11 @@ const router = createHashRouter([
         element: <Comment/>
       },
       {
-        path: 'home/dashboard'
+        path: '/home/dashboard'
+      },
+      {
+        path: '/home/store/:id',
+        element: <Store/>
       }
     ]
   }

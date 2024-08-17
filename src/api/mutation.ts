@@ -55,7 +55,7 @@ export const userComment = async ({id, comment}: { id: string | undefined, comme
     })
 }
 
-export const userLikeAComment = async (id: string) => {
+export const userLikeAComment = async (id: string | undefined) => {
     const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT}/comment/${id}/like/user`, {}, {
         headers: {

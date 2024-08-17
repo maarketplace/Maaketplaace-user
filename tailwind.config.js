@@ -12,7 +12,7 @@ module.exports = {
       },
       animation: {
         slideUp: 'slideUp 2s ease-out',
-      },
+      }
     },
   },
   variants: {

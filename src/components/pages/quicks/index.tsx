@@ -126,7 +126,7 @@ const Quicks = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="w-[40%] h-[100%] flex flex-col gap-[20px] max-w-[650px]:hidden">
+                                        <div className="w-[40%] h-[100%] flex flex-col gap-[20px] max-[650px]:hidden">
                                             <div className="flex items-center justify-between">
                                                 <span className="flex items-center gap-[10px]">
                                                     <img src={i?.merchant?.image} alt="" className="w-[40px] h-[40px] rounded-[100%] object-cover " />

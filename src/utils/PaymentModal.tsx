@@ -51,31 +51,31 @@ const PaymentModal: React.FC<ModalProps> = ({
                     <h2 className="text-xl font-semibold mr-2">{title}</h2>
                 </div>
                 <div className="p-4 flex flex-col gap-[10px] dark:text-white">
-                    <span className='flex justify-between'>
+                    <span className='flex justify-between text-[12px]'>
                         <p>Amount:</p>
                         <p>NGN {amount}</p>
                     </span>
                     {fee &&
-                        <span className='flex justify-between'>
+                        <span className='flex justify-between text-[12px]'>
                             <p>Fee: </p>
                             <p>NGN {fee}</p>
                         </span>
                     }
                     {paymentAPI &&
-                        <span className='flex justify-between'>
+                        <span className='flex justify-between text-[12px]'>
                             <p>Gateway: </p>
                             <p>{paymentAPI}</p>
                         </span>
                     }
                     {payeeName &&
-                        <span className='flex justify-between'>
-                            <p>Customer Name: </p>
+                        <span className='flex justify-between text-[12px]'>
+                            <p>Name: </p>
                             <p>{payeeName}</p>
                         </span>
                     }
                     {payeeEmail &&
-                        <span className='flex justify-between'>
-                            <p>Customer Email: </p>
+                        <span className='flex justify-between text-[12px]'>
+                            <p>Email: </p>
                             <p>{payeeEmail}</p>
                         </span>
                     }
