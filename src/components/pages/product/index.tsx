@@ -256,7 +256,7 @@ function Product() {
                                     </button>
                                 </a>
                             ) : (
-                                <button className="w-[70%] h-[30px] bg-[#FFC300] rounded-[8px] text-[14px] " onClick={() => payNowMutate(paymentDetails.paymentID)}>
+                                <button className="w-[70%] h-[30px] bg-[#FFC300] rounded-[8px] text-[10px] " onClick={() => payNowMutate(paymentDetails.paymentID)}>
                                     Buy Now
                                 </button>
                             ),
