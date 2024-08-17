@@ -8,7 +8,7 @@ import 'swiper/css/navigation';
 import { Mousewheel, Pagination } from 'swiper/modules';
 import parse from 'html-react-parser';
 import { IoHeart, IoHeartOutline, IoShareSocial } from "react-icons/io5";
-import { FaRegComment } from "react-icons/fa";
+import { FaRegComment, FaUser } from "react-icons/fa";
 import { userLike } from "../../../api/mutation";
 import { useUser } from "../../../context/GetUser";
 import { IoMdAdd } from "react-icons/io";
@@ -88,7 +88,9 @@ const Quicks = () => {
                                                     <div className="w-[100%] h-[70%] flex justify-end">
                                                         <div className="w-[20%] h-[100%] flex flex-col items-center justify-center gap-[30px]">
                                                             <span className="gap-[10px] w-[40px] flex items-center justify-center relative">
-                                                                <img src={i?.merchant?.image} alt="" className="w-[40px] h-[40px] rounded-[100%] object-cover " />
+                                                                {
+                                                                    !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover' /> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
+                                                                }
                                                                 <span className="absolute top-7 w-[20px] h-[20px]  bg-red-500 rounded-full flex items-center justify-center ">
                                                                     <IoMdAdd className="text-[15px]" />
                                                                 </span>
@@ -116,10 +118,10 @@ const Quicks = () => {
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <div className="w-[100%] h-[40%] flex ">
+                                                    <div className="w-[100%] h-[40%] flex bg-[#00000047] ">
                                                         <div className=" w-[90%] h-[60%] flex items-center justify-center ml-[10px]">
                                                             <span className="flex items-center gap-[10px] w-[100%]">
-                                                                <p className="font-medium text-[white] truncate ">{i?.merchant?.business_name}</p>
+                                                                <p className="font-medium text-[white] truncate ">{i?.merchant?.business_name || i?.merchant?.fullName}</p>
                                                             </span>
                                                         </div>
                                                     </div>
