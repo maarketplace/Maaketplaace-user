@@ -12,6 +12,7 @@ import { copyToClipboard } from '../../../utils/CopytoClip';
 import PaymentModal from '../../../utils/PaymentModal';
 
 function Product() {
+    const navigate = useNavigate();
     const { isUserAuthenticated } = useAuth();
     const { data } = useUser();
     const queryClient = useQueryClient();
@@ -30,8 +31,7 @@ function Product() {
         });
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
     const loggedInUserId = data?._id;
-    const navigate = useNavigate();
-
+    
     const {
         data: allProductData, isLoading
     } = useQuery(["getallproduct"], getAllProduct);
@@ -40,7 +40,6 @@ function Product() {
         if (allProductData?.data?.data?.products) {
             const reversedData = [...allProductData.data.data.products].reverse();
             setAllProduct(reversedData);
-            // console.log(allProduct);
         }
     }, [allProductData]);
 
@@ -177,11 +176,11 @@ function Product() {
                                     <div className='w-[100%]  flex items-center justify-center mb-[10px]'>
                                         <img src={i?.productImage} className='w-[100%] object-cover aspect-square ' onClick={() => navigate(`/home/details/${i?._id}`)} />
                                     </div>
-                                    <div className='flex items-center gap-[5px]' onClick={()=> navigate(`/home/store/${i?.merchant._id}`)}>
+                                    <div className='flex items-center gap-[5px]' onClick={() => navigate(`/home/store/${i?.merchant._id}`)}>
                                         {
-                                            !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover'/> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
+                                            !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover' /> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
                                         }
-                                        
+
                                         <p className='text-[20px]'>{i?.merchant?.business_name || i?.merchant.fullName}</p>
                                     </div>
                                     <span >

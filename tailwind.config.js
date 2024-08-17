@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-  darkMode: "class", 
+  darkMode: "class",
   theme: {
     extend: {
       keyframes: {
@@ -12,7 +12,7 @@ module.exports = {
       },
       animation: {
         slideUp: 'slideUp 2s ease-out',
-      }
+      },
     },
   },
   variants: {
