@@ -24,12 +24,11 @@ function UserLoginForm() {
             toast.success(data?.data?.message);
             const redirectPath = localStorage.getItem('redirectPath');
             if (redirectPath) {
-                // Clear the stored location from session storage
-                localStorage.removeItem('redirectPath');
                 navigate(redirectPath);
+                localStorage.removeItem('redirectPath');
                 localStorage.setItem(VITE_TOKEN_USER, data?.data?.data?.token)
             } else {
-                navigate('');
+                navigate('/home');
             }
         },
         onError: (err: any) => {
@@ -45,7 +44,11 @@ function UserLoginForm() {
         handleSubmit(onSubmit)();
     };
     return (
-        <div className="h-[100vh] w-[55%] flex items-center justify-center flex-col gap-5 max-[650px]:w-[100%]">
+        <div className="h-[100vh] w-[55%] flex items-center flex-col gap-5 max-[650px]:w-[100%]">
+            <span className="w-[100%] p-[10px] max-[650px]:w-[90%] flex gap-[20px] justify-end" >
+                <p className="cursor-pointer p-[10px]" onClick={()=> navigate('/home')}>Product</p>
+                <p className="cursor-pointer bg-[#FFC300] p-[10px] rounded-[8px] "> <a href="http://merchant.maarketplaace.com/#/">Start Selling</a></p>
+            </span>
             <div className="w-[70%] flex items-center justify-center flex-col gap-[10px] max-[650px]:w-[100%]" >
                 <img src="MARKET.svg" alt="" className="max-[650px]:w-[80px]" />
                 <span className="flex items-center justify-center flex-col gap-[10px] max-[650px]:w-[100%]" >
@@ -60,7 +63,7 @@ function UserLoginForm() {
                     type="email"
                     {...register('email')}
                     placeholder="Email"
-                    className="w-[100%] h-[50px] outline-none p-2 border border-[#999BA1] max-[650px]:h-[40px]"
+                    className="w-[100%] h-[50px] outline-none p-2 border border-[#999BA1] max-[650px]:h-[40px] bg-transparent"
                 />
             </div>
             <b className='w-[70%] text-[red] text-sm max-[650px]:w-[90%]'>{errors.email?.message}</b>
@@ -70,7 +73,7 @@ function UserLoginForm() {
                     <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
-                        className="w-[90%] h-[50px] outline-none p-2 max-[650px]:h-[40px] "
+                        className="w-[90%] h-[50px] outline-none p-2 max-[650px]:h-[40px] bg-transparent "
                         {...register('password')}
                     />
                     <span
@@ -78,7 +81,7 @@ function UserLoginForm() {
                         className=""
                         style={{ background: "none", border: "none" }}
                     >
-                        {!showPassword ? <FaEye size={25} style={{ color: 'black' }} className="w-[15px]" /> : <FaEyeSlash size={25} style={{ color: 'black' }} className="w-[15px]" />}
+                        {!showPassword ? <FaEye   className="text-[30px] w-[15px]" /> : <FaEyeSlash   className="text-[30px] w-[15px]" />}
                     </span>
                 </div>
                 <b className='w-[70%] text-[red] text-sm'>{errors.password?.message}</b>
@@ -99,10 +102,10 @@ function UserLoginForm() {
                 <h4 className="">Don't have an account?</h4>
                 <h4
                     className="text-[#0c50af] cursor-pointer"
-                    onClick={() => navigate('/userSignup')}
+                    onClick={() => navigate('/create-account')}
                 >
                     Create an Account
-                </h4>   
+                </h4>
             </div>
             <h4 className="text-[red] cursor-pointer" onClick={() => navigate('/userForgotPassword')}>Forgot Password?</h4>
         </div>
