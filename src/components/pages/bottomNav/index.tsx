@@ -23,7 +23,7 @@ const Bottom = () => {
     return (
         <div className="w-[100%] h-[100%] flex items-center  ">
             <div className="w-[80%] h-[100%] ml-[20px] max-w-[650px]:ml-[20px] flex items-center justify-between ">
-            <span className={(location.pathname === '/home' || location.pathname.startsWith('/home/details')) ? 'text-[#FFC300] text-[20px]' : 'text-[20px]'}>
+                <span className={(location.pathname === '/home' || location.pathname.startsWith('/home/details')) ? 'text-[#FFC300] text-[20px]' : 'text-[20px]'}>
                     <FiHome
                         className=''
                         onClick={handleHomeClick} />
@@ -34,7 +34,7 @@ const Bottom = () => {
                         onClick={handleQuicksClick} />
                 </span>
                 <span className={location.pathname === '/userhome/userprofile/userdashboard' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
-                    <IoMdAdd/>
+                    <IoMdAdd />
                 </span>
                 <span className={location.pathname === '/home/profile/adminsetting' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
                     <IoIosNotificationsOutline
