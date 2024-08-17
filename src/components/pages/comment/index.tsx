@@ -139,7 +139,7 @@ const Comment = () => {
         />
         <p>{productDetails?.length} Comments</p>
       </div>
-      <div className="w-[50%] h-[70%] max-[650px]:w-[100%] overflow-y-auto">
+      <div className="w-[50%] h-[80%] max-[650px]:w-[100%] overflow-y-auto">
         {
           isLoading ?
             <div className="w-[100%] h-[80vh] flex items-center justify-center">
@@ -157,7 +157,7 @@ const Comment = () => {
                       <span className="w-[80%] flex flex-col gap-1">
                         <p className="text-[12px] font-bold">Suliton <b className="font-light">{i?.createdTime}</b></p>
                         <p className="text-[10px]">{i?.comment}</p>
-                        <p className="text-[8px]">Reply</p>
+                        {/* <p className="text-[8px]">Reply</p> */}
                       </span>
                       <span className="flex flex-col justify-center items-center">
                         {
@@ -185,10 +185,10 @@ const Comment = () => {
               </div>
             )}
       </div>
-      <div className="w-[55%] h-[90px] max-[650px]:w-[100%] flex items-center justify-center flex-col gap-[10px] bg-black ">
-        <div className=" flex flex-col items-center justify-center max-[650px]:w-[100%] mb-[10px] bg-black ">
+      <div className="w-[55%] h-[90px] max-[650px]:w-[100%] flex items-center justify-center flex-col gap-[10px] max-[650px]:bg-black ">
+        <div className=" flex w-[100%]  flex-col items-center justify-center max-[650px]:w-[100%] mb-[20px] bg-white max-[650px]:bg-black ">
           <div className="flex gap-5 w-[90%]  justify-between items-center border max-[650px]:w-[96%]">
-            <span className="w-[90%]  flex items-center justify-center  h-[35px] p-2 max-[650px]:w-[99%]">
+            <span className="w-[100%] flex items-center justify-center  h-[35px] p-2 max-[650px]:w-[99%]">
               <button className="w-[30px] h-[20px] text-[20px] flex items-center" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
                 😊
               </button>
@@ -201,7 +201,7 @@ const Comment = () => {
             </span>
 
             <button className="w-[10%] flex items-center " onClick={handleComment}>
-              <IoMdSend className="text-[25px] text-[white]" />
+              <IoMdSend className="text-[25px] max-[650px]:text-[white]" />
             </button>
           </div>
           {showEmojiPicker && (
