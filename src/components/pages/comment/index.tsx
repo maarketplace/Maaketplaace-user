@@ -41,6 +41,8 @@ const Comment = () => {
   useEffect(() => {
     if (ProductData) {
       setProductDetails(ProductData?.data?.data?.data?.product?.[0].comments || []);
+      // console.log([ProductData]);
+
     }
   }, [ProductData]);
 
@@ -139,7 +141,7 @@ const Comment = () => {
         />
         <p>{productDetails?.length} Comments</p>
       </div>
-      <div className="w-[50%] h-[80%] max-[650px]:w-[100%] overflow-y-auto">
+      <div className="w-[50%] h-[70%] max-[650px]:w-[100%] overflow-y-auto">
         {
           isLoading ?
             <div className="w-[100%] h-[80vh] flex items-center justify-center">
@@ -185,7 +187,7 @@ const Comment = () => {
               </div>
             )}
       </div>
-      <div className="w-[55%] h-[90px] max-[650px]:w-[100%] flex items-center justify-center flex-col gap-[10px] max-[650px]:bg-black ">
+      <div className="w-[55%] h-[20%] max-[650px]:w-[100%] flex items-center justify-center flex-col gap-[10px] max-[650px]:bg-black ">
         <div className=" flex w-[100%]  flex-col items-center justify-center max-[650px]:w-[100%] mb-[20px] bg-white max-[650px]:bg-black ">
           <div className="flex gap-5 w-[90%]  justify-between items-center border max-[650px]:w-[96%]">
             <span className="w-[100%] flex items-center justify-center  h-[35px] p-2 max-[650px]:w-[99%]">
