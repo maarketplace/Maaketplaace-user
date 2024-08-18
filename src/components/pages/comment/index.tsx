@@ -187,8 +187,8 @@ const Comment = () => {
               </div>
             )}
       </div>
-      <div className="w-[55%] h-[20%] max-[650px]:w-[100%] flex items-center justify-center flex-col gap-[10px] max-[650px]:bg-black ">
-        <div className=" flex w-[100%]  flex-col items-center justify-center max-[650px]:w-[100%] mb-[20px] bg-white max-[650px]:bg-black ">
+      <div className="w-[55%] h-[25%] max-[650px]:w-[100%] flex items-center justify-center flex-col gap-[10px] max-[650px]:bg-black ">
+        <div className=" flex w-[100%] flex-col items-center justify-center max-[650px]:w-[100%] mb-[40px] bg-white max-[650px]:bg-black ">
           <div className="flex gap-5 w-[90%]  justify-between items-center border max-[650px]:w-[96%]">
             <span className="w-[100%] flex items-center justify-center  h-[35px] p-2 max-[650px]:w-[99%]">
               <button className="w-[30px] h-[20px] text-[20px] flex items-center" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
@@ -197,7 +197,7 @@ const Comment = () => {
               <input
                 placeholder="Add your review"
                 {...register('comment')}
-                className="w-[90%] flex items-center justify-center p-2 bg-transparent rounded-md text-[10px] outline-none text-black max-[650px]:w-[100%] sm:p-[5px] dark:text-white"
+                className="w-[90%] flex items-center justify-center p-2 bg-transparent rounded-md text-[10px] outline-none text-white max-[650px]:w-[100%] sm:p-[5px] dark:text-white"
               />
               <b className=''>{errors.comment?.message}</b>
             </span>
