@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom styles for light and dark mode */
+@layer utilities {
+  .bg-default-bg {
+    background-color: #ffffff; /* Light mode background */
+  }
+
+  .bg-dark-bg {
+    background-color: #000000; /* Dark mode background */
+  }
+
+  .text-light-text {
+    color: #000000; /* Light mode text color */
+  }
+
+  .text-dark-text {
+    color: #ffffff; /* Dark mode text color */
+  }
+}
+
+/* Apply the classes based on mode */
+body {
+  @apply bg-default-bg font-sans text-light-text;
+}
+
+.dark body {
+  @apply bg-dark-bg text-dark-text;
+}

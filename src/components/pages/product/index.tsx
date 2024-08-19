@@ -161,7 +161,7 @@ function Product() {
     });
 
     return (
-        <div className="w-[100%] mt-[75px] dark:bg-black dark:text-white">
+        <div className="w-[100%] mt-[40px] max-[650px]:mt-[20px] dark:bg-black dark:text-white">
             {
                 isLoading ?
                     <div className="w-[100%] h-[80vh] flex items-center justify-center">
@@ -170,9 +170,9 @@ function Product() {
                     :
                     allProduct?.length !== 0
                         ?
-                        <div className="w-[100%] h-[75vh] overflow-scroll p-0 flex flex-wrap gap-[10px] justify-center ">
+                        <div className="w-[100%] h-[80vh] overflow-scroll p-0 flex flex-wrap gap-[10px] justify-center ">
                             {allProduct?.map((i: IProduct) => (
-                                <div key={i?._id} className='w-[300px] mb-[10px] border  rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none ' >
+                                <div key={i?._id} className='w-[300px]  border  rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none ' >
                                     <div className='w-[100%]  flex items-center justify-center mb-[10px]'>
                                         <img src={i?.productImage} className='w-[100%] object-cover aspect-square ' onClick={() => navigate(`/home/details/${i?._id}`)} />
                                     </div>

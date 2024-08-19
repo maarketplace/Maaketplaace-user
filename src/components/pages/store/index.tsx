@@ -38,8 +38,8 @@ const Store = () => {
         }
     }
     return (
-        <div className="mt-[100px] w-[100%] flex items-center justify-center flex-col gap-[20px] dark:text-white ">
-            <div className="w-[50%] mt-[50px] h-[auto] p-[2%] shadow-lg shadow-grey-500/50 bg-slate-50  dark:bg-[#1D1C1C] dark:shadow-white-500/50 rounded-[16px]  max-[650px]:w-[90%] max-[650px]:p-[2%]">
+        <div className="w-[100%] flex items-center justify-center flex-col gap-[20px] dark:text-white ">
+            <div className="w-[50%] mt-[30px] h-[auto] p-[2%] shadow-lg shadow-grey-500/50 bg-slate-50  dark:bg-[#1D1C1C] dark:shadow-white-500/50 rounded-[16px]  max-[650px]:w-[90%] max-[650px]:p-[2%]">
                 <div className="w-[60%] flex flex-col gap-[10px] max-[650px]:w-[100%] max-[650px]:items-center ">
                     <div className=" w-[100%] flex items-center gap-5 max-[650px]:flex-col">
                         <span className="flex w-[70%] flex-col items-center gap-[10px] relative">
