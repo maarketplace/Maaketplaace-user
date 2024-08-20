@@ -13,6 +13,12 @@ module.exports = {
       animation: {
         slideUp: 'slideUp 2s ease-out',
       },
+      fontFamily: {
+        sans: ['Poppins', 'sans-serif'],
+      },
+      backgroundColor: {
+        'default-bg': '#000000',
+      },
     },
   },
   variants: {

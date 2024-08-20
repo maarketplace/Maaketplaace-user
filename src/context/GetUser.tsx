@@ -1,5 +1,5 @@
 // UserContext.tsx
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import { getUser } from '../api/query';
 
@@ -13,19 +13,20 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+    const [user, setUser] = useState()
     const {
         data,
         isLoading,
         error,
-    } = useQuery(["getMerchant"], getUser, {
-        // enabled: !!localStorage.getItem('VITE_TOKEN'),
-        // refetchOnWindowFocus: true,
-        onError: (error: any) => {
-            console.log(error?.response?.data?.message)
+    } = useQuery(["getUser"], getUser, {
+        onError: () => {
         },
     });
+    useEffect(()=>{
+        setUser(data?.data?.data?.data)
+    }, [data])
     const value: UserContextType = {
-        data: data?.data?.data?.data,
+        data: user,
         isLoading,
         error,
     };
