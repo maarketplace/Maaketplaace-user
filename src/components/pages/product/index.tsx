@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { IoHeart, IoHeartOutline, IoLink } from "react-icons/io5";
 import { FaRegComment, FaUser } from 'react-icons/fa';
 import { useAuth } from '../../../context/Auth';
@@ -15,7 +15,6 @@ function Product() {
     const navigate = useNavigate();
     const { isUserAuthenticated } = useAuth();
     const { data } = useUser();
-    const queryClient = useQueryClient();
     const [allProduct, setAllProduct] = useState<any>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [paymentDetails, setPaymentDetails] = useState(
@@ -46,10 +45,6 @@ function Product() {
     const { mutate } = useMutation(
         ['userlike'],
         userLike,
-        {
-            onSuccess: () => queryClient.invalidateQueries('getallproduct'),
-            onError: (err) => console.log('Error:', err),
-        }
     );
 
     const handleLikeClick = async (productId: string) => {
@@ -110,14 +105,14 @@ function Product() {
 
                     setLoadingStates(prevState => ({
                         ...prevState,
-                        [id]: false,  // Reset the loading state for this product
+                        [id]: false,
                     }));
                 },
                 onError: (error) => {
                     console.log('Error:', error);
                     setLoadingStates(prevState => ({
                         ...prevState,
-                        [id]: false,  // Reset the loading state for this product
+                        [id]: false, 
                     }));
                 }
             });
@@ -161,7 +156,7 @@ function Product() {
     });
 
     return (
-        <div className="w-[100%] mt-[40px] max-[650px]:mt-[20px] dark:bg-black dark:text-white">
+        <div className="w-[100%] mt-[30px] max-[650px]:mt-[5px] dark:bg-black dark:text-white">
             {
                 isLoading ?
                     <div className="w-[100%] h-[80vh] flex items-center justify-center">
