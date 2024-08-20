@@ -10,6 +10,7 @@ import { IProduct } from '../../../interface/ProductInterface';
 import { useUser } from '../../../context/GetUser';
 import { copyToClipboard } from '../../../utils/CopytoClip';
 import PaymentModal from '../../../utils/PaymentModal';
+import toast from 'react-hot-toast';
 
 function Product() {
     const navigate = useNavigate();
@@ -30,7 +31,7 @@ function Product() {
         });
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
     const loggedInUserId = data?._id;
-    
+
     const {
         data: allProductData, isLoading
     } = useQuery(["getallproduct"], getAllProduct);
@@ -48,19 +49,26 @@ function Product() {
     );
 
     const handleLikeClick = async (productId: string) => {
-        const updateLikeProduct = [...allProduct];
-        const existingItem = updateLikeProduct.findIndex((product: { _id: string; }) => product._id === productId);
-
-        if (existingItem !== -1 && !updateLikeProduct[existingItem]?.user_likes?.includes(loggedInUserId)) {
-            updateLikeProduct[existingItem].total_likes += 1;
-            updateLikeProduct[existingItem]?.user_likes?.push(loggedInUserId);
-            mutate(productId);
-        } else if (existingItem !== -1 && updateLikeProduct[existingItem]?.user_likes?.includes(loggedInUserId)) {
-            updateLikeProduct[existingItem].total_likes -= 1;
-            updateLikeProduct[existingItem]?.user_likes?.pop(loggedInUserId);
-            mutate(productId);
+        if (isUserAuthenticated) {
+            const updateLikeProduct = [...allProduct];
+            const existingItem = updateLikeProduct.findIndex((product: { _id: string; }) => product._id === productId);
+            if (existingItem !== -1 && !updateLikeProduct[existingItem]?.user_likes?.includes(loggedInUserId)) {
+                updateLikeProduct[existingItem].total_likes += 1;
+                updateLikeProduct[existingItem]?.user_likes?.push(loggedInUserId);
+                mutate(productId);
+            } else if (existingItem !== -1 && updateLikeProduct[existingItem]?.user_likes?.includes(loggedInUserId)) {
+                updateLikeProduct[existingItem].total_likes -= 1;
+                updateLikeProduct[existingItem]?.user_likes?.pop(loggedInUserId);
+                mutate(productId);
+            }
+            setAllProduct(updateLikeProduct);
+        } else {
+            toast.error("Please login to like this Product")
+            setTimeout(() => {
+                navigate('/')
+            }, 2000)
         }
-        setAllProduct(updateLikeProduct);
+
     };
 
     const { mutate: buyMutate } = useMutation(['buynow'],
@@ -112,7 +120,7 @@ function Product() {
                     console.log('Error:', error);
                     setLoadingStates(prevState => ({
                         ...prevState,
-                        [id]: false, 
+                        [id]: false,
                     }));
                 }
             });
