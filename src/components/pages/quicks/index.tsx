@@ -30,6 +30,8 @@ const Quicks = () => {
         if (allProductData && allProductData?.data && allProductData?.data?.data?.products) {
             const reversedData = [...allProductData?.data?.data?.products]?.reverse();
             setAllProduct(reversedData);
+            // console.log(allProduct);
+            
         }
 
     }, [allProductData]);
@@ -115,7 +117,7 @@ const Quicks = () => {
                                                             <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]">
                                                                 <FaRegComment className="text-[black] text-[25px]" />
                                                             </span>
-                                                            <p >{i?.total_likes}</p>
+                                                            <p >{i?.comments?.length}</p>
                                                             <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]">
                                                                 <IoShareSocial className="text-[black] text-[25px]" />
                                                             </span>
