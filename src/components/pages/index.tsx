@@ -15,7 +15,7 @@ const Home = () => {
             <div className={isQuicksPage ? "hidden": "w-[100%] h-[10vh] bg-black flex items-center justify-center fixed top-0 left-0 z-50 p-2"}>
                 <div className="w-[30%] h-[100%] flex items-center max-w-[650px]:w-[10%]">
                     <img src={Logo} alt="image" className="w-[180px] h-[50px] max-[650px]:hidden " />
-                    {/* <img src='MARKET.svg' alt="image" className="w-[40px] h-[40px] hidden max-[650px]:flex " /> */}
+                    <img src='MARKET.svg' alt="image" className="w-[40px] h-[40px] hidden max-[650px]:flex " />
                 </div>
                 <div className="w-[70%] h-[100%] max-w-[650px]:w-[90%] flex justify-center items-center">
                     <input type="text"
