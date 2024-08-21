@@ -79,7 +79,7 @@ const Quicks = () => {
                             spaceBetween={30}
                             mousewheel={true}
                             modules={[Mousewheel, Pagination]}
-                            className='w-[100%] h-[80vh] mt-[20px] max-[650px]:h-[80vh] max-[650px]:mt-[0px]'>
+                            className='w-[100%] h-[80vh] mt-[20px] max-[650px]:h-[85vh] max-[650px]:mt-[0px]'>
                             {
                                 allProduct?.map((i: IProduct) => (
                                     <SwiperSlide key={i?._id} style={{ display: 'flex', height: '100%', gap: 20, justifyContent: 'center', overflow: 'hidden' }}>
