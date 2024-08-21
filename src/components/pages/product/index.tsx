@@ -40,6 +40,8 @@ function Product() {
         if (allProductData?.data?.data?.products) {
             const reversedData = [...allProductData.data.data.products].reverse();
             setAllProduct(reversedData);
+            // console.log(allProductData);
+            
         }
     }, [allProductData]);
 

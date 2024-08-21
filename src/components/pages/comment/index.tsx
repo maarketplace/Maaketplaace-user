@@ -37,12 +37,12 @@ const Comment = () => {
   };
 
   const { data: ProductData, isLoading } = useQuery(['getoneproduct', productIdParam], () => getOneProduct(productIdParam), {});
+  // const { data: CommentData } = useQuery(['getProductComment', productIdParam], () => getProductComment(productIdParam), {});
 
   useEffect(() => {
     if (ProductData) {
       setProductDetails(ProductData?.data?.data?.data?.product?.[0].comments || []);
-      // console.log([ProductData]);
-
+      // console.log(CommentData);
     }
   }, [ProductData]);
 

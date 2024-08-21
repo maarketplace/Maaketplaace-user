@@ -12,10 +12,10 @@ const Home = () => {
     const isStorePage = location.pathname === `/home/store/${id}`;
     return (
         <div className="w-[100%] p-[0px] dark:bg-black max-w-fill">
-            <div className="w-[100%] h-[10vh] bg-black flex items-center justify-center fixed top-0 left-0 z-50 p-2">
+            <div className={isQuicksPage ? "hidden": "w-[100%] h-[10vh] bg-black flex items-center justify-center fixed top-0 left-0 z-50 p-2"}>
                 <div className="w-[30%] h-[100%] flex items-center max-w-[650px]:w-[10%]">
                     <img src={Logo} alt="image" className="w-[180px] h-[50px] max-[650px]:hidden " />
-                    <img src='MARKET.svg' alt="image" className="w-[40px] h-[40px] hidden max-[650px]:flex " />
+                    {/* <img src='MARKET.svg' alt="image" className="w-[40px] h-[40px] hidden max-[650px]:flex " /> */}
                 </div>
                 <div className="w-[70%] h-[100%] max-w-[650px]:w-[90%] flex justify-center items-center">
                     <input type="text"
@@ -29,7 +29,7 @@ const Home = () => {
                     <SideBar />
                 </div>
                 <div className={isDetailsPage || isQuicksPage || isStorePage ? 'w-[100%]' : "w-[85%] flex flex-col items-center justify-center h-[100%] max-[650px]:w-[100%] "}>
-                    <div className="w-[100%] h-[92%] mt-[60px] max-[650px]:p-[0px] ">
+                    <div className={isQuicksPage ? "mt-0": "w-[100%] h-[92%] mt-[60px] max-[650px]:p-[0px] "}>
                         <Layout />
                     </div>
                     <div className={isQuicksPage ? "w-[100%] h-[8%] bg-black text-white fixed left-0 bottom-0 z-50" : "w-[100%] h-[8%] bg-black text-white fixed left-0 bottom-0 z-50"}>
