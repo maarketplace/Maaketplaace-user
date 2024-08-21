@@ -87,8 +87,8 @@ const Quicks = () => {
                                             <img src={i?.productImage} alt="" className="relative w-full h-full object-cover " />
                                             <div className=" w-[100%] h-[100%] bg-[#00000038] opacity-100 flex items-end absolute top-0 left-0 right-0 bottom-0">
                                                 <div className="w-[100%] h-[500px] hidden max-[650px]:flex max-[650px]:flex-col max-[650px]:gap-[10px]">
-                                                    <div className="w-[100%] h-[80%] flex justify-end">
-                                                        <div className="w-[26%] h-[100%] flex flex-col items-center justify-center gap-[10px]">
+                                                    <div className="w-[100%] h-[60%] flex justify-end ">
+                                                        <div className="w-[20%] h-[100%] flex flex-col items-center justify-center gap-[10px]">
                                                             <span className="gap-[10px] w-[40px] flex items-center justify-center relative ">
                                                                 {
                                                                     !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover' /> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
@@ -123,8 +123,8 @@ const Quicks = () => {
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <div className="w-[100%] h-[40%] flex ">
-                                                        <div className=" w-[90%] h-[60%] flex items-center justify-center ml-[10px]">
+                                                    <div className="w-[100%] h-[40%] flex items-center ">
+                                                        <div className=" w-[90%] h-[30%]flex ml-[10px]">
                                                             <span className="flex items-center gap-[10px] w-[100%]">
                                                                 <p className="text-white text-lg font-bold shadow-md  truncate ">{i?.merchant?.business_name || i?.merchant?.fullName}</p>
                                                             </span>
