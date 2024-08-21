@@ -1,9 +1,11 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Bottom from "./bottomNav";
 import Layout from "./layout";
 import SideBar from "./sidebar";
 import Logo from '../../assets/LOGO.svg'
+import { IoSearch } from "react-icons/io5";
 const Home = () => {
+    const navigate = useNavigate()
     const {id} = useParams()
     const location = useLocation();
 
@@ -13,15 +15,12 @@ const Home = () => {
     return (
         <div className="w-[100%] p-[0px] dark:bg-black max-w-fill">
             <div className={isQuicksPage ? "hidden": "w-[100%] h-[10vh] bg-black flex items-center justify-center fixed top-0 left-0 z-50 p-2"}>
-                <div className="w-[30%] h-[100%] flex items-center max-w-[650px]:w-[10%]">
+                <div className="w-[80%] h-[100%] flex items-center max-w-[650px]:w-[10%]">
                     <img src={Logo} alt="image" className="w-[180px] h-[50px] max-[650px]:hidden " />
                     <img src='MARKET.svg' alt="image" className="w-[40px] h-[40px] hidden max-[650px]:flex " />
                 </div>
-                <div className="w-[70%] h-[100%] max-w-[650px]:w-[90%] flex justify-center items-center">
-                    <input type="text"
-                        placeholder="Search for product and store"
-                        className="w-[300px] text-[12px] p-2 bg-transparent border outline-none text-white max-w-[650px]:w-[200px] max-w-[650px]:h-[18px] max-w-[650px]:text-[10px]"
-                    />
+                <div className="w-[20%] h-[100%] max-w-[650px]:w-[90%] flex justify-end items-center">
+                    <IoSearch className="text-[30px] text-[#FFC300] " onClick={()=>navigate('/home/search')} />
                 </div>
             </div>
             <div className="w-[100%] flex h-[90vh] ">
@@ -42,3 +41,4 @@ const Home = () => {
 }
 
 export default Home;
+

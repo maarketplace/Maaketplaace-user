@@ -8,6 +8,7 @@ import Quicks from './components/pages/quicks';
 import Verify from './components/onboarding/verify';
 import Comment from './components/pages/comment';
 import Store from './components/pages/store';
+import Search from './components/pages/search';
 
 const LoginLoader = () => import('./components/onboarding/login');
 
@@ -51,10 +52,15 @@ const router = createHashRouter([
       {
         path: '/home/store/:id',
         element: <Store/>
-      }
+      },
+      {
+        path: '/home/search',
+        element: <Search/>
+      },
     ]
   }
 ]);
 
 
 export default router;
+
