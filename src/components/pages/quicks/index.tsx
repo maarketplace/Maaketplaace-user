@@ -113,11 +113,11 @@ const Quicks = () => {
                                                                 }
 
                                                             </span>
-                                                            <p >{i?.total_likes}</p>
+                                                            <p className="text-white text-lg font-bold shadow-md">{i?.total_likes}</p>
                                                             <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]">
                                                                 <FaRegComment className="text-[black] text-[25px]" />
                                                             </span>
-                                                            <p >{i?.comments?.length}</p>
+                                                            <p className="text-white text-lg font-bold shadow-md">{i?.comments?.length}</p>
                                                             <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]">
                                                                 <IoShareSocial className="text-[black] text-[25px]" />
                                                             </span>
