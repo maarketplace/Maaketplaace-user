@@ -36,3 +36,6 @@ export const getUserOrders = async ()=>{
 export const getOneMerchantStoreProduct = async (data: any) => {
     return await axios.get(`${VITE_ENDPOINT}/merchants/${data?.queryKey[1]}/products`)
 }
+export const getProductComment = async (id: string) =>{
+    return await axios.get(`${VITE_ENDPOINT}/comments/products/${id}`)
+}
