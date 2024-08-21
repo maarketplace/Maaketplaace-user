@@ -123,7 +123,7 @@ const Quicks = () => {
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <div className="w-[100%] max-[375px]:h-[30%] flex items-center ">
+                                                    <div className="w-[100%] max-[650px]:h-[30%] flex items-center ">
                                                         <div className=" w-[90%] h-[30%]flex ml-[10px]">
                                                             <span className="flex items-center gap-[10px] w-[100%]">
                                                                 <p className="text-white text-lg font-bold shadow-md  truncate ">{i?.merchant?.business_name || i?.merchant?.fullName}</p>
