@@ -47,7 +47,9 @@ const Store = () => {
                             <p className="text-[15px] font-bold hidden max-[650px]:flex ">{AdminInfo?.profession}</p>
                         </span>
                         <span className="h-[100px] w-[100%] gap-5 max-[650px]:w-[100%] max-[650px]:flex max-[650px]:items-center max-[650px]:flex-col">
-                            <p className="text-clamp text-[25px] mb-[10px]">@{AdminInfo?.business_name}</p>
+                            {
+                                AdminInfo?.business_name &&  <p className="text-clamp text-[25px] mb-[10px]">@{AdminInfo?.business_name}</p>
+                            }
                             <p className="text-[12px] max-[650px]:text-center">{AdminInfo?.bio}</p>
                         </span>
                     </div>

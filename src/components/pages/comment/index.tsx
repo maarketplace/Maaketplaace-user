@@ -3,7 +3,7 @@ import { IoMdArrowBack, IoMdSend } from "react-icons/io";
 // import  { EmojiStyle, SkinTones } from 'emoji-picker-react';
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { getOneProduct } from "../../../api/query";
+import { getOneProduct, getProductComment } from "../../../api/query";
 import { useEffect } from "react";
 import { userComment, userLikeAComment } from "../../../api/mutation";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -22,7 +22,7 @@ const Comment = () => {
   const navigate = useNavigate()
   const queryClient = useQueryClient();
   const commentQuery = ["getoneproduct"];
-  const [productDetails, setProductDetails] = useState<IAddComment[]>([]);
+  const [productComment, setProductComment] = useState<IAddComment[]>([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const form = useForm<IAddComment>({
@@ -37,12 +37,12 @@ const Comment = () => {
   };
 
   const { data: ProductData, isLoading } = useQuery(['getoneproduct', productIdParam], () => getOneProduct(productIdParam), {});
-  // const { data: CommentData } = useQuery(['getProductComment', productIdParam], () => getProductComment(productIdParam), {});
+  const { data: CommentData } = useQuery(['getProductComment', productIdParam], () => getProductComment(productIdParam), {});
 
   useEffect(() => {
     if (ProductData) {
-      setProductDetails(ProductData?.data?.data?.data?.product?.[0].comments || []);
-      // console.log(CommentData);
+      setProductComment(CommentData?.data?.data || []);
+      // console.log(CommentData?.data?.data);
     }
   }, [ProductData]);
 
@@ -63,18 +63,21 @@ const Comment = () => {
       comment: formData.comment,
       createdTime: currentTime,
       productIdParam: undefined,
-      user: [userData?._id],
+      user: {
+        fullName: ""
+      },
       _id: "",
       total_likes: 0,
+      user_likes: undefined
     };
-    setProductDetails((prevComments) => [...prevComments, newComment]);
+    setProductComment((prevComments) => [...prevComments, newComment]);
     form.reset({ comment: '' });
     mutate(
       { id: productIdParam, comment: formData.comment },
       {
         onSuccess: (response) => {
           const actualComment = response.data.comment;
-          setProductDetails((prevComments) =>
+          setProductComment((prevComments) =>
             prevComments.map((comment) =>
               comment.id === temporaryId ? { ...comment, ...actualComment } : comment
             )
@@ -82,7 +85,7 @@ const Comment = () => {
         },
         onError: (err) => {
           console.error('Error:', err);
-          setProductDetails((prevComments) =>
+          setProductComment((prevComments) =>
             prevComments.filter((comment) => comment.id !== temporaryId)
           );
         },
@@ -107,27 +110,27 @@ const Comment = () => {
     }
   );
   const handleLikeClick = async (commentId: string) => {
-    const updatedComments = productDetails.map((comment) => {
+    const updatedComments = productComment.map((comment) => {
       if (comment._id === commentId) {
-        const isLiked = comment.user.includes(loggedInUserId);
+        const isLiked = comment.user_likes.includes(loggedInUserId);
 
         return {
           ...comment,
           total_likes: isLiked ? comment.total_likes - 1 : comment.total_likes + 1,
           user: isLiked
-            ? comment.user.filter(userId => userId !== loggedInUserId) // Unlike
-            : [...comment.user, loggedInUserId], // Like
+            ? comment.user_likes.filter((userId: any) => userId !== loggedInUserId) // Unlike
+            : [...comment.user_likes, loggedInUserId], // Like
         };
       }
       return comment;
     });
 
-    setProductDetails(updatedComments);
+    setProductComment(updatedComments);
 
     likeCommentMutate(commentId, {
       onError: (err) => {
         console.log("Error:", err);
-        setProductDetails(productDetails);
+        setProductComment(productComment);
       },
     });
   };
@@ -139,7 +142,7 @@ const Comment = () => {
         <IoMdArrowBack
           onClick={() => navigate('/home')}
         />
-        <p>{productDetails?.length} Comments</p>
+        <p>{productComment?.length} Comments</p>
       </div>
       <div className="w-[50%] h-[70%] max-[650px]:w-[100%] overflow-y-auto">
         {
@@ -148,22 +151,22 @@ const Comment = () => {
               <p>Loading Comments....</p>
             </div>
             :
-            productDetails.length !== 0 ? (
+            productComment.length !== 0 ? (
               <div className="w-[100%] flex flex-col gap-[10px]">
-                {productDetails.map((i: IAddComment) => (
+                {productComment.map((i: IAddComment) => (
                   <div key={i._id} >
                     <div className=" flex items-center justify-between p-4 gap-2 ">
-                      <span className="w-[30px] h-[30px] bg-red-300 rounded-full">
-
+                      <span className="w-[30px] flex items-center justify-center h-[30px] bg-[#FFC300] rounded-full">
+                        <p>{i?.user?.fullName?.charAt(0)}</p>
                       </span>
                       <span className="w-[80%] flex flex-col gap-1">
-                        <p className="text-[12px] font-bold">Suliton <b className="font-light">{i?.createdTime}</b></p>
+                        <p className="text-[12px] font-bold">{i?.user?.fullName} <b className="font-light">{i?.createdTime}</b></p>
                         <p className="text-[10px]">{i?.comment}</p>
                         {/* <p className="text-[8px]">Reply</p> */}
                       </span>
                       <span className="flex flex-col justify-center items-center">
                         {
-                          i?.user.includes(loggedInUserId) ? (
+                          i?.user_likes?.includes(loggedInUserId) ? (
                             <IoHeart
                               className='text-[#FFC300] text-[15px]'
                               onClick={() => handleLikeClick(i?._id)}
@@ -197,7 +200,7 @@ const Comment = () => {
               <input
                 placeholder="Add your review"
                 {...register('comment')}
-                className="w-[90%] flex items-center justify-center p-2 bg-transparent rounded-md text-[10px] outline-none text-white max-[650px]:w-[100%] sm:p-[5px] dark:text-white"
+                className="w-[90%] flex items-center  justify-center p-2 bg-transparent rounded-md text-[10px] outline-none text-black max-[650px]:w-[100%] sm:p-[5px] dark:text-white"
               />
               <b className=''>{errors.comment?.message}</b>
             </span>
