@@ -35,8 +35,8 @@ const Details = () => {
                     {/* <p>{product?.productDescription}</p> */}
                     </div>
                 </div>
-                <div className="w-[50%] bg-slate-50 max-[650px]:w-full">
-                    <div className='prose flex flex-wrap' dangerouslySetInnerHTML={{ __html: product?.productDescription }} />
+                <div className="w-[50%] bg-slate-50 max-[650px]:w-full dark:bg-black ">
+                    <div className='prose flex flex-wrap dark:text-white max-[650px]:text-[14px]' dangerouslySetInnerHTML={{ __html: product?.productDescription }} />
                 </div>
                 {/* <div className="w-[20%] h-[300px] bg-slate-50 max-[650px]:w-full">
                     <span className="flex justify-between">
@@ -51,13 +51,13 @@ const Details = () => {
                     <button>Confirm</button>
                 </div> */}
             </div>
-            <div className="w-[100%] mt-[50px] h-[400px] mb-[200px] flex flex-col items-center gap-[20px]">
+            <div className="w-[100%] mt-[50px] h-[400px] mb-[200px] flex flex-col items-center gap-[20px] ">
                 <p className=" w-[90%] text-[20px]">Recommended Product</p>
                 <div className="w-[100%] p-0 flex flex-wrap gap-[10px] max-[650px]:w-full ">
                     <Swiper
                         direction="horizontal"
                         spaceBetween={30}
-                        mousewheel={false}
+                        mousewheel={true}
                         modules={[Mousewheel, Pagination]}
                         className="w-[90%]"
                         style={{ padding: "10px", }}
@@ -80,7 +80,7 @@ const Details = () => {
                             <SwiperSlide
                                 key={i?._id}
                                 style={{ height: 400 }}
-                                className="h-[450px] border rounded-lg p-[10px] flex flex-col gap-[20px] max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none "
+                                className="h-[450px] border rounded-lg p-[10px] flex flex-col gap-[20px] max-[650px]:border-none max-[650px]:bg-slate-50 dark:bg-black dark:shadow-sm dark:shadow-[lightgrey] max-[650px]:w-[100%] max-[650px]:rounded-none "
                             >
                                 <div className="h-[250px] flex items-center justify-center mb-[10px] max-[650px]:w-full max-[650px]:h-[250px]">
                                     <img

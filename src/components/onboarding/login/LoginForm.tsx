@@ -9,6 +9,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { LoginInterface } from "../../../interface/LoginInterface";
 import { AdminLoginSchema } from "../../../schema/LoginSchema";
 import { userLogin } from "../../../api/mutation";
+import Loading from "../../../loader";
 
 function UserLoginForm() {
     // const location = useLocation();
@@ -93,7 +94,7 @@ function UserLoginForm() {
                     disabled={isLoading}
                     className="w-[100%] h-[50px] outline-none p-2 bg-[#FFC300] rounded-lg"
                 >
-                    {isLoading ? "Loading..." : "Login"}
+                    {isLoading ? <Loading/> : "Login"}
                 </button>
 
             </div>

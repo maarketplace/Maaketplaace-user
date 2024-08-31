@@ -25,7 +25,7 @@ const Home = () => {
                 </div>
             </div>
             <div className="w-[100%] flex h-[90vh] ">
-                <div className={isDetailsPage || isQuicksPage || isStorePage ? "hidden" : "w-[15%] h-[100%] bg-slate-50 max-[650px]:hidden mt-[60px]  "}>
+                <div className={isDetailsPage || isQuicksPage || isStorePage ? "hidden" : "w-[15%] h-[100%] bg-white max-[650px]:hidden mt-[60px]  "}>
                     <SideBar />
                 </div>
                 <div className={isDetailsPage || isQuicksPage || isStorePage ? 'w-[100%]' : "w-[85%] flex flex-col items-center justify-center h-[100%] max-[650px]:w-[100%] "}>

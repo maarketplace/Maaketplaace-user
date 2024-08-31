@@ -2,17 +2,20 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { RxLightningBolt } from "react-icons/rx";
 import { FiHome, FiUser } from "react-icons/fi";
 import { IoMdAdd, IoIosNotificationsOutline } from "react-icons/io";
+import { useState } from 'react';
+import PostModal from '../../../utils/QuicksUploadModal';
 
 <IoIosNotificationsOutline />
 const Bottom = () => {
     const navigate = useNavigate()
     const location = useLocation();
+    const [showQuicksModal, setShowQuicksModal] = useState(false)
 
     const handleHomeClick = () => {
         navigate('/home');
     };
     const handleQuicksClick = () => {
-        navigate('/home/quicks');
+        setShowQuicksModal(!showQuicksModal)
     };
     const handleSettingClick = () => {
         navigate('')
@@ -34,7 +37,9 @@ const Bottom = () => {
                         onClick={handleQuicksClick} />
                 </span>
                 <span className={location.pathname === '/userhome/userprofile/userdashboard' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
-                    <IoMdAdd />
+                    <IoMdAdd 
+                    onClick={handleQuicksClick}
+                    />
                 </span>
                 <span className={location.pathname === '/home/profile/adminsetting' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
                     <IoIosNotificationsOutline
@@ -47,6 +52,7 @@ const Bottom = () => {
                         onClick={handleUserClick} />
                 </span>
             </div>
+            {showQuicksModal && <PostModal isOpen={showQuicksModal} onClose={() => setShowQuicksModal(false)} />}
         </div>
     )
 }

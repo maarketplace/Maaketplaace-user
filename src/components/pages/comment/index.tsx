@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { IoMdArrowBack, IoMdSend } from "react-icons/io";
 // import  { EmojiStyle, SkinTones } from 'emoji-picker-react';
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { getOneProduct, getProductComment } from "../../../api/query";
+import { getProductComment } from "../../../api/query";
 import { useEffect } from "react";
 import { userComment, userLikeAComment } from "../../../api/mutation";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -15,13 +15,16 @@ import { IoHeart, IoHeartOutline } from "react-icons/io5";
 import { useUser } from "../../../context/GetUser";
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
+import { useAuth } from "../../../context/Auth";
+import toast from "react-hot-toast";
 
 const Comment = () => {
   const { id: productIdParam } = useParams<{ id?: any }>();
   const { data: userData } = useUser();
+  const { isUserAuthenticated } = useAuth();
   const navigate = useNavigate()
-  const queryClient = useQueryClient();
-  const commentQuery = ["getoneproduct"];
+  // const queryClient = useQueryClient();
+  // const commentQuery = ["getoneproduct"];
   const [productComment, setProductComment] = useState<IAddComment[]>([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
@@ -36,15 +39,13 @@ const Comment = () => {
     setValue('comment', currentComment + emoji.native);
   };
 
-  const { data: ProductData, isLoading } = useQuery(['getoneproduct', productIdParam], () => getOneProduct(productIdParam), {});
-  const { data: CommentData } = useQuery(['getProductComment', productIdParam], () => getProductComment(productIdParam), {});
+  const { data: CommentData, isLoading } = useQuery(['getProductComment', productIdParam], () => getProductComment(productIdParam), {});
 
   useEffect(() => {
-    if (ProductData) {
+    if (CommentData) {
       setProductComment(CommentData?.data?.data || []);
-      // console.log(CommentData?.data?.data);
     }
-  }, [ProductData]);
+  }, [CommentData]);
 
   const { mutate } = useMutation(['comment'], userComment, {
     onSuccess: () => {
@@ -64,19 +65,23 @@ const Comment = () => {
       createdTime: currentTime,
       productIdParam: undefined,
       user: {
-        fullName: ""
+        fullName: userData?.fullName || ""
       },
       _id: "",
       total_likes: 0,
-      user_likes: undefined
+      user_likes: []
     };
+
     setProductComment((prevComments) => [...prevComments, newComment]);
+
     form.reset({ comment: '' });
+
     mutate(
       { id: productIdParam, comment: formData.comment },
       {
         onSuccess: (response) => {
           const actualComment = response.data.comment;
+
           setProductComment((prevComments) =>
             prevComments.map((comment) =>
               comment.id === temporaryId ? { ...comment, ...actualComment } : comment
@@ -93,47 +98,100 @@ const Comment = () => {
     );
   };
 
+
   const handleComment = () => {
     handleSubmit(onSubmit)();
   };
   const loggedInUserId = userData?._id;
-  const { mutate: likeCommentMutate } = useMutation(
-    ['userLikeAComment'],
-    userLikeAComment,
+
+  const { mutate: likeCommentMutate } = useMutation(['userLikeAComment',], userLikeAComment,
     {
       onSuccess: (data) => {
-        queryClient.invalidateQueries(commentQuery)
+        // queryClient.invalidateQueries(commentQuery)
         console.log(data);
 
       },
       onError: (err) => console.log('Error:', err),
     }
   );
+
+  // const handleLikeClick = async (commentId: string) => {
+  //   if (isUserAuthenticated) {
+  //     const updatedComments = [...productComment];
+  //     const commentIndex = updatedComments.findIndex((comment) => comment._id === commentId);
+  //     if (commentIndex !== -1 && !updatedComments[commentIndex]?.user_likes?.includes(loggedInUserId)) {
+  //       updatedComments[commentIndex].comment.total_likes += 1;
+  //       updatedComments[commentIndex].comment.user_likes.push(loggedInUserId);
+  //       likeCommentMutate(commentId);
+  //     } else if (updatedComments[commentIndex]?.user_likes?.includes(loggedInUserId)) {
+  //       updatedComments[commentIndex].total_likes -= 1;
+  //       updatedComments[commentIndex]?.user_likes?.pop(loggedInUserId)
+  //       likeCommentMutate(commentId);
+  //     }
+  //     setProductComment(updatedComments);
+  //   } else {
+  //     toast.error("Please login to like this Product")
+  //     setTimeout(() => {
+  //       navigate('/')
+  //     }, 2000)
+  //   }
+  // };
   const handleLikeClick = async (commentId: string) => {
-    const updatedComments = productComment.map((comment) => {
-      if (comment._id === commentId) {
-        const isLiked = comment.user_likes.includes(loggedInUserId);
+    if (isUserAuthenticated) {
+        // Create a copy of the current comments
+        const updatedComments = [...productComment];
+        const commentIndex = updatedComments.findIndex((comment) => comment._id === commentId);
 
-        return {
-          ...comment,
-          total_likes: isLiked ? comment.total_likes - 1 : comment.total_likes + 1,
-          user: isLiked
-            ? comment.user_likes.filter((userId: any) => userId !== loggedInUserId) // Unlike
-            : [...comment.user_likes, loggedInUserId], // Like
-        };
-      }
-      return comment;
-    });
+        if (commentIndex !== -1) {
+            const comment = updatedComments[commentIndex];
+            const isLiked = comment.user_likes?.includes(loggedInUserId);
 
-    setProductComment(updatedComments);
+            // Optimistically update the UI
+            if (!isLiked) {
+                comment.total_likes = (comment.total_likes || 0) + 1;
+                comment.user_likes = [...(comment.user_likes || []), loggedInUserId];
+            } else {
+                comment.total_likes = (comment.total_likes || 0) - 1;
+                comment.user_likes = (comment.user_likes || []).filter((userId: any) => userId !== loggedInUserId);
+            }
 
-    likeCommentMutate(commentId, {
-      onError: (err) => {
-        console.log("Error:", err);
-        setProductComment(productComment);
-      },
-    });
-  };
+            // Update the local state immediately
+            setProductComment(updatedComments);
+
+            // Call the API
+            try {
+                await likeCommentMutate(commentId); // assuming this is a mutation function that returns a promise
+            } catch (error) {
+                console.error('API error:', error);
+
+                // If the API call fails, revert the optimistic update
+                const revertedComments = [...productComment];
+                const revertedCommentIndex = revertedComments.findIndex((comment) => comment._id === commentId);
+                
+                if (revertedCommentIndex !== -1) {
+                    const revertedComment = revertedComments[revertedCommentIndex];
+                    const wasLiked = isLiked; // the state before the update
+                    
+                    if (!wasLiked) {
+                        revertedComment.total_likes -= 1;
+                        revertedComment.user_likes = (revertedComment.user_likes || []).filter((userId: any) => userId !== loggedInUserId);
+                    } else {
+                        revertedComment.total_likes += 1;
+                        revertedComment.user_likes = [...(revertedComment.user_likes || []), loggedInUserId];
+                    }
+                    
+                    setProductComment(revertedComments);
+                }
+            }
+        }
+    } else {
+        toast.error("Please login to like this Comment");
+        setTimeout(() => {
+            navigate('/');
+        }, 2000);
+    }
+};
+
 
 
   return (
@@ -200,7 +258,7 @@ const Comment = () => {
               <input
                 placeholder="Add your review"
                 {...register('comment')}
-                className="w-[90%] flex items-center  justify-center p-2 bg-transparent rounded-md text-[10px] outline-none text-black max-[650px]:w-[100%] sm:p-[5px] dark:text-white"
+                className="w-[90%] flex items-center  justify-center p-2 bg-transparent rounded-md text-[10px] outline-none text-black max-[650px]:w-[100%] sm:p-[5px] dark:text-white max-[650px]:text-white"
               />
               <b className=''>{errors.comment?.message}</b>
             </span>
