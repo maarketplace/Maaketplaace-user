@@ -21,11 +21,11 @@ export const getOneProduct = async (id: any) => {
     return await axios.get(`${VITE_ENDPOINT}/product/${id}`)
 }
 
-export const getAllComment = async () =>{
+export const getAllComment = async () => {
     return await axios.get(``)
 }
 
-export const getUserOrders = async ()=>{
+export const getUserOrders = async () => {
     const usertoken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.get(`${VITE_ENDPOINT}/orders/users`, {
         headers: {
@@ -33,9 +33,14 @@ export const getUserOrders = async ()=>{
         }
     })
 };
-export const getOneMerchantStoreProduct = async (data: any) => {
-    return await axios.get(`${VITE_ENDPOINT}/merchants/${data?.queryKey[1]}/products`)
+export const getOneMerchantStoreProduct = async (businessName: string | null) => {
+    // console.log(data);
+    return await axios.get(`${VITE_ENDPOINT}/merchants/products`, {
+        params: {
+         businessName
+        }
+    })
 }
-export const getProductComment = async (id: string) =>{
+export const getProductComment = async (id: string) => {
     return await axios.get(`${VITE_ENDPOINT}/comments/products/${id}`)
 }

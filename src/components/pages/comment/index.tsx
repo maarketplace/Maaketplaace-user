@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { IoMdArrowBack, IoMdSend } from "react-icons/io";
-// import  { EmojiStyle, SkinTones } from 'emoji-picker-react';
 import { useMutation, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProductComment } from "../../../api/query";
@@ -23,11 +22,8 @@ const Comment = () => {
   const { data: userData } = useUser();
   const { isUserAuthenticated } = useAuth();
   const navigate = useNavigate()
-  // const queryClient = useQueryClient();
-  // const commentQuery = ["getoneproduct"];
   const [productComment, setProductComment] = useState<IAddComment[]>([]);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-
   const form = useForm<IAddComment>({
     resolver: yupResolver(CommentSchema) as any
   });
@@ -104,93 +100,38 @@ const Comment = () => {
   };
   const loggedInUserId = userData?._id;
 
-  const { mutate: likeCommentMutate } = useMutation(['userLikeAComment',], userLikeAComment,
-    {
-      onSuccess: (data) => {
-        // queryClient.invalidateQueries(commentQuery)
-        console.log(data);
+  const { mutate: likeCommentMutate } = useMutation(['userLikeAComment',], userLikeAComment,{
 
-      },
-      onError: (err) => console.log('Error:', err),
-    }
-  );
+  });
 
-  // const handleLikeClick = async (commentId: string) => {
-  //   if (isUserAuthenticated) {
-  //     const updatedComments = [...productComment];
-  //     const commentIndex = updatedComments.findIndex((comment) => comment._id === commentId);
-  //     if (commentIndex !== -1 && !updatedComments[commentIndex]?.user_likes?.includes(loggedInUserId)) {
-  //       updatedComments[commentIndex].comment.total_likes += 1;
-  //       updatedComments[commentIndex].comment.user_likes.push(loggedInUserId);
-  //       likeCommentMutate(commentId);
-  //     } else if (updatedComments[commentIndex]?.user_likes?.includes(loggedInUserId)) {
-  //       updatedComments[commentIndex].total_likes -= 1;
-  //       updatedComments[commentIndex]?.user_likes?.pop(loggedInUserId)
-  //       likeCommentMutate(commentId);
-  //     }
-  //     setProductComment(updatedComments);
-  //   } else {
-  //     toast.error("Please login to like this Product")
-  //     setTimeout(() => {
-  //       navigate('/')
-  //     }, 2000)
-  //   }
-  // };
-  const handleLikeClick = async (commentId: string) => {
+  const handleCommentLik = async (commentId: string) => {
     if (isUserAuthenticated) {
-        // Create a copy of the current comments
-        const updatedComments = [...productComment];
-        const commentIndex = updatedComments.findIndex((comment) => comment._id === commentId);
+      const updatedComments = [...productComment];
+      const commentIndex = updatedComments.findIndex((comment) => comment._id === commentId);
 
-        if (commentIndex !== -1) {
-            const comment = updatedComments[commentIndex];
-            const isLiked = comment.user_likes?.includes(loggedInUserId);
-
-            // Optimistically update the UI
-            if (!isLiked) {
-                comment.total_likes = (comment.total_likes || 0) + 1;
-                comment.user_likes = [...(comment.user_likes || []), loggedInUserId];
-            } else {
-                comment.total_likes = (comment.total_likes || 0) - 1;
-                comment.user_likes = (comment.user_likes || []).filter((userId: any) => userId !== loggedInUserId);
-            }
-
-            // Update the local state immediately
-            setProductComment(updatedComments);
-
-            // Call the API
-            try {
-                await likeCommentMutate(commentId); // assuming this is a mutation function that returns a promise
-            } catch (error) {
-                console.error('API error:', error);
-
-                // If the API call fails, revert the optimistic update
-                const revertedComments = [...productComment];
-                const revertedCommentIndex = revertedComments.findIndex((comment) => comment._id === commentId);
-                
-                if (revertedCommentIndex !== -1) {
-                    const revertedComment = revertedComments[revertedCommentIndex];
-                    const wasLiked = isLiked; // the state before the update
-                    
-                    if (!wasLiked) {
-                        revertedComment.total_likes -= 1;
-                        revertedComment.user_likes = (revertedComment.user_likes || []).filter((userId: any) => userId !== loggedInUserId);
-                    } else {
-                        revertedComment.total_likes += 1;
-                        revertedComment.user_likes = [...(revertedComment.user_likes || []), loggedInUserId];
-                    }
-                    
-                    setProductComment(revertedComments);
-                }
-            }
+      if (commentIndex !== -1) {
+        const comment = updatedComments[commentIndex];
+        const isLiked = comment.user_likes?.includes(loggedInUserId);
+        if (!isLiked) {
+          comment.total_likes = (comment.total_likes || 0) + 1;
+          comment.user_likes = [...(comment.user_likes || []), loggedInUserId];
+          comment?.user_likes?.push(loggedInUserId);
+          likeCommentMutate(commentId);
+        } else {
+          comment.total_likes = (comment.total_likes || 0) - 1;
+          comment.user_likes = (comment.user_likes || []).filter((userId: any) => userId !== loggedInUserId);
+          comment?.user_likes?.pop(loggedInUserId);
+          likeCommentMutate(commentId);
         }
+        setProductComment(updatedComments);
+      }
     } else {
-        toast.error("Please login to like this Comment");
-        setTimeout(() => {
-            navigate('/');
-        }, 2000);
+      toast.error("Please login to like this Comment");
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
     }
-};
+  };
 
 
 
@@ -218,21 +159,22 @@ const Comment = () => {
                         <p>{i?.user?.fullName?.charAt(0)}</p>
                       </span>
                       <span className="w-[80%] flex flex-col gap-1">
-                        <p className="text-[12px] font-bold">{i?.user?.fullName} <b className="font-light">{i?.createdTime}</b></p>
-                        <p className="text-[10px]">{i?.comment}</p>
-                        {/* <p className="text-[8px]">Reply</p> */}
+                        <p className="text-[14px] font-bold">{i?.user?.fullName} <b className="font-light">{i?.createdTime}</b></p>
+                        <p className="text-[12px]">{i?.comment}</p>
+                        {/* <p className="text-[10px]">reply</p> */}
                       </span>
                       <span className="flex flex-col justify-center items-center">
                         {
-                          i?.user_likes?.includes(loggedInUserId) ? (
+                          i?.user_likes?.includes(loggedInUserId) 
+                          ? (
                             <IoHeart
                               className='text-[#FFC300] text-[15px]'
-                              onClick={() => handleLikeClick(i?._id)}
+                              onClick={() => handleCommentLik(i?._id)}
                             />
                           ) : (
                             <IoHeartOutline
                               className='text-[15px] text-[#FFC300]'
-                              onClick={() => handleLikeClick(i?._id)}
+                              onClick={() => handleCommentLik(i?._id)}
                             />
                           )
                         }

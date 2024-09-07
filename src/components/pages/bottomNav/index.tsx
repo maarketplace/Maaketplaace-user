@@ -15,6 +15,9 @@ const Bottom = () => {
         navigate('/home');
     };
     const handleQuicksClick = () => {
+        navigate('/home/quicks')
+    };
+    const handleAddQuicksClick = () => {
         setShowQuicksModal(!showQuicksModal)
     };
     const handleSettingClick = () => {
@@ -36,9 +39,9 @@ const Bottom = () => {
                         className=''
                         onClick={handleQuicksClick} />
                 </span>
-                <span className={location.pathname === '/userhome/userprofile/userdashboard' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
+                <span className={location.pathname === '' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
                     <IoMdAdd 
-                    onClick={handleQuicksClick}
+                    onClick={handleAddQuicksClick}
                     />
                 </span>
                 <span className={location.pathname === '/home/profile/adminsetting' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
@@ -52,7 +55,7 @@ const Bottom = () => {
                         onClick={handleUserClick} />
                 </span>
             </div>
-            {showQuicksModal && <PostModal isOpen={showQuicksModal} onClose={() => setShowQuicksModal(false)} />}
+         {showQuicksModal && <PostModal isOpen={showQuicksModal} onClose={() => setShowQuicksModal(false)} />}
         </div>
     )
 }

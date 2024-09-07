@@ -50,7 +50,7 @@ const router = createHashRouter([
         path: '/home/dashboard'
       },
       {
-        path: '/home/store/:id',
+        path: '/home/store',
         element: <Store/>
       },
       {
