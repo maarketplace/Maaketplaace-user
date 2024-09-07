@@ -19,11 +19,16 @@ module.exports = {
       backgroundColor: {
         'default-bg': '#000000',
       },
+      fontFamily: {
+        sans: ['Poppins', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
     },
   },
   variants: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }
 

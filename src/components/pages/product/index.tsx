@@ -11,6 +11,13 @@ import { useUser } from '../../../context/GetUser';
 import { copyToClipboard } from '../../../utils/CopytoClip';
 import PaymentModal from '../../../utils/PaymentModal';
 import toast from 'react-hot-toast';
+import Loading from '../../../loader';
+import { IoEyeOutline } from 'react-icons/io5';
+import Modal from '../../../utils/ProductModal';
+import { RiPagesLine } from "react-icons/ri";
+import { IoMdTime } from 'react-icons/io';
+import { FiUser } from 'react-icons/fi';
+import { CiMoneyCheck1 } from "react-icons/ci";
 
 function Product() {
     const navigate = useNavigate();
@@ -29,6 +36,8 @@ function Product() {
             checkoutURL: '',
             source: '',
         });
+    const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
+    const [isProductModalOpen, setIsProductModalOpen] = useState(false);
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
     const loggedInUserId = data?._id;
 
@@ -41,7 +50,7 @@ function Product() {
             const reversedData = [...allProductData.data.data.products].reverse();
             setAllProduct(reversedData);
             // console.log(allProductData);
-            
+
         }
     }, [allProductData]);
 
@@ -131,7 +140,7 @@ function Product() {
         }
     };
 
-    const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora, {
+    const { mutate: payNowMutate, isLoading: paymutateLoading } = useMutation(['paynow'], userPayWithKora, {
         onSuccess: (data) => {
             const innerData = data?.data?.data?.data?.data?.data;
             const paymentData = data?.data?.data?.data?.paymentData;
@@ -164,9 +173,18 @@ function Product() {
             console.log(error);
         }
     });
+    const handleEyeClick = (product: IProduct) => {
+        setSelectedProduct(product);
+        setIsProductModalOpen(true);
+        console.log(selectedProduct);
+    };
+    const handleMerchantClick = (businessName: string) => {
 
+        navigate(`/home/store?businessName=${encodeURIComponent(businessName)}`);
+    };
     return (
-        <div className="w-[100%] mt-[30px] max-[650px]:mt-[5px] dark:bg-black dark:text-white">
+        <div className="w-[100%] mt-[30px] max-[650px]:mt-[20px] dark:bg-black dark:text-white">
+
             {
                 isLoading ?
                     <div className="w-[100%] h-[80vh] flex items-center justify-center">
@@ -175,13 +193,19 @@ function Product() {
                     :
                     allProduct?.length !== 0
                         ?
-                        <div className="w-[100%] h-[80vh] overflow-scroll p-0 flex flex-wrap gap-[10px] justify-center ">
+                        <div className="w-[100%] h-[80vh] overflow-scroll p-0 flex flex-wrap gap-[10px] justify-center max-[650px]:gap-0 ">
                             {allProduct?.map((i: IProduct) => (
-                                <div key={i?._id} className='w-[300px]  border  rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none ' >
-                                    <div className='w-[100%]  flex items-center justify-center mb-[10px]'>
-                                        <img src={i?.productImage} className='w-[100%] object-cover aspect-square ' onClick={() => navigate(`/home/details/${i?._id}`)} />
+                                <div key={i?._id} className='w-[300px] h-[500px] shadow-sm dark:shadow-[white] rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none max-[650px]:h-auto' >
+                                    <div className='w-[100%] relative flex items-center justify-center mb-[10px]'>
+                                        <img src={i?.productImage} className='w-[100%] object-cover aspect-square ' />
+                                        <div
+                                            className='absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity'
+                                            onClick={() => handleEyeClick(i)}
+                                        >
+                                            <IoEyeOutline size={30} className='text-white cursor-pointer' />
+                                        </div>
                                     </div>
-                                    <div className='flex items-center gap-[5px]' onClick={() => navigate(`/home/store/${i?.merchant._id}`)}>
+                                    <div className='flex items-center gap-[5px]' onClick={() => handleMerchantClick(i?.merchant?.business_name)}>
                                         {
                                             !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover' /> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
                                         }
@@ -196,7 +220,7 @@ function Product() {
                                         <p className='text-[12px]'>₦{i?.paymentPrice}</p>
                                     </span>
                                     <span className='flex gap-[10px] text-[12px] '>
-                                        <div dangerouslySetInnerHTML={{ __html: i?.productDescription?.slice(0, 30) }} />
+                                        <div className='' dangerouslySetInnerHTML={{ __html: i?.productDescription?.slice(0, 45) }} />
                                     </span>
                                     <div className='w-[100%] flex flex-col'>
                                         <div className='flex items-center w-[100%] h-[50px]'>
@@ -228,7 +252,7 @@ function Product() {
                                                 onClick={() => handleCartAddingAuth(i?._id)}
                                                 disabled={loadingStates[i?._id]}
                                             >
-                                                {loadingStates[i?._id] ? 'Buying' : 'Buy Now'}
+                                                {loadingStates[i?._id] ? <Loading /> : 'Buy Now'}
                                             </button>
                                         </div>
                                     </div>
@@ -255,13 +279,13 @@ function Product() {
                         primaryButton={{
                             text: paymentDetails.source === 'payNow' ? (
                                 <a href={paymentDetails.checkoutURL} rel="noopener noreferrer">
-                                    <button className="w-[70%] h-[30px] bg-[#FFC300] rounded-[8px] text-[14px]">
-                                        Pay Now
+                                    <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]">
+                                        {paymutateLoading ? "Paying" : "Pay Now"}
                                     </button>
                                 </a>
                             ) : (
-                                <button className="w-[70%] h-[30px] bg-[#FFC300] rounded-[8px] text-[10px] " onClick={() => payNowMutate(paymentDetails.paymentID)}>
-                                    Buy Now
+                                <button className="w-[70%] h-[30px] bg-[#FFC300]  text-black rounded-[8px] text-[10px] " onClick={() => payNowMutate(paymentDetails.paymentID)}>
+                                    Continue
                                 </button>
                             ),
                             display: true,
@@ -276,6 +300,62 @@ function Product() {
                     />
                 </div>
             }
+            {isProductModalOpen && selectedProduct && (
+                <Modal onClose={() => setIsProductModalOpen(false)}>
+                    <div className="flex w-full gap-2 max-[650px]:flex-col max-[650px]:w-full overflow-scroll">
+                        <span className='w-[50%] flex items-center justify-center max-[650px]:w-full'>
+                            <img src={selectedProduct.productImage} alt={selectedProduct.productName} className="object-cover w-full aspect-square" />
+                        </span>
+                        <div className='w-[50%] flex flex-col gap-2 max-[650px]:w-full mt-[20px]'>
+                            <div className='w-full h-[20%] gap-2 flex flex-col justify-end max-[650px]:h-auto'>
+                                <h2 className="text-[14px] mb-1 pb-2 flex items-center border-b border-lightgrey">
+                                    {selectedProduct.pages ? <p>E-book</p> : <p>Course</p>}
+                                </h2>
+                                <h2 className="text-[20px] w-full max-[650px]:text-[15px]">{selectedProduct.productName}</h2>
+                            </div>
+                            <div className='prose h-[30%] max-[650px]:w-full max-[650px]:text-[12px] text-[lightgrey] text-[14px]' dangerouslySetInnerHTML={{ __html: selectedProduct?.productDescription?.slice(0, 80) }} />
+                            {selectedProduct.pages ? (
+                                <div className='h-[50%] max-[650px]:mt-[20px] max-[650px]:text-[14px]  max-[650px]:h-auto flex flex-col gap-3 justify-center max-[650px]:w-full'>
+                                    <p>E-book Details</p>
+                                    <span className='flex items-center gap-2'>
+                                        <RiPagesLine />
+                                        <p>Pages: {selectedProduct?.pages}</p>
+                                    </span>
+                                    <span className='flex items-center gap-2'>
+                                        <IoMdTime />
+                                        <p>Duration: {selectedProduct?.duration}</p>
+                                    </span>
+                                    <span className='flex items-center gap-2'>
+                                        <FiUser />
+                                        <p>Author: {selectedProduct?.author}</p>
+                                    </span>
+                                </div>
+                            ) : (
+                                <div className='h-[50%]  max-[650px]:h-auto gap-2 flex flex-col justify-center max-[650px]:w-full'>
+                                    <p>Course Details</p>
+                                    <span className='flex items-center gap-2'>
+                                        <IoMdTime />
+                                        <p>Duration: {selectedProduct?.duration}</p>
+                                    </span>
+                                    <span className='flex items-center gap-2'>
+                                        <FiUser />
+                                        <p>Author: {selectedProduct?.author}</p>
+                                    </span>
+                                </div>
+                            )}
+                            <div className='flex w-full items-center justify-between mt-4'>
+                                <span className='flex gap-2 items-center'>
+                                <CiMoneyCheck1 />
+                                    <p>Amount: {selectedProduct?.paymentPrice}</p>
+                                </span>
+                                <button className=" bg-[#FFC300] w-[120px] text-[12px] h-[40px] rounded" onClick={() => navigate(`/home/details/${selectedProduct._id}`)}>
+                                    View more Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </Modal>
+            )}
 
         </div>
     );

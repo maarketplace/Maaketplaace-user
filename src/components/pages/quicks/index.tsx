@@ -91,7 +91,7 @@ const Quicks = () => {
                     <Swiper
                         direction="vertical"
                         slidesPerView={1}
-                        spaceBetween={5}
+                        spaceBetween={0}
                         mousewheel={true}
                         modules={[Mousewheel, Pagination]}
                         loop={true}
@@ -104,7 +104,7 @@ const Quicks = () => {
                             <SwiperSlide key={i._id} style={{ display: 'flex', height: '100%', gap: 20, justifyContent: 'center', overflow: 'hidden' }}>
                                 <div className="w-[40%] max-[650px]:w-[100%] bg-black">
                                     <img src={i.productImage} alt="" className="relative mt-[20px] w-full h-full object-cover" />
-                                    <div className="w-[100%] h-[100%] bg-[#00000038] opacity-100 flex items-end absolute top-0 left-0 right-0 bottom-0">
+                                    <div className="w-[100%] h-[100%] bg-[#00000038] opacity-90 flex items-end absolute top-0 left-0 right-0 bottom-0">
                                         <div className="w-[100%] max-[650px]:h-[400px] hidden max-[650px]:flex max-[650px]:flex-col max-[650px]:gap-[10px]">
                                             <div className="w-[100%] max-[650px]:h-[75%] flex justify-end">
                                                 <div className="w-[20%] h-[100%] flex flex-col items-center justify-center gap-[10px]">
@@ -141,7 +141,7 @@ const Quicks = () => {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="w-[40%] h-[100%] mt-[20px] flex relative flex-col gap-[20px] max-[650px]:hidden">
+                                <div className="w-[40%] h-[100%] bg mt-[20px] flex relative flex-col gap-[20px] max-[650px]:hidden">
                                     <div className="flex items-center justify-between">
                                         <span className="flex items-center gap-[10px]">
                                             <img src={i.merchant?.image} alt="" className="w-[40px] h-[40px] rounded-[100%] object-cover" />

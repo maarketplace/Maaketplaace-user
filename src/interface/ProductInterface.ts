@@ -4,45 +4,62 @@ export interface ImgUrl {
     comments: Comment[];
 }
 // type productId = number;
-export interface IProduct {
-    paymentPrice: number;
-    user_likes: string[];
+export interface IMerchant {
     _id: string;
-    productDescription: any;
-    productImage: string | undefined;
-    id: number;
-    productName: string;
+    fullName: string;
+    email: string;
+    business_name: string;
+    password: string;
+    phoneNumber: string;
+    is_admin: boolean;
+    bio: string;
+    profession: string;
+    role_slug: string;
     image: string;
-    productAuthorName: string;
-    isLiked: boolean;
-    commentText: string;
-    comments: (string | Comment)[];
-    img: string;
-    imgUrl: ImgUrl[];
-    description: string;
-    postedTime?:  string;
-    total_likes: number;
-    merchant_likes: string[];
-    productPrice: number;
-    discountPrice: number;
-    merchant: {
-        business_name: string;
-        _id: string;
-        fullName: string;
-        email: string;
-        phoneNumber: string,
-        bio: string;
-        image: string;
-        imageCloudUrl: string;
-        verified: boolean;
-        verificationCode: number;
-        subscribed: boolean,
-        subscriptionType: string;
-        products: [],
-        createdAt: string;
-        updatedAt: string;
-    },
+    imageCloudUrl: string;
+    verified: boolean;
+    verificationCode: number;
+    subscribed: boolean;
+    subscriptionType: string;
+    products: any[]; // Adjust the type if you have a specific product type
+    createdAt: string;
+    updatedAt: string;
+    accountStatus: string;
 }
+
+export interface IProduct {
+    _id: string;
+    productName: string;
+    productDescription: string;
+    productPrice: number;
+    paymentPrice: number;
+    discountPrice: number;
+    productImage: string;
+    status: string;
+    eBook: string;
+    author: string;
+    pages: number;
+    duration: string;
+    topics: string;
+    whatToExpect: string;
+    eBookUrl: string;
+    productImageUrl: string;
+    imageGallery: string[]; 
+    imageGalleryUrl: string[];
+    inStock: boolean;
+    quantity: number;
+    category: string;
+    subCategory: string;
+    merchant: IMerchant;
+    user: any[]; // Adjust the type if you have a specific user type
+    comments: any[]; // Adjust the type if you have a specific comment type
+    user_likes: string[];
+    merchant_likes: string[];
+    total_likes: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
 
 export interface ICart {
     productName: string;
