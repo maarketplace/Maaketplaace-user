@@ -18,11 +18,14 @@ import { RiPagesLine } from "react-icons/ri";
 import { IoMdTime } from 'react-icons/io';
 import { FiUser } from 'react-icons/fi';
 import { CiMoneyCheck1 } from "react-icons/ci";
-
-function Product() {
+interface ProductProps {
+    searchQuery: string;
+}
+function Product({searchQuery}: ProductProps) {
     const navigate = useNavigate();
     const { isUserAuthenticated } = useAuth();
     const { data } = useUser();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [allProduct, setAllProduct] = useState<any>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [paymentDetails, setPaymentDetails] = useState(
@@ -58,7 +61,10 @@ function Product() {
         ['userlike'],
         userLike,
     );
-
+    const filteredProducts = allProduct?.filter((product: IProduct) => 
+        product?.productName?.toLowerCase().includes(searchQuery?.toLowerCase() || "")
+    );
+    
     const handleLikeClick = async (productId: string) => {
         if (isUserAuthenticated) {
             const updateLikeProduct = [...allProduct];
@@ -183,7 +189,7 @@ function Product() {
         navigate(`/home/store?businessName=${encodeURIComponent(businessName)}`);
     };
     return (
-        <div className="w-[100%] mt-[30px] max-[650px]:mt-[20px] dark:bg-black dark:text-white">
+        <div className="w-[100%] mt-[40px] max-[650px]:mt-[20px] flex justify-center dark:bg-black dark:text-white">
 
             {
                 isLoading ?
@@ -191,10 +197,10 @@ function Product() {
                         <p>Loading Product....</p>
                     </div>
                     :
-                    allProduct?.length !== 0
+                    filteredProducts?.length !== 0
                         ?
-                        <div className="w-[100%] h-[80vh] overflow-scroll p-0 flex flex-wrap gap-[10px] justify-center max-[650px]:gap-0 ">
-                            {allProduct?.map((i: IProduct) => (
+                        <div className="w-[95%] h-[80vh] overflow-scroll p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 ">
+                            {filteredProducts?.map((i: IProduct) => (
                                 <div key={i?._id} className='w-[300px] h-[500px] shadow-sm dark:shadow-[white] rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none max-[650px]:h-auto' >
                                     <div className='w-[100%] relative flex items-center justify-center mb-[10px]'>
                                         <img src={i?.productImage} className='w-[100%] object-cover aspect-square ' />
@@ -213,7 +219,7 @@ function Product() {
                                         <p className='text-[20px]'>{i?.merchant?.business_name || i?.merchant.fullName}</p>
                                     </div>
                                     <span >
-                                        <p className='text-[15px]'>{i?.productName?.slice(0, 50)}</p>
+                                        <p className='text-[15px] truncate'>{i?.productName} </p>
                                     </span>
                                     <span className='flex gap-[10px]'>
                                         <p className='text-[12px] line-through text-[lightgrey]'>₦{i?.productPrice}</p>

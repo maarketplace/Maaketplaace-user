@@ -16,7 +16,7 @@ export const getAllProduct = async () => {
     return await axios.get(`${VITE_ENDPOINT}/product`)
 }
 
-export const getOneProduct = async (id: any) => {
+export const getOneProduct = async (id: string) => {
     // console.log(data?.queryKey[1])
     return await axios.get(`${VITE_ENDPOINT}/product/${id}`)
 }
