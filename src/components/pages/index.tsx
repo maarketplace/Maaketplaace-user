@@ -29,7 +29,7 @@ const Home = () => {
                 </div>
                 <div className="w-[30%] h-[100%] max-w-[650px]:w-[90%] flex justify-end items-center">
                     <input 
-                    className="w-[100%] py-[5px] border border-[grey] text-[12px] px-[5px] outline-none text-white rounded-[4px]  max-[650px]:w-[90%] bg-transparent" 
+                    className="w-[100%] py-[5px] border border-[grey] text-[12px] px-[5px] outline-none text-white rounded-[4px]  max-[650px]:w-[90%] bg-transparent max-[650px]:hidden" 
                     placeholder="Search here" 
                     value={searchQuery}
                     onChange={handleSearch}

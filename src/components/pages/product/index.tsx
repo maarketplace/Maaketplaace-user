@@ -18,6 +18,7 @@ import { RiPagesLine } from "react-icons/ri";
 import { IoMdTime } from 'react-icons/io';
 import { FiUser } from 'react-icons/fi';
 import { CiMoneyCheck1 } from "react-icons/ci";
+import ProductReels from '../reels';
 interface ProductProps {
     searchQuery: string;
 }
@@ -189,17 +190,18 @@ function Product({searchQuery}: ProductProps) {
         navigate(`/home/store?businessName=${encodeURIComponent(businessName)}`);
     };
     return (
-        <div className="w-[100%] mt-[40px] max-[650px]:mt-[20px] flex justify-center dark:bg-black dark:text-white">
+        <div className="w-[100%] h-[] mt-[50px] max-[650px]:mt-[30px] flex justify-center flex-col items-center dark:bg-black dark:text-white overflow-auto">
+            <ProductReels/>
 
             {
                 isLoading ?
-                    <div className="w-[100%] h-[80vh] flex items-center justify-center">
+                    <div className="w-[100%] h-[80vh] flex justify-center">
                         <p>Loading Product....</p>
                     </div>
                     :
                     filteredProducts?.length !== 0
                         ?
-                        <div className="w-[95%] h-[80vh] overflow-scroll p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 ">
+                        <div className="w-[95%] h-[80vh] overflow-scroll p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0  max-[650px]:mb-[60px] ">
                             {filteredProducts?.map((i: IProduct) => (
                                 <div key={i?._id} className='w-[300px] h-[500px] shadow-sm dark:shadow-[white] rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none max-[650px]:h-auto' >
                                     <div className='w-[100%] relative flex items-center justify-center mb-[10px]'>
