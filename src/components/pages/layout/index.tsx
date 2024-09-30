@@ -4,10 +4,10 @@ interface LayoutProps {
   searchQuery: string; 
 }
 
-const Layout: React.FC<LayoutProps> = ({ searchQuery }) => {
+const Layout: React.FC<LayoutProps> = () => {
   return (
     <div className="p-0 dark:bg-black w-full">
-      <Outlet  context={{ searchQuery }}/>
+      <Outlet />
     </div>
   );
 };

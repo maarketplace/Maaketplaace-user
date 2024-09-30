@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
 import { IoHeart, IoHeartOutline, IoLink } from "react-icons/io5";
@@ -19,10 +19,12 @@ import { IoMdTime } from 'react-icons/io';
 import { FiUser } from 'react-icons/fi';
 import { CiMoneyCheck1 } from "react-icons/ci";
 import ProductReels from '../reels';
-interface ProductProps {
-    searchQuery: string;
-}
-function Product({searchQuery}: ProductProps) {
+import { SearchContext } from '../../../context/Search';
+import { handleBuyNow, handlePayNow } from '../../../utils/PaymentComponent';
+
+
+function Product() {
+    const context = useContext(SearchContext);
     const navigate = useNavigate();
     const { isUserAuthenticated } = useAuth();
     const { data } = useUser();
@@ -62,10 +64,8 @@ function Product({searchQuery}: ProductProps) {
         ['userlike'],
         userLike,
     );
-    const filteredProducts = allProduct?.filter((product: IProduct) => 
-        product?.productName?.toLowerCase().includes(searchQuery?.toLowerCase() || "")
-    );
-    
+
+
     const handleLikeClick = async (productId: string) => {
         if (isUserAuthenticated) {
             const updateLikeProduct = [...allProduct];
@@ -89,109 +89,36 @@ function Product({searchQuery}: ProductProps) {
 
     };
 
-    const { mutate: buyMutate } = useMutation(['buynow'],
-        userBuyNow,
-        {
-            onSuccess: () => {
-            },
-            onError: (error) => {
-                console.log('Error:', error);
-            }
-        }
-    );
+    const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        if (isUserAuthenticated) {
-            setLoadingStates(prevState => ({
-                ...prevState,
-                [id]: true,
-            }));
-
-            buyMutate(id, {
-                onSuccess: (response) => {
-                    const paymentAmount = response?.data?.data?.data?.amount || '₦0';
-                    const paymentFee = response?.data?.data?.data?.transaction_fee || '₦0';
-                    const paymentID = response?.data?.data?.data?._id;
-                    const paymentAPI = response?.data?.data?.paymentData?.payment_type;
-
-                    setPaymentDetails({
-                        amount: paymentAmount,
-                        fee: paymentFee,
-                        paymentID: paymentID,
-                        paymentAPI: paymentAPI,
-                        payeeName: '',
-                        payeeEmail: '',
-                        checkoutURL: '',
-                        source: 'buyNow',
-                    });
-
-                    setTimeout(() => {
-                        setIsModalOpen(true);
-                    }, 2000);
-
-                    setLoadingStates(prevState => ({
-                        ...prevState,
-                        [id]: false,
-                    }));
-                },
-                onError: (error) => {
-                    console.log('Error:', error);
-                    setLoadingStates(prevState => ({
-                        ...prevState,
-                        [id]: false,
-                    }));
-                }
-            });
-        } else {
-            navigate('/');
-        }
+        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
     };
 
-    const { mutate: payNowMutate, isLoading: paymutateLoading } = useMutation(['paynow'], userPayWithKora, {
-        onSuccess: (data) => {
-            const innerData = data?.data?.data?.data?.data?.data;
-            const paymentData = data?.data?.data?.data?.paymentData;
-            console.log(paymentData);
-            console.log(innerData);
-            const paymentAmount = paymentData?.amount || '₦0';
-            const payeeName = paymentData?.customer?.name || '';
-            const payeeEmail = paymentData?.customer?.email || '';
-            const paymentAPI = paymentData?.payment_type || '';
-            const checkoutURL = innerData?.checkout_url || '';
+    const { mutate: payNowMutate, isLoading: paymutateLoading } = useMutation(['paynow'], userPayWithKora);
 
-            setPaymentDetails({
-                amount: paymentAmount,
-                fee: '',
-                paymentID: paymentData?._id || '',
-                paymentAPI: paymentAPI,
-                payeeName: payeeName,
-                payeeEmail: payeeEmail,
-                checkoutURL: checkoutURL,
-                source: 'payNow',
-            });
-            console.log(paymentDetails);
+    const handlePayment = (paymentID: string) => {
+        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
+    };
 
-            setTimeout(() => {
-                setIsModalOpen(true);
-            }, 2000);
-        },
-        onError: (error) => {
-            setIsModalOpen(false);
-            console.log(error);
-        }
-    });
     const handleEyeClick = (product: IProduct) => {
         setSelectedProduct(product);
         setIsProductModalOpen(true);
         console.log(selectedProduct);
     };
     const handleMerchantClick = (businessName: string) => {
-
         navigate(`/home/store?businessName=${encodeURIComponent(businessName)}`);
     };
+    if (!context) {
+        return null;
+    }
+    const { searchQuery } = context
+    const filteredProducts = allProduct?.filter((product: IProduct) =>
+        product?.productName?.toLowerCase().includes(searchQuery?.trim().toLowerCase())
+    );
     return (
-        <div className="w-[100%] h-[] mt-[50px] max-[650px]:mt-[30px] flex justify-center flex-col items-center dark:bg-black dark:text-white overflow-auto">
-            <ProductReels/>
+        <div className="w-[100%] h-[] mt-[20px] mb-[60px] max-[650px]:mt-[30px] flex justify-center flex-col items-center dark:bg-black dark:text-white overflow-scroll no-scrollbar">
+            <ProductReels />
 
             {
                 isLoading ?
@@ -201,11 +128,11 @@ function Product({searchQuery}: ProductProps) {
                     :
                     filteredProducts?.length !== 0
                         ?
-                        <div className="w-[95%] h-[80vh] overflow-scroll p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0  max-[650px]:mb-[60px] ">
+                        <div className="w-[95%] h-[] overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] ">
                             {filteredProducts?.map((i: IProduct) => (
                                 <div key={i?._id} className='w-[300px] h-[500px] shadow-sm dark:shadow-[white] rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none max-[650px]:h-auto' >
                                     <div className='w-[100%] relative flex items-center justify-center mb-[10px]'>
-                                        <img src={i?.productImage} className='w-[100%] object-cover aspect-square ' />
+                                        <img src={i?.productImage} className='w-[100%] object-cover aspect-square filter brightness-225 contrast-110 transition-all duration-500 ease-in-out' />
                                         <div
                                             className='absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity'
                                             onClick={() => handleEyeClick(i)}
@@ -214,11 +141,14 @@ function Product({searchQuery}: ProductProps) {
                                         </div>
                                     </div>
                                     <div className='flex items-center gap-[5px]' onClick={() => handleMerchantClick(i?.merchant?.business_name)}>
-                                        {
-                                            !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover' /> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
-                                        }
+                                        <span className='w-[90%] flex items-center gap-[10px]'>
+                                            {
+                                                !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover' /> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
+                                            }
 
-                                        <p className='text-[20px]'>{i?.merchant?.business_name || i?.merchant.fullName}</p>
+                                            <p className='text-[20px]'>{i?.merchant?.business_name || i?.merchant.fullName}</p>
+                                        </span>
+                                        <p className='text-[12px]'>Follow</p>
                                     </div>
                                     <span >
                                         <p className='text-[15px] truncate'>{i?.productName} </p>
@@ -274,7 +204,7 @@ function Product({searchQuery}: ProductProps) {
             }
             {
                 isModalOpen &&
-                <div className='absolute w-full h-full top-0 bottom-0 left-0 right-0'>
+                <div className=' w-full h-full bottom-2 fixed z-[100]'>
                     <PaymentModal
                         isOpen={isModalOpen}
                         setIsOpen={setIsModalOpen}
@@ -292,7 +222,7 @@ function Product({searchQuery}: ProductProps) {
                                     </button>
                                 </a>
                             ) : (
-                                <button className="w-[70%] h-[30px] bg-[#FFC300]  text-black rounded-[8px] text-[10px] " onClick={() => payNowMutate(paymentDetails.paymentID)}>
+                                <button className="w-[70%] h-[30px] bg-[#FFC300]  text-black rounded-[8px] text-[14px] " onClick={() => handlePayment(paymentDetails.paymentID)}>
                                     Continue
                                 </button>
                             ),
@@ -321,7 +251,7 @@ function Product({searchQuery}: ProductProps) {
                                 </h2>
                                 <h2 className="text-[20px] w-full max-[650px]:text-[15px]">{selectedProduct.productName}</h2>
                             </div>
-                            <div className='prose h-[30%] max-[650px]:w-full max-[650px]:text-[12px] text-[lightgrey] text-[14px]' dangerouslySetInnerHTML={{ __html: selectedProduct?.productDescription?.slice(0, 80) }} />
+                            <div className='prose h-[30%] max-[650px]:w-full max-[650px]:text-[12px] text-[#000000c1] text-[14px]' dangerouslySetInnerHTML={{ __html: selectedProduct?.productDescription?.slice(0, 80) }} />
                             {selectedProduct.pages ? (
                                 <div className='h-[50%] max-[650px]:mt-[20px] max-[650px]:text-[14px]  max-[650px]:h-auto flex flex-col gap-3 justify-center max-[650px]:w-full'>
                                     <p>E-book Details</p>
@@ -353,7 +283,7 @@ function Product({searchQuery}: ProductProps) {
                             )}
                             <div className='flex w-full items-center justify-between mt-4'>
                                 <span className='flex gap-2 items-center'>
-                                <CiMoneyCheck1 />
+                                    <CiMoneyCheck1 />
                                     <p>Amount: {selectedProduct?.paymentPrice}</p>
                                 </span>
                                 <button className=" bg-[#FFC300] w-[120px] text-[12px] h-[40px] rounded" onClick={() => navigate(`/home/details/${selectedProduct._id}`)}>

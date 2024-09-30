@@ -29,3 +29,12 @@ body {
 .dark body {
   @apply bg-dark-bg text-dark-text;
 }
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.prose ol,
+.prose li {
+  margin: 0; /* Remove default margin */
+  padding: 0; /* Remove default padding */
+}

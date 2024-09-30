@@ -31,7 +31,7 @@ const Quicks = () => {
 
     useEffect(() => {
         if (allProductData && allProductData?.data && allProductData?.data?.data?.products) {
-            const reversedData = [...allProductData?.data?.data?.products]?.reverse();
+            const reversedData = [...allProductData.data.data.products]?.reverse();
             setAllProduct(reversedData);
         }
     }, [allProductData]);

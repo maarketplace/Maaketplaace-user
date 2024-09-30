@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { RxLightningBolt } from "react-icons/rx";
 import { FiHome, FiUser } from "react-icons/fi";
-import { IoMdAdd, IoIosNotificationsOutline } from "react-icons/io";
+import { IoIosNotificationsOutline } from "react-icons/io";
 import { useState } from 'react';
 import PostModal from '../../../utils/QuicksUploadModal';
 
@@ -17,14 +17,11 @@ const Bottom = () => {
     const handleQuicksClick = () => {
         navigate('/home/quicks')
     };
-    const handleAddQuicksClick = () => {
-        setShowQuicksModal(!showQuicksModal)
-    };
     const handleSettingClick = () => {
         navigate('')
     };
     const handleUserClick = () => {
-        navigate('/userhome/userprofile/userdashboard')
+        navigate('/dashboard')
     };
     return (
         <div className="w-[100%] h-[100%] flex items-center  ">
@@ -39,17 +36,12 @@ const Bottom = () => {
                         className=''
                         onClick={handleQuicksClick} />
                 </span>
-                <span className={location.pathname === '' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
-                    <IoMdAdd 
-                    onClick={handleAddQuicksClick}
-                    />
-                </span>
                 <span className={location.pathname === '/home/profile/adminsetting' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
                     <IoIosNotificationsOutline
                         className=''
                         onClick={handleSettingClick} />
                 </span>
-                <span className={location.pathname === '/userhome/userprofile/userdashboard' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
+                <span className={location.pathname === '/dashboard' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
                     <FiUser
                         className=''
                         onClick={handleUserClick} />

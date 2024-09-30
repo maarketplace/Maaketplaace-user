@@ -1,4 +1,6 @@
 export interface IAddComment {
+    image: string | undefined;
+    image: any;
     user_likes: any;
     total_likes: number;
     user: {
