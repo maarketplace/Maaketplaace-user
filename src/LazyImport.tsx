@@ -3,6 +3,7 @@
 import React, { Suspense, ComponentType } from 'react';
 
 interface Props {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   componentLoader: () => Promise<{ default: ComponentType<any> }>;
 }
 

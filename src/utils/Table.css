@@ -1,0 +1,51 @@
+@media screen and (max-width: 480px) {
+    table,
+    thead,
+    tbody,
+    th,
+    td,
+    tr {
+      display: block;
+    }
+  
+    thead tr {
+      display: none;
+    }
+  
+    tr {
+      margin-bottom: 10px;
+    }
+  
+    td {
+      padding: 10px;
+      text-align: right;
+      position: relative;
+      padding-left: 50%;
+      text-wrap: wrap;
+      font-weight: 300;
+    }
+  
+    td:before {
+      content: attr(data-label);
+      position: absolute;
+      left: 0;
+      width: 50%;
+      padding-left: 15px;
+      font-weight: 300;
+      text-align: left;
+      /* background-color: grey; */
+    }
+  }
+  
+  @media screen and (max-width: 650px) {
+    th,
+    td {
+      padding: 8px;
+      font-size: 12px;
+    }
+  
+    button {
+      padding: 5px;
+      margin-right: 3px;
+    }
+  }

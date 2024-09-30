@@ -10,17 +10,19 @@ import { LoginInterface } from "../../../interface/LoginInterface";
 import { AdminLoginSchema } from "../../../schema/LoginSchema";
 import { userLogin } from "../../../api/mutation";
 import Loading from "../../../loader";
+import { IErrorResponse } from "../../../interface/ErrorData";
+import { IResponseData } from "../../../interface/ResponseData";
 
 function UserLoginForm() {
-    // const location = useLocation();
     const [showPassword, setShow] = useState<boolean>(false);
     const navigate = useNavigate()
     const form = useForm<LoginInterface>({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         resolver: yupResolver(AdminLoginSchema) as any
     });
     const { register, handleSubmit, formState: { errors } } = form;
     const { mutate, isLoading } = useMutation(['userlogin'], userLogin, {
-        onSuccess: async (data: any) => {
+        onSuccess: async (data: IResponseData) => {
             localStorage.setItem(VITE_TOKEN_USER, data?.data?.data?.token)
             toast.success(data?.data?.message);
             const redirectPath = localStorage.getItem('redirectPath');
@@ -32,7 +34,7 @@ function UserLoginForm() {
                 navigate('/home');
             }
         },
-        onError: (err: any) => {
+        onError: (err: IErrorResponse) => {
             toast.error(err?.response?.data?.message || err?.response?.data?.error?.message || err?.message);
         }
     })
@@ -53,7 +55,7 @@ function UserLoginForm() {
             <div className="w-[70%] flex items-center justify-center flex-col gap-[10px] max-[650px]:w-[100%]" >
                 <img src="MARKET.svg" alt="" className="max-[650px]:w-[80px]" />
                 <span className="flex items-center justify-center flex-col gap-[10px] max-[650px]:w-[100%]" >
-                    <h2 className="text-2xl max-[650px]:text-[15px]">Welcome  Back to MaarketPlaace</h2>
+                    <h2 className="text-2xl max-[650px]:text-[15px]">Welcome  Back to Maarketplaace</h2>
                     <p className="italic text-center max-[650px]:text-[12px] text-wrap">Continue selling and creating wonderful <br></br>products for our consumers</p>
                 </span>
             </div>

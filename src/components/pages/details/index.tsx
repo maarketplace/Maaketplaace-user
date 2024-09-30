@@ -1,5 +1,5 @@
-import { useQuery } from "react-query";
-import { useParams } from "react-router-dom"
+import { useMutation, useQuery } from "react-query";
+import { useNavigate, useParams } from "react-router-dom"
 import { getOneProduct } from "../../../api/query";
 import { IProduct } from "../../../interface/ProductInterface";
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -11,31 +11,63 @@ import { FiUser } from "react-icons/fi";
 import { IoMdTime } from "react-icons/io";
 import { RiPagesLine } from "react-icons/ri";
 import { BsDot } from "react-icons/bs";
+import { userBuyNow, userPayWithKora } from "../../../api/mutation";
+import { handleBuyNow, handlePayNow } from "../../../utils/PaymentComponent";
+import PaymentModal from "../../../utils/PaymentModal";
+import { useAuth } from "../../../context/Auth";
+import Loading from "../../../loader";
 
 const Details = () => {
+    const navigate = useNavigate();
+    const { isUserAuthenticated } = useAuth();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { id: productIdParam } = useParams<{ id?: any }>();
     const [product, setProduct] = useState<IProduct | null>(null)
     const { data } = useQuery(['getoneproduct', productIdParam], () => getOneProduct(productIdParam), {})
-
+    const [activeTab, setActiveTab] = useState('topics');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [paymentDetails, setPaymentDetails] = useState(
+        {
+            amount: '',
+            fee: '',
+            paymentID: '',
+            paymentAPI: '',
+            payeeName: '',
+            payeeEmail: '',
+            checkoutURL: '',
+            source: '',
+        });
+        const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
 
     const relatedProduct = data?.data?.data?.data?.related_product
     useEffect(() => {
         setProduct(data?.data?.data?.data?.product?.[0])
-        // console.log(product);
     }, [data])
+
+    const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
+
+    const handleCartAddingAuth = (id: string) => {
+        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
+    };
+
+    const { mutate: payNowMutate, isLoading: paymutateLoading } = useMutation(['paynow'], userPayWithKora);
+
+    const handlePayment = (paymentID: string) => {
+        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
+    };
 
     return (
         <div className="w-full h-full text-[15px] mt-[100px] flex flex-col items-center max-[650px]:mt-[40px]">
             <div className="w-[90%] flex gap-[10px] max-[650px]:flex-col max-[650px]:w-[100%]">
-                <div className="w-[20%]  flex flex-col items-center p-[10px] gap-[10px] max-[650px]:w-full max-[650px]:mt-[40px]">
+                <div className="w-[20%] h-[400px] max-[650px]:h-[550px]  flex flex-col items-center p-[10px] gap-[10px] max-[650px]:w-full max-[650px]:mt-[40px]">
                     <div className='w-full h-[250px] flex items-center justify-center '>
-                        <img src={product?.productImage} className='w-[100%] object-cover aspect-square max-[650px]:h-[90%] ' />
+                        <img src={product?.productImage} className='w-[100%] object-cover  aspect-square max-[650px]:h-[90%] ' />
                     </div>
-                    <div className="flex w-full items-center gap-[10px] mt-[10px]">
+                    <div className="flex w-full items-center gap-[5px] mt-[10px]">
                         <span className="w-[20%]">
-                            <img src={product?.merchant?.image} alt="" className="w-[40px] h-[40px] rounded-full object-cover" />
+                            <img src={product?.merchant?.image} alt="" className="w-[40px] h-[40px] rounded-full object-cover filter brightness-225 contrast-110 transition-all duration-500 ease-in-out" />
                         </span>
-                        <p className=" w-[50%] text-[12px]">{product?.productName.slice(0, 30)}</p>
+                        <p className=" w-[50%] max-[650px]:w-[80%] text-[12px] text-wrap">{product?.productName}</p>
                     </div>
                     {product?.pages ? (
                         <div className='h-[50%] max-[650px]:mt-[20px] max-[650px]:text-[14px]  max-[650px]:h-auto flex flex-col gap-3 justify-center max-[650px]:w-full'>
@@ -48,9 +80,10 @@ const Details = () => {
                                 <BsDot className="text-[#FFC300] text-[30px]" />
                                 <IoMdTime />
                                 <p>Duration: {product?.duration}</p>
-                                <BsDot className="text-[#FFC300] text-[30px]" />
+                                {/* <BsDot className="text-[#FFC300] text-[30px]" /> */}
                             </span>
                             <span className='flex items-center gap-2'>
+                                <BsDot className="text-[#FFC300] text-[30px]" />
                                 <FiUser />
                                 <p>Author: {product?.author}</p>
                             </span>
@@ -75,20 +108,69 @@ const Details = () => {
                         </div>
                     )}
                     <div className="w-[90%]">
-                        <button className=" bg-[#FFC300] w-[100%] text-[12px] h-[40px] rounded">
-                            Pay for this course
+                        <button className=" bg-[#FFC300] w-[100%] text-[12px] h-[40px] rounded" onClick={() => handleCartAddingAuth(product?._id)}>
+                        {loadingStates[product?._id] ? <Loading /> : ' Pay for this course'}  
                         </button>
                     </div>
                 </div>
-                <div className="w-[50%]  max-[650px]:w-[100%] dark:bg-black  p-[20px] flex flex-col gap-[20px]">
-                    <div className="w-full">
-                        <p className=" w-[100%] text-[20px]">{product?.productName}</p>
-                        <div className='prose text-[14px] flex flex-wrap text-black dark:text-white max-[650px]:text-[14px]' dangerouslySetInnerHTML={{ __html: product?.productDescription }} />
+                <div className="w-[50%] max-[650px]:w-[100%] dark:bg-black p-[20px] flex flex-col gap-[20px] max-[650px]:p-[10px]">
+                    <div className="w-full flex flex-col gap-[10px]">
+                        <p className="w-[100%] text-[20px]">{product?.productName}</p>
+                        {product?.productDescription && (
+                            <div
+                                className="prose dark:prose-invert text-[14px] flex flex-wrap text-black dark:text-white max-[650px]:text-[12px]"
+                                dangerouslySetInnerHTML={{ __html: product?.productDescription }}
+                            />
+                        )}
                     </div>
-                    <div className="w-full bg-slate-50 p-[20px] ">
-                        <p className="text-[20px] max-[650px]:text-[16px]">In This Course, You Will Learn How To</p>
-                        <div className='prose flex flex-wrap dark:text-white max-[650px]:text-[14px] mt-[20px] ' dangerouslySetInnerHTML={{ __html: product?.whatToExpect }} />
-                    </div>
+                    {product?.pages ? null : (
+                        <div className="w-full bg-slate-50 p-[20px] dark:bg-black max-[650px]:p-[5px] flex flex-col gap-[10px]">
+                            {/* Tab Buttons */}
+                            <div className="flex gap-[10px]">
+                                <button
+                                    className={`${activeTab === 'topics' ? 'text-[#FFC300]' : 'text-gray-500'
+                                        }`}
+                                    onClick={() => setActiveTab('topics')}
+                                >
+                                    Topics
+                                </button>
+                                <button
+                                    className={`${activeTab === 'expect' ? 'text-[#FFC300]' : 'text-gray-500'
+                                        }`}
+                                    onClick={() => setActiveTab('expect')}
+                                >
+                                    What to Expect
+                                </button>
+                            </div>
+
+                            {/* Conditionally Render Content Based on Active Tab */}
+                            {activeTab === 'topics' && (
+                                <div className="p-[10px]">
+                                    {/* <p className="text-[20px] max-[650px]:text-[18px]">Topics</p> */}
+                                    {/* Add the topics content here */}
+                                    {product?.topics && (
+                                        <div className="prose text-[14px] flex flex-wrap text-black dark:text-white max-[650px]:text-[12px]"
+                                            dangerouslySetInnerHTML={{ __html: product?.topics }}
+
+                                        />
+                                    )}
+                                </div>
+                            )}
+
+                            {activeTab === 'expect' && (
+                                <div className="p-[10px]">
+                                    {/* <p className="text-[20px] max-[650px]:text-[18px]">What to Expect</p> */}
+                                    {product?.whatToExpect && (
+                                        <div
+                                            className="prose dark:prose-invert text-[14px] flex flex-wrap text-black dark:text-white max-[650px]:text-[12px] m-0 p-0"
+                                            dangerouslySetInnerHTML={{ __html: product?.whatToExpect }}
+                                            style={{ margin: 0, padding: 0 }}
+                                        />
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
             <div className="w-[100%] mt-[50px] h-[400px] mb-[200px] flex flex-col items-center gap-[20px] ">
@@ -120,6 +202,7 @@ const Details = () => {
                             <SwiperSlide
                                 key={i?._id}
                                 style={{ height: 400 }}
+                                onClick={() => navigate(`/home/details/${i._id}`)}
                                 className="h-[450px] border rounded-lg p-[10px] flex flex-col gap-[20px] max-[650px]:border-none max-[650px]:bg-slate-50 dark:bg-black dark:shadow-sm dark:shadow-[lightgrey] max-[650px]:w-[100%] max-[650px]:rounded-none "
                             >
                                 <div className="h-[250px] flex items-center justify-center mb-[10px] max-[650px]:w-full max-[650px]:h-[250px]">
@@ -146,8 +229,8 @@ const Details = () => {
                                 </span>
                                 <div className="w-[100%] flex flex-col">
                                     <div className="flex items-center w-[100%] h-[50px]">
-                                        <button className="w-[40%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]">
-                                            Buy Now
+                                        <button className="w-[40%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]" onClick={() => handleCartAddingAuth(i?._id)}>
+                                        {loadingStates[i?._id] ? <Loading /> : 'Buy Now'} 
                                         </button>
                                     </div>
                                 </div>
@@ -157,6 +240,42 @@ const Details = () => {
 
                 </div>
             </div>
+            {
+                isModalOpen &&
+                <div className=' w-full h-full bottom-2 fixed z-[100] '>
+                    <PaymentModal
+                        isOpen={isModalOpen}
+                        setIsOpen={setIsModalOpen}
+                        title={paymentDetails.source === 'payNow' ? "Complete Your Payment" : "Proceed to Payment"}
+                        amount={paymentDetails.amount}
+                        fee={paymentDetails.source === 'buyNow' ? paymentDetails.fee : ''}
+                        paymentAPI={paymentDetails.source === 'payNow' ? paymentDetails.paymentAPI : ''}
+                        payeeEmail={paymentDetails.source === 'payNow' ? paymentDetails.payeeEmail : ''}
+                        payeeName={paymentDetails.source === 'payNow' ? paymentDetails.payeeName : ''}
+                        primaryButton={{
+                            text: paymentDetails.source === 'payNow' ? (
+                                <a href={paymentDetails.checkoutURL} rel="noopener noreferrer">
+                                    <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]">
+                                        {paymutateLoading ? "Paying" : "Pay Now"}
+                                    </button>
+                                </a>
+                            ) : (
+                                <button className="w-[70%] h-[30px] bg-[#FFC300]  text-black rounded-[8px] text-[14px] " onClick={() => handlePayment(paymentDetails.paymentID)}>
+                                    Continue
+                                </button>
+                            ),
+                            display: true,
+                            primary: true,
+                        }}
+                        secondaryButton={{
+                            text: "Cancel",
+                            onClick: () => setIsModalOpen(false),
+                            display: true,
+                            primary: true,
+                        }}
+                    />
+                </div>
+            }
         </div>
     )
 }

@@ -5,8 +5,10 @@ import { getUser } from '../api/query';
 
 
 interface UserContextType {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any;
     isLoading: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     error: any;
 }
 
@@ -18,13 +20,12 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         data,
         isLoading,
         error,
-    } = useQuery(["getUser"], getUser, {
-        onError: () => {
-        },
-    });
-    useEffect(()=>{
-        setUser(data?.data?.data?.data)
-    }, [data])
+    } = useQuery(["getUser"], getUser, {});
+    useEffect(() => {
+        if (data?.data?.data?.data) {
+            setUser(data?.data?.data?.data); // Adjust based on actual response structure
+        }
+    }, [data]);
     const value: UserContextType = {
         data: user,
         isLoading,
@@ -38,6 +39,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useUser = (): UserContextType => {
     const context = useContext(UserContext);
     if (!context) {

@@ -1,11 +1,15 @@
-import { Outlet } from "react-router-dom"
+import { Outlet } from "react-router-dom";
 
-const Layout = () => {
-  return (
-    <div className="p-0 dark:bg-black w-full">
-        <Outlet/>
-    </div>
-  )
+interface LayoutProps {
+  searchQuery: string; 
 }
 
-export default Layout
+const Layout: React.FC<LayoutProps> = () => {
+  return (
+    <div className="p-0 dark:bg-black w-full">
+      <Outlet />
+    </div>
+  );
+};
+
+export default Layout;

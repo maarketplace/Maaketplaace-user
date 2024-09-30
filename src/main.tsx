@@ -10,6 +10,7 @@ import {
 import { ThemeProvider } from './context/DarkTheme.tsx';
 import { UserProvider } from './context/GetUser.tsx';
 import { CartProvider } from './context/Auth.tsx';
+import { SearchProvider } from './context/Search.tsx';
 
 const queryClient = new QueryClient()
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -18,7 +19,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <ThemeProvider>
         <UserProvider>
           <CartProvider>
-            <App />
+            <SearchProvider>
+              <App />
+            </SearchProvider>
           </CartProvider>
         </UserProvider>
       </ThemeProvider>

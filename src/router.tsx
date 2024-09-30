@@ -9,7 +9,11 @@ import Verify from './components/onboarding/verify';
 import Comment from './components/pages/comment';
 import Store from './components/pages/store';
 import Search from './components/pages/search';
+import Dashaboard from './components/dashboard';
+import Overview from './components/dashboard/overview';
+import Order from './components/dashboard/order';
 
+// eslint-disable-next-line react-refresh/only-export-components
 const LoginLoader = () => import('./components/onboarding/login');
 
 const router = createHashRouter([
@@ -28,34 +32,48 @@ const router = createHashRouter([
   },
   {
     path: 'home',
-    element: <Home/>,
+    element: <Home />,
     children: [
       {
         path: '',
-        element: <Product/>
+        element: <Product />
       },
       {
         path: '/home/details/:id',
-        element: <Details/>
+        element: <Details />
       },
       {
         path: '/home/quicks',
-        element: <Quicks/>
+        element: <Quicks />
       },
       {
         path: '/home/comments/:id',
-        element: <Comment/>
+        element: <Comment />
       },
       {
         path: '/home/dashboard'
       },
       {
         path: '/home/store',
-        element: <Store/>
+        element: <Store />
       },
       {
         path: '/home/search',
-        element: <Search/>
+        element: <Search />
+      },
+    ]
+  },
+  {
+    path: 'dashboard',
+    element: <Dashaboard/>,
+    children: [
+      {
+        path: '',
+        element: <Overview/>
+      },
+      {
+        path: '/dashboard/order',
+        element: <Order/>
       },
     ]
   }
