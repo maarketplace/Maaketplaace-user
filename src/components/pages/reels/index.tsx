@@ -21,7 +21,7 @@ const ProductReels = () => {
             <div className='w-[100%] h-[95%] flex gap-[20px] p-[10px] overflow-x-auto whitespace-nowrap no-scrollbar'>
                 {
                     allProduct.map((i) => (
-                        <div className="w-[150px] h-[150px] max-w-[150px] flex-shrink-0 inline-block" onClick={()=>navigate(`/home/quicks?reelId=${i?._id}`)}>
+                        <div key={i?._id} className="w-[150px] h-[150px] max-w-[150px] flex-shrink-0 inline-block" onClick={()=>navigate(`/home/quicks?reelId=${i?._id}`)}>
                             <div className='w-[100%] relative flex items-center justify-center rounded-[10px]'>
                                 <img src={i?.productImage} alt="" className='w-[100%] h-[100%] object-cover aspect-square rounded-[10px] ' />
                                 <div className='absolute w-[100%] inset-0 bg-black bg-opacity-50 flex flex-col opacity-100 transition-opacity p-[10px] rounded-[8px]'>

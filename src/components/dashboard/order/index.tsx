@@ -41,14 +41,14 @@ const Order = () => {
         return order.Status === statusFilter;
     });
     return (
-        <div className="w-full  mb-[50px] flex items-center justify-center mt-[50px]">
+        <div className="w-full flex items-center justify-center mt-[50px] max-[650px]:mt-[70px]">
             <div className="w-[100%] mb-[50px] flex flex-col gap-[20px]">
                 <div className="flex justify-between items-center mb-4">
                     {/* Dropdown to select order status */}
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-4 py-2 border rounded"
+                        className="px-4 py-2 border rounded text-black outline-none"
                     >
                         <option value="All">All</option>
                         <option value="pending">Pending</option>
