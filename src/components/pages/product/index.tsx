@@ -5,7 +5,7 @@ import { IoHeart, IoHeartOutline, IoLink } from "react-icons/io5";
 import { FaRegComment, FaUser } from 'react-icons/fa';
 import { useAuth } from '../../../context/Auth';
 import { getAllProduct } from '../../../api/query';
-import { userBuyNow, userLike, userPayWithKora } from '../../../api/mutation';
+import { userBuyNow, userFollowMerchant, userLike, userPayWithKora } from '../../../api/mutation';
 import { IProduct } from '../../../interface/ProductInterface';
 import { useUser } from '../../../context/GetUser';
 import { copyToClipboard } from '../../../utils/CopytoClip';
@@ -45,6 +45,8 @@ function Product() {
     const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
     const [isProductModalOpen, setIsProductModalOpen] = useState(false);
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
+    const [followingMerchants, setFollowingMerchants] = useState<string[]>([]);
+    
     const loggedInUserId = data?._id;
 
     const {
@@ -64,7 +66,27 @@ function Product() {
         ['userlike'],
         userLike,
     );
+    const { mutate: followMutate } = useMutation(
+        ['userFollowMerchant'],
+        userFollowMerchant,
+        {
+            onSuccess: (data, merchantId) => {
+                // On successful follow, update the list of followed merchants
+                setFollowingMerchants((prev) => [...prev, merchantId]);
+            },
+        }
+    );
 
+    const handleFollowMerchant = (merchantId: string) => {
+        if (isUserAuthenticated) {
+            followMutate(merchantId); // Follow the merchant
+        } else {
+            toast.error("Please login to follow this merchant");
+            setTimeout(() => {
+                navigate('/');
+            }, 2000);
+        }
+    };
 
     const handleLikeClick = async (productId: string) => {
         if (isUserAuthenticated) {
@@ -140,18 +162,23 @@ function Product() {
                                             <IoEyeOutline size={30} className='text-white cursor-pointer' />
                                         </div>
                                     </div>
-                                    <div className='flex items-center gap-[5px]' onClick={() => handleMerchantClick(i?.merchant?.business_name)}>
-                                        <span className='w-[90%] flex items-center gap-[10px]'>
+                                    <div className='flex items-center gap-[5px] justify-between' >
+                                        <span className='w-[80%] flex items-center gap-[10px]  cursor-pointer' onClick={() => handleMerchantClick(i?.merchant?.business_name)}>
                                             {
                                                 !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover' /> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
                                             }
 
-                                            <p className='text-[20px]'>{i?.merchant?.business_name || i?.merchant.fullName}</p>
+                                            <p className='text-[18px]'>{i?.merchant?.business_name || i?.merchant.fullName}</p>
                                         </span>
-                                        <p className='text-[12px]'>Follow</p>
+                                        <button
+                                            className='text-[12px]'
+                                            onClick={() => handleFollowMerchant(i?.merchant?._id)}
+                                        >
+                                            {followingMerchants.includes(i?.merchant?._id) ? "Following" : "Follow"}
+                                        </button>
                                     </div>
                                     <span >
-                                        <p className='text-[15px] truncate'>{i?.productName} </p>
+                                        <p className='text-[14px] truncate'>{i?.productName} </p>
                                     </span>
                                     <span className='flex gap-[10px]'>
                                         <p className='text-[12px] line-through text-[lightgrey]'>₦{i?.productPrice}</p>

@@ -227,7 +227,7 @@ const Comment = () => {
             type="file"
             accept="image/*"
             className="hidden"
-            onChange={handleFileChange} // Handle image selection
+            onChange={handleFileChange}
           />
           <span className="w-[90%] flex items-center justify-center h-[35px] p-2 max-[650px]:w-[99%]">
             <input
