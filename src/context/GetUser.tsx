@@ -25,7 +25,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         if (data?.data?.data?.data) {
             setUser(data?.data?.data?.data); // Adjust based on actual response structure
         }
-    }, [data]);
+    }, [data, user]);
     const value: UserContextType = {
         data: user,
         isLoading,

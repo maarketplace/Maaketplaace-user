@@ -65,15 +65,15 @@ const router = createHashRouter([
   },
   {
     path: 'dashboard',
-    element: <Dashaboard/>,
+    element: <Dashaboard />,
     children: [
       {
         path: '',
-        element: <Overview/>
+        element: <Overview />
       },
       {
         path: '/dashboard/order',
-        element: <Order/>
+        element: <Order />
       },
     ]
   }

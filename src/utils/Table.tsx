@@ -72,22 +72,20 @@ const Table = <T extends object>({
                     <tbody>
                         {currentData.length > 0 ? (
                             currentData.map((row, rowIndex) => {
-                                // Determine if the row should have a grey background
                                 const shouldHaveGreyBackground = 
-                                    rowIndex % 2 === 0; // This can be modified based on your criteria
-
+                                    rowIndex % 2 === 0;
                                 return (
                                     <tr
                                         key={rowIndex}
-                                        className={`hover:bg-gray-100 cursor-pointer ${
-                                            shouldHaveGreyBackground ? "bg-gray-200" : ""
+                                        className={`hover:bg-gray-100 cursor-pointer dark:bg-[white] ${
+                                            shouldHaveGreyBackground ? "bg-gray-200 dark:bg-none " : "dark:bg-none"
                                         }`}
                                         onClick={() => onRowClick?.(row)}
                                     >
                                         {columns.map((column) => (
                                             <td
                                                 key={String(column)}
-                                                className="px-4 py-2 text-sm border-b"
+                                                className="px-4 py-2 text-sm border-b dark:text-black"
                                                 data-label={String(column)}
                                             >
                                                 {String(row[column])}
@@ -100,7 +98,7 @@ const Table = <T extends object>({
                             <tr>
                                 <td
                                     colSpan={columns.length}
-                                    className="text-center py-4 text-black"
+                                    className="text-center py-4 text-black dark:text-white"
                                 >
                                     {emptyMessage}
                                 </td>
@@ -110,20 +108,20 @@ const Table = <T extends object>({
                 </table>
             </div>
 
-            <div className="flex justify-between items-center mt- max-[650px]:p-[10px]">
-                <span>
+            <div className="flex justify-between items-center mt-[20px] max-[650px]:p-[10px]">
+                <span className="max-[650px]:text-[12px]">
                     Showing {currentPage} of {totalPages}
                 </span>
                 <span className="flex gap-2">
                     <button
-                        className="px-4 py-2 bg-gray-200 rounded"
+                        className="px-4 py-2 bg-gray-200 text-black rounded max-[650px]:p-0 max-[650px]:text-[12px] max-[650px]:h-[30px] max-[650px]:w-[70px]"
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                     >
                         Previous
                     </button>
                     <button
-                        className="px-4 py-2 bg-gray-200 rounded"
+                        className="px-4 py-2 bg-gray-200 text-black rounded max-[650px]:p-0 max-[650px]:text-[12px] max-[650px]:h-[30px] max-[650px]:w-[60px]"
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
                     >

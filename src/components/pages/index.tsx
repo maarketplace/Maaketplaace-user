@@ -47,14 +47,14 @@ const Home = () => {
                 </div>
             </div>
             <div className="w-[100%] flex h-[90vh] ">
-                <div className={isDetailsPage || isQuicksPage || isStorePage ? "hidden" : "w-[15%] h-[100%] bg-white max-[650px]:hidden mt-[60px]  "}>
+                <div className={isDetailsPage || isQuicksPage || isStorePage ? "hidden" : "w-[15%] h-[100%] bg-white max-[650px]:hidden mt-[60px]  fixed "}>
                     <SideBar />
                 </div>
-                <div className={isDetailsPage || isQuicksPage || isStorePage ? 'w-[100%]' : "w-[85%] flex flex-col items-center justify-center h-[100%] max-[650px]:w-[100%] "}>
+                <div className={isDetailsPage || isQuicksPage || isStorePage ? 'w-[100%]' : "w-[85%] flex flex-col items-center justify-center h-[100%] max-[650px]:w-[100%] ml-[200px] max-[650px]:ml-[0px] "}>
                     <div className={isQuicksPage ? "mt-0" : "w-[100%] h-[92%] mt-[60px] max-[650px]:p-[0px] "}>
                         <Layout searchQuery={searchQuery}/>
                     </div>
-                    <div className={isQuicksPage ? "w-[100%] h-[8%] bg-black text-white fixed left-0 bottom-0 z-50" : "w-[100%] h-[8%] bg-black text-white fixed left-0 bottom-0 z-50"}>
+                    <div className={isQuicksPage ? "w-[80%] h-[8%] bg-white text-black fixed right-0 bottom-0 z-50 flex items-center justify-center dark:bg-[black] dark:text-white" : "w-[85%] h-[8%] bg-white text-black fixed right-0 bottom-0 z-50 dark:bg-[black] dark:text-white"}>
                         <Bottom />
                     </div>
                 </div>

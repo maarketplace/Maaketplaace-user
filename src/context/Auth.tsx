@@ -1,6 +1,6 @@
+import React, { createContext, useContext, useState, useEffect, Dispatch, SetStateAction, useMemo } from 'react';
 
 const { VITE_TOKEN_USER } = import.meta.env;
-import React, { createContext, useContext, useState, useEffect, Dispatch, SetStateAction } from 'react';
 
 interface CartContextType {
     isUserAuthenticated: boolean;
@@ -14,21 +14,24 @@ interface CartProviderProps {
 }
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-
+    // Initialize userToken with localStorage value
     const [userToken, setUserToken] = useState<string | null>(localStorage.getItem(VITE_TOKEN_USER));
 
+    // Determine if the user is authenticated based on the presence of the token
     const isUserAuthenticated = !!userToken;
 
     useEffect(() => {
-    }, [ userToken]);
-    useEffect(() => {
         const storedUserToken = localStorage.getItem(VITE_TOKEN_USER);
-        setUserToken(storedUserToken);
+        if (storedUserToken) {
+            setUserToken(storedUserToken);  // Only update if there is a token
+        }
     }, []);
-    const contextValue: CartContextType = {
+
+    // Memoize the context value to avoid re-rendering unless userToken changes
+    const contextValue = useMemo(() => ({
         isUserAuthenticated,
         setUserToken,
-    };
+    }), [isUserAuthenticated]);
 
     return (
         <CartContext.Provider value={contextValue}>
@@ -40,7 +43,7 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
 export const useAuth = (): CartContextType => {
     const context = useContext(CartContext);
     if (!context) {
-        throw new Error('useAuth must be used within an CartProvider');
+        throw new Error('useAuth must be used within a CartProvider');
     }
     return context;
 };

@@ -1,7 +1,7 @@
 
 const Overview = () => {
   return (
-    <div>Overview</div>
+    <div className="w-full mt-[50px] max-[650px]:mt-[70px]">Overview</div>
   )
 }
 

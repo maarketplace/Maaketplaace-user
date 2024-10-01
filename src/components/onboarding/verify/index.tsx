@@ -40,6 +40,7 @@ const Verify = () => {
         onSuccess: async (data: IResponseData) => {
             toast.success(data?.data?.data?.message);
             navigate('/');
+            localStorage.removeItem('userEmail')
         },
         onError: (err: IErrorResponse) => {
             toast.error(err?.response?.data?.message || err?.response?.data?.error?.message || err?.message);
