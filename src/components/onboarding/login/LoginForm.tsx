@@ -21,6 +21,7 @@ function UserLoginForm() {
         resolver: yupResolver(AdminLoginSchema) as any
     });
     const { register, handleSubmit, formState: { errors } } = form;
+
     const { mutate, isLoading } = useMutation(['userlogin'], userLogin, {
         onSuccess: async (data: IResponseData) => {
             localStorage.setItem(VITE_TOKEN_USER, data?.data?.data?.token)
@@ -36,10 +37,15 @@ function UserLoginForm() {
         },
         onError: (err: IErrorResponse) => {
             toast.error(err?.response?.data?.message || err?.response?.data?.error?.message || err?.message);
+            if(err?.response?.data?.message ==  "Please verify your account"){
+                navigate('/verify')
+                localStorage.setItem
+            }
         }
     })
 
     const onSubmit: SubmitHandler<LoginInterface> = (data) => {
+        localStorage.setItem('userEmail', data.email);
         mutate(data)
     };
 

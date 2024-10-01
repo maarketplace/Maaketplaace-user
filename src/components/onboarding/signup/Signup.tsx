@@ -24,21 +24,27 @@ function UserSignupForm() {
     const [showConfirmassword, setShowConfirmPassword] = useState<boolean>(false);
 
     const form = useForm<UserSignUpInterface>({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         resolver: yupResolver(SignUpSchema) as any
     });
     const { register, handleSubmit, formState: { errors } } = form;
     const navigate = useNavigate()
 
     const { mutate, isLoading } = useMutation(['userSignup'], userSignup, {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onSuccess: async (data: any) => {
             toast.success(data?.data?.data?.message)
             navigate('/verify')
         },
         onError: (err: IErrorResponse) => {
             toast.error(err?.response?.data?.message || err?.response?.data?.error?.message || err?.message)
+            if(err?.response?.data?.message == "User already exists"){
+                navigate('/')
+            }
         }
     })
     const onSubmit: SubmitHandler<UserSignUpInterface> = (data) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { confirmPassword, ...others } = data
         mutate(others)
         console.log(others);

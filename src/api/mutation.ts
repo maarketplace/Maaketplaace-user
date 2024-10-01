@@ -3,6 +3,7 @@ import axios from "axios";
 const { VITE_ENDPOINT } = import.meta.env;
 const { VITE_TOKEN_USER } = import.meta.env;
 
+const userToken = localStorage.getItem(VITE_TOKEN_USER)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const userSignup = async (data: any) => {
     return await axios.post(`${VITE_ENDPOINT}/user`, data)
@@ -58,7 +59,6 @@ export const userComment = async ({ id, formData }: { id: string | undefined, fo
     });
   };
   
-
 export const userLikeAComment = async (id: string | undefined) => {
     const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT}/comment/${id}/like/user`, {}, {
@@ -78,7 +78,6 @@ export const userResetPassword = async (data: { id: string | undefined, password
 }
 
 export const userBuyNow = async (id: string)=>{
-    const userToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT}/orders/products/${id}/buy`, {}, {
         headers: {
             'Authorization': `Bearer ${userToken}`
@@ -87,7 +86,6 @@ export const userBuyNow = async (id: string)=>{
 }
 
 export const userPayWithKora = async (id: string)=>{
-    const userToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT}/init-kora/orders/${id}/single`,{}, {
         headers: {
             'Authorization': `Bearer ${userToken}`
@@ -96,5 +94,13 @@ export const userPayWithKora = async (id: string)=>{
 }
 
 export const userFollowMerchant = async (id: string) => {
-    return await axios.post(`${VITE_ENDPOINT}/users/merchants/${id}`)
+    return await axios.post(`${VITE_ENDPOINT}/users/merchants/${id}`, {}, {
+        headers: {
+            'Authorization': `Bearer ${userToken}`
+        }
+    })
 }
+
+export const resendVerification = async (email: string | null) => {
+    return await axios.post(`${VITE_ENDPOINT}/email?email=${email}`);
+};
