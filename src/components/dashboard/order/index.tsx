@@ -8,14 +8,16 @@ import { IProduct } from "../../../interface/ProductInterface";
 import { Worker, Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-// Set the app element for accessibility
+
 Modal.setAppElement('#root');
 
 const Order = () => {
     const [allOrder, setAllOrder] = useState<IOrder[]>([]);
     const [statusFilter, setStatusFilter] = useState<string>("All");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [orderDetails, setOrderDetails] = useState<any>(null);
     const [isDetailsLoading, setIsDetailsLoading] = useState(false);
     const [detailsError, setDetailsError] = useState<string | null>(null);
@@ -27,7 +29,7 @@ const Order = () => {
             const reversedData = data?.data?.data?.data.reverse();
             setAllOrder(reversedData);
         }
-    }, [data]);
+    }, [data, selectedOrder]);
 
     if (isLoading) {
         return <p>Loading...</p>;
@@ -47,7 +49,7 @@ const Order = () => {
         "Amount": transaction?.amount || "N/A",
         "Status": transaction.status,
         "Date": new Date(transaction?.createdAt).toLocaleDateString(),
-        "id": transaction._id // Store the ID for fetching details
+        "id": transaction._id
     }));
 
     const filteredOrders = formattedData.filter(order => {
@@ -57,27 +59,28 @@ const Order = () => {
         return order.Status === statusFilter;
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleRowClick = async (row: any, orderId: string) => {
-        setSelectedOrder(row); // Set basic clicked row details in state
-        setIsModalOpen(true); // Open the modal
-        setIsDetailsLoading(true); // Start loading state for details
+        setSelectedOrder(row); 
+        setIsModalOpen(true);
+        setIsDetailsLoading(true); 
         setDetailsError(null);
 
         try {
             const response = await getUserOrderDetails(orderId);
             console.log(response?.data?.data?.data);
 
-            setOrderDetails(response?.data?.data?.data); // Set fetched order details
+            setOrderDetails(response?.data?.data?.data);
         } catch (error) {
             setDetailsError("Failed to fetch order details.");
         } finally {
-            setIsDetailsLoading(false); // Stop loading state
+            setIsDetailsLoading(false);
         }
     };
 
     const closeModal = () => {
-        setIsModalOpen(false); // Close the modal
-        setOrderDetails(null); // Reset order details
+        setIsModalOpen(false); 
+        setOrderDetails(null); 
     };
 
     return (
@@ -102,8 +105,6 @@ const Order = () => {
                     columns={columns}
                     onRowClick={(row) => handleRowClick(row, row?.id)}
                 />
-
-                {/* Modal to display product details */}
                 <Modal
                     isOpen={isModalOpen}
                     onRequestClose={closeModal}
@@ -122,20 +123,13 @@ const Order = () => {
                             <div className="flex flex-col gap-[]">
                                 <p className="flex justify-between"><strong className="font-semibold text-[14px]">Amount:</strong> {orderDetails?.payable_amount}</p>
                                 <p className="flex justify-between"><strong className="font-semibold text-[14px]">Status:</strong> {orderDetails?.status}</p>
-                                {/* <p><strong>Payable Amount:</strong> {orderDetails?.payable_amount}</p> */}
                                 <p className="flex justify-between"><strong className="font-semibold text-[14px]">Created At:</strong> {new Date(orderDetails.createdAt).toLocaleDateString()}</p>
-
-                                {/* Product Details */}
                                 {orderDetails?.products?.length > 0 && (
                                     <div className="mt-4">
                                         <h3 className="text-lg font-bold">Products</h3>
                                         {orderDetails.products.map((product: IProduct) => (
                                             <div key={product._id} className="border p-4 mb-4">
                                                 <p><strong className="font-semibold text-[14px]">Product Name:</strong> {product?.productName}</p>
-                                                {/* <p><strong>Description:</strong> <span dangerouslySetInnerHTML={{ __html: product?.productDescription }} /></p> */}
-                                                {/* <p><strong>Price:</strong> {product?.productPrice}</p>
-                                                <p><strong>Discount Price:</strong> {product?.discountPrice}</p>
-                                                <p><strong>Status:</strong> {product.status}</p> */}
                                                 {
                                                     product.eBook ? (
                                                         <div style={{ height: '250px' }}>
@@ -145,8 +139,6 @@ const Order = () => {
                                                         </div>
                                                     ) : ''
                                                 }
-                                                {/* <p><strong>Duration:</strong> {product.duration}</p>
-                                                <p><strong>What to Expect:</strong> <span dangerouslySetInnerHTML={{ __html: product.whatToExpect }} /></p> */}
                                             </div>
                                         ))}
                                     </div>

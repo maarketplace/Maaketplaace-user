@@ -49,12 +49,12 @@ const Search = () => {
         console.log(selectedProduct);
     };
     return (
-        <div className="mt-[20px] w-full h-full">
+        <div className="mt-[20px] w-full h-full max-[650px]:mt-[40px]">
             <div className="w-[full] flex justify-center">
                 <input
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="w-[60%] py-[10px] px-[10px] outline-none rounded-[4px] border max-[650px]:w-[90%] bg-transparent"
+                    className="w-[60%] py-[10px] px-[5px] outline-none rounded-[4px] border max-[650px]:w-[90%] bg-transparent"
                     placeholder="Search here"
                 />
             </div>
@@ -73,11 +73,11 @@ const Search = () => {
                                         <div className='w-[100%] relative flex items-center justify-center mb-[10px]'>
                                             <img src={i?.productImage} className='w-[100%] object-cover aspect-square filter brightness-225 contrast-110 transition-all duration-500 ease-in-out' />
                                             <div
-                                            className='absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity'
-                                            onClick={() => handleEyeClick(i)}
-                                        >
-                                            <IoEyeOutline size={30} className='text-white cursor-pointer' />
-                                        </div>
+                                                className='absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity'
+                                                onClick={() => handleEyeClick(i)}
+                                            >
+                                                <IoEyeOutline size={30} className='text-white cursor-pointer' />
+                                            </div>
                                         </div>
                                         <span >
                                             <p className='text-[15px] truncate'>{i?.productName} </p>
