@@ -8,17 +8,10 @@ import toast from 'react-hot-toast';
 import { UserSignUpInterface } from "../../../interface/Signupinterface";
 import { SignUpSchema } from "../../../schema/SignUpSchema";
 import { userSignup } from "../../../api/mutation";
+import { IErrorResponse } from "../../../interface/ErrorData";
+import Loading from "../../../loader";
 
 
-interface IErrorResponse {
-    message: any;
-    response: {
-        data: {
-            error: any;
-            message: string
-        }
-    };
-}
 function UserSignupForm() {
     const [showPassword, setShow] = useState<boolean>(false);
     const [showConfirmassword, setShowConfirmPassword] = useState<boolean>(false);
@@ -151,7 +144,7 @@ function UserSignupForm() {
                     onClick={handleButtonClick}
                     disabled={isLoading}
                 >
-                    {isLoading ? "Loading..." : "Create account"}
+                    {isLoading ? <Loading/> : "Create account"}
                 </button>
             </div>
             <div className="w-[70%] flex items-center justify-center gap-[10px] max-[650px]:w-[90%] max-[650px]:flex-wrap max-[650px]:mt-[10px] ">
