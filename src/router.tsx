@@ -12,6 +12,7 @@ import Search from './components/pages/search';
 import Dashaboard from './components/dashboard';
 import Overview from './components/dashboard/overview';
 import Order from './components/dashboard/order';
+import Books from './components/dashboard/books';
 
 // eslint-disable-next-line react-refresh/only-export-components
 const LoginLoader = () => import('./components/onboarding/login');
@@ -74,6 +75,14 @@ const router = createHashRouter([
       {
         path: '/dashboard/order',
         element: <Order />
+      },
+      {
+        path: '/dashboard/books',
+        element: <Books />
+      },
+      {
+        path: '/dashboard/books/:id',
+        element: <Books />
       },
     ]
   }

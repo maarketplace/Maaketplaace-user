@@ -39,6 +39,16 @@ export const getUserOrders = async () => {
         }
     });
 };
+export const getUserOrderDetails = async (id: string) => {
+    const usertoken = getToken();
+    if (!usertoken) throw new Error('No user token found');
+    return await axios.get(`${VITE_ENDPOINT}/orders/${id}`, {
+        headers: {
+            'Authorization': `Bearer ${usertoken}`
+        }
+    });
+};
+
 
 export const getOneMerchantStoreProduct = async (businessName: string | null) => {
     return await axios.get(`${VITE_ENDPOINT}/merchants/products`, {
