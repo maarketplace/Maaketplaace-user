@@ -48,7 +48,7 @@ const Layout = () => {
                 <div className="w-[100%] h-[100%] ">
                     <Outlet />
                 </div>
-                <div className="w-[85%] h-[5%] fixed right-0 bottom-0 z-50 flex items-center justify-center ">
+                <div className="w-[85%] h-[8%] bg-white dark:bg-[black] fixed right-0 bottom-0 z-50 flex items-center justify-center max-[650px]:w-[100%] ">
                     <Bottom />
                 </div>
             </div>

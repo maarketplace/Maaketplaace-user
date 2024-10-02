@@ -46,7 +46,7 @@ function Product() {
     const [isProductModalOpen, setIsProductModalOpen] = useState(false);
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
     const [followingMerchants, setFollowingMerchants] = useState<string[]>([]);
-    
+
     const loggedInUserId = data?._id;
 
     const {
@@ -152,7 +152,7 @@ function Product() {
                         ?
                         <div className="w-[95%] h-[] overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] ">
                             {filteredProducts?.map((i: IProduct) => (
-                                <div key={i?._id} className='w-[300px] h-[500px] shadow-sm dark:shadow-[white] rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none max-[650px]:h-auto' >
+                                <div key={i?._id} className='w-[280px] h-[500px] shadow-sm dark:shadow-[white] rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none max-[650px]:h-auto' >
                                     <div className='w-[100%] relative flex items-center justify-center mb-[10px]'>
                                         <img src={i?.productImage} className='w-[100%] object-cover aspect-square filter brightness-225 contrast-110 transition-all duration-500 ease-in-out' />
                                         <div

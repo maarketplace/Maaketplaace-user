@@ -54,7 +54,7 @@ const Home = () => {
                     <div className={isQuicksPage ? "mt-0" : "w-[100%] h-[92%] mt-[60px] max-[650px]:p-[0px] "}>
                         <Layout searchQuery={searchQuery}/>
                     </div>
-                    <div className={isQuicksPage ? "w-[80%] h-[8%] bg-white text-black fixed right-0 bottom-0 z-50 flex items-center justify-center dark:bg-[black] dark:text-white" : "w-[85%] h-[8%] bg-white text-black fixed right-0 bottom-0 z-50 dark:bg-[black] dark:text-white"}>
+                    <div className={isQuicksPage ? "w-[80%] h-[8%] bg-white text-black fixed right-0 bottom-0 z-50 flex items-center justify-center dark:bg-[black] dark:text-white max-[650px]:w-[100%]" : "w-[85%] h-[8%] bg-white text-black fixed right-0 bottom-0 z-50 dark:bg-[black] dark:text-white max-[650px]:w-[100%]"}>
                         <Bottom />
                     </div>
                 </div>

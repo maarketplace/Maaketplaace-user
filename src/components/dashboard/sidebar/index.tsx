@@ -34,6 +34,10 @@ const SideBar = ({ setShowSidebar }: SideBarProps) => {
                     <IoBagHandleOutline className="w-[20%] h-[15px]" />
                     <p className="text-[15px] w-[80%]">Order</p>
                 </span>
+                <span className="flex items-center gap-[20px] justify-center h-[50px] cursor-pointer w-[90%]" onClick={() => handleNavigation('/dashboard/books')}>
+                    <IoBagHandleOutline className="w-[20%] h-[15px]" />
+                    <p className="text-[15px] w-[80%]">Books</p>
+                </span>
                 <span
                     className='flex items-center gap-[20px] justify-center h-[50px] cursor-pointer w-[90%]'
                     onClick={() => {
