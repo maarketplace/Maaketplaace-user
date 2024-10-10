@@ -4,6 +4,7 @@ import './Table.css'
 interface TableProps<T> {
     columns: Array<keyof T>;
     data: T[];
+    loading?: boolean;
     emptyMessage?: string;
     rowsPerPage?: number;
     onRowClick?: (row: T) => void;
@@ -12,6 +13,7 @@ interface TableProps<T> {
 const Table = <T extends object>({
     columns,
     data,
+    loading = false,
     emptyMessage = "No data available",
     rowsPerPage = 10,
     onRowClick,
@@ -43,20 +45,40 @@ const Table = <T extends object>({
         }
     };
 
+    const renderLoadingSkeleton = () => {
+        return (
+            <tbody>
+                {Array.from({ length: rowsPerPage }).map((_, index) => (
+                    <tr key={index}>
+                        {columns.map((_column, colIndex) => (
+                            <td
+                                key={colIndex}
+                                className="px-4 py-2 text-sm border-b animate-pulse bg-gray-200"
+                            >
+                                <div className="h-4 bg-gray-300 rounded w-full"></div>
+                            </td>
+                        ))}
+                    </tr>
+                ))}
+            </tbody>
+        );
+    };
+
     return (
-        <div className="AllUser"> {/* Main container class */}
+        <div className="AllUser">
             <div className="mb-4">
                 <input
                     type="text"
                     placeholder="Search..."
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="px-4 py-2 border rounded w-full"
+                    className="px-4 py-2 border rounded w-full outline-none max-[650px]:bg-transparent"
+                    disabled={loading} // Disable search when loading
                 />
             </div>
 
             <div className="overflow-x-auto">
-                <table className="min-w-full"> {/* Class for table */}
+                <table className="min-w-full">
                     <thead>
                         <tr>
                             {columns.map((column) => (
@@ -69,32 +91,38 @@ const Table = <T extends object>({
                             ))}
                         </tr>
                     </thead>
-                    <tbody>
-                        {currentData.length > 0 ? (
-                            currentData.map((row, rowIndex) => {
+
+                    {/* Render loading skeleton or table data */}
+                    {loading ? (
+                        renderLoadingSkeleton()
+                    ) : currentData.length > 0 ? (
+                        <tbody>
+                            {currentData.map((row, rowIndex) => {
                                 const shouldHaveGreyBackground = 
                                     rowIndex % 2 === 0;
                                 return (
                                     <tr
                                         key={rowIndex}
-                                        className={`hover:bg-gray-100 cursor-pointer dark:bg-[white] ${
-                                            shouldHaveGreyBackground ? "bg-gray-200 dark:bg-none " : "dark:bg-none"
+                                        className={` cursor-pointer bg-[#f5f5f5] dark:bg-[#1b1a1a] ${
+                                            shouldHaveGreyBackground ? "" : ""
                                         }`}
                                         onClick={() => onRowClick?.(row)}
                                     >
                                         {columns.map((column) => (
                                             <td
                                                 key={String(column)}
-                                                className="px-4 py-2 text-sm border-b dark:text-black"
+                                                className="px-4 py-2 text-sm border-b truncate"
                                                 data-label={String(column)}
                                             >
-                                                {String(row[column])}
+                                                {String(row[column]).slice(0, 32)}
                                             </td>
                                         ))}
                                     </tr>
                                 );
-                            })
-                        ) : (
+                            })}
+                        </tbody>
+                    ) : (
+                        <tbody>
                             <tr>
                                 <td
                                     colSpan={columns.length}
@@ -103,8 +131,8 @@ const Table = <T extends object>({
                                     {emptyMessage}
                                 </td>
                             </tr>
-                        )}
-                    </tbody>
+                        </tbody>
+                    )}
                 </table>
             </div>
 
@@ -116,14 +144,14 @@ const Table = <T extends object>({
                     <button
                         className="px-4 py-2 bg-gray-200 text-black rounded max-[650px]:p-0 max-[650px]:text-[12px] max-[650px]:h-[30px] max-[650px]:w-[70px]"
                         onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
+                        disabled={currentPage === 1 || loading}
                     >
                         Previous
                     </button>
                     <button
                         className="px-4 py-2 bg-gray-200 text-black rounded max-[650px]:p-0 max-[650px]:text-[12px] max-[650px]:h-[30px] max-[650px]:w-[60px]"
                         onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
+                        disabled={currentPage === totalPages || loading}
                     >
                         Next
                     </button>
