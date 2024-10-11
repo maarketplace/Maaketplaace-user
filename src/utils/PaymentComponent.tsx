@@ -98,7 +98,7 @@ export const handlePayNow = (
         fee: '',
         paymentID: paymentData?._id || '',
         paymentAPI,
-        payeeName,
+        payeeName, 
         payeeEmail,
         checkoutURL,
         source: 'payNow',
