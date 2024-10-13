@@ -104,3 +104,11 @@ export const userFollowMerchant = async (id: string) => {
 export const resendVerification = async (email: string | null) => {
     return await axios.post(`${VITE_ENDPOINT}/email?email=${email}`);
 };
+
+export const deleteCOmment = async (id: string) => {
+    return await axios.post(`${VITE_ENDPOINT}/comments/${id}`, {}, {
+        headers: {
+            'Authorization': `Bearer ${userToken}`
+        }
+    })
+}

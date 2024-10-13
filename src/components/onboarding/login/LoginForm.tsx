@@ -12,8 +12,10 @@ import { userLogin } from "../../../api/mutation";
 import Loading from "../../../loader";
 import { IErrorResponse } from "../../../interface/ErrorData";
 import { IResponseData } from "../../../interface/ResponseData";
+import { useAuth } from "../../../context/Auth";
 
 function UserLoginForm() {
+    const { setUserToken } = useAuth();
     const [showPassword, setShow] = useState<boolean>(false);
     const navigate = useNavigate()
     const form = useForm<LoginInterface>({
@@ -31,6 +33,7 @@ function UserLoginForm() {
                 navigate(redirectPath);
                 localStorage.removeItem('redirectPath');
                 localStorage.setItem(VITE_TOKEN_USER, data?.data?.data?.token)
+                setUserToken(data?.data?.data?.token)
             } else {
                 navigate('/home');
             }
@@ -39,7 +42,6 @@ function UserLoginForm() {
             toast.error(err?.response?.data?.message || err?.response?.data?.error?.message || err?.message);
             if(err?.response?.data?.message ==  "Please verify your account"){
                 navigate('/verify')
-                localStorage.setItem
             }
         }
     })

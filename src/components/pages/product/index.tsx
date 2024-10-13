@@ -57,8 +57,6 @@ function Product() {
         if (allProductData?.data?.data?.products) {
             const reversedData = [...allProductData.data.data.products].reverse();
             setAllProduct(reversedData);
-            // console.log(allProductData);
-
         }
     }, [allProductData]);
 
@@ -174,7 +172,12 @@ function Product() {
                                             className='text-[12px]'
                                             onClick={() => handleFollowMerchant(i?.merchant?._id)}
                                         >
-                                            {followingMerchants?.includes(i?.merchant?._id) ? "Following" : "Follow"}
+                                            {
+                                                followingMerchants.includes(i?.merchant?._id) || 
+                                                i?.merchant?.followedUsers?.includes(loggedInUserId)
+                                                    ? "Following"
+                                                    : "Follow"
+                                            }
                                         </button>
                                     </div>
                                     <span >
