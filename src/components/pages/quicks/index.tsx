@@ -15,13 +15,18 @@ import { IoMdAdd } from "react-icons/io";
 import toast from "react-hot-toast";
 import { useLocation } from 'react-router-dom';
 import SwiperCore from 'swiper';
+import { Drawer } from "@mui/material";
+import Comment from "../comment";
 
 const Quicks = () => {
     const [allProduct, setAllProduct] = useState<IProduct[]>([]);
     const { data } = useUser();
     const queryClient = useQueryClient();
-
+    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [currentProductId, setCurrentProductId] = useState<string | null>(null);
     const location = useLocation();
+    const [touchStartY, setTouchStartY] = useState<number>(0);
+    const [touchEndY, setTouchEndY] = useState<number>(0);
     const swiperRef = useRef<SwiperCore>();
 
     const loggedInUserId = data?._id;
@@ -80,6 +85,27 @@ const Quicks = () => {
         });
     };
 
+    const toggleDrawer = (open: boolean, productId: string | null = null) => {
+        setDrawerOpen(open);
+        setCurrentProductId(productId);
+        console.log(productId);
+
+    };
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchStartY(e.touches[0].clientY);
+    };
+
+    // Handle touch move event
+    const handleTouchMove = (e: React.TouchEvent) => {
+        setTouchEndY(e.touches[0].clientY);
+    };
+
+    // Handle touch end event to detect dragging down
+    const handleTouchEnd = () => {
+        if (touchEndY - touchStartY > 150) { // Change threshold as needed
+            setDrawerOpen(false);
+        }
+    };
     return (
         <div className="w-full h-full flex gap-[10px]">
             {isLoading ? (
@@ -122,7 +148,7 @@ const Quicks = () => {
                                                         )}
                                                     </span>
                                                     <p className="text-white text-lg font-bold shadow-md">{i.total_likes}</p>
-                                                    <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]">
+                                                    <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]" onClick={() => toggleDrawer(true, i._id)}>
                                                         <FaRegComment className="text-[black] text-[25px]" />
                                                     </span>
                                                     <p className="text-white text-lg font-bold shadow-md">{i.comments?.length}</p>
@@ -178,6 +204,18 @@ const Quicks = () => {
                     </Swiper>
                 </div>
             )}
+
+            <Drawer
+                anchor="bottom"
+                className="h-[100vh]"
+                open={drawerOpen}
+                onClose={() => toggleDrawer(false)}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+            >
+                {currentProductId && <Comment productId={currentProductId} />}
+            </Drawer>
         </div>
     );
 };
