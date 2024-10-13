@@ -10,15 +10,21 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 Modal.setAppElement('#root');
-
+interface Order {
+    payable_amount: number;
+    status: string;
+    createdAt: string | number | Date;
+    products: IProduct[];
+    // Define order properties here
+    id: string;
+    // Add other relevant properties
+  }
 const Order = () => {
     const [allOrder, setAllOrder] = useState<IOrder[]>([]);
     const [statusFilter, setStatusFilter] = useState<string>("All");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [orderDetails, setOrderDetails] = useState<any>(null);
+    const [orderDetails, setOrderDetails] = useState<Order | null>(null);
     const [isDetailsLoading, setIsDetailsLoading] = useState(false);
     const [detailsError, setDetailsError] = useState<string | null>(null);
 

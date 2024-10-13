@@ -41,7 +41,9 @@ const Search = () => {
         setSearchQuery(e.target.value);
     };
     const filteredProducts = allProduct?.filter((product: IProduct) =>
-        product?.productName?.toLowerCase().includes(searchQuery?.trim().toLowerCase())
+        product?.productName?.toLowerCase().includes(searchQuery?.trim().toLowerCase()) ||
+        product?.merchant?.business_name.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+        product?.merchant?.fullName.toLowerCase().includes(searchQuery.trim().toLowerCase())
     );
     const handleEyeClick = (product: IProduct) => {
         setSelectedProduct(product);
@@ -49,7 +51,7 @@ const Search = () => {
         console.log(selectedProduct);
     };
     return (
-        <div className="mt-[20px] w-full h-full max-[650px]:mt-[40px]">
+        <div className="mt-[20px] w-full h-full max-[650px]:mt-[40px] hidden max-[650px]:flex max-[650px]:flex-col">
             <div className="w-[full] flex justify-center">
                 <input
                     value={searchQuery}

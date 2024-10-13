@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { getProductComment } from "../../../api/query";
 import { useEffect } from "react";
-import { userComment, userLikeAComment } from "../../../api/mutation";
+import { deleteCOmment, userComment, userLikeAComment } from "../../../api/mutation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IAddComment } from "../../../interface/Coment.interface";
 import { format } from 'date-fns';
@@ -15,6 +15,8 @@ import { useUser } from "../../../context/GetUser";
 import { useAuth } from "../../../context/Auth";
 import toast from "react-hot-toast";
 import ImageModal from "../../../utils/ImageModal";
+// import { RxDotsVertical } from "react-icons/rx";
+import { MdDeleteOutline } from "react-icons/md";
 
 const Comment = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -44,6 +46,7 @@ const Comment = () => {
     }
   }, [CommentData]);
 
+  const {mutate: deleteMutate } = useMutation(['deleteComment'], deleteCOmment, )
   const { mutate } = useMutation(['comment'], userComment, {
     onSuccess: () => {
       setSelectedImage(null);  // Reset image after successful upload
@@ -186,8 +189,8 @@ const Comment = () => {
           <div className="w-[100%] flex flex-col gap-[10px]">
             {productComment.map((i: IAddComment) => (
               <div key={i._id}>
-                <div className="flex items-center justify-between p-4 gap-2">
-                  <span className="w-[30px] flex items-center justify-center h-[30px] bg-[#FFC300] rounded-full">
+                <div className="flex items-center justify-between p-2 gap-2">
+                  <span className=" py-[2px] px-[9px] flex items-center justify-center  bg-[#FFC300] rounded-full">
                     <p>{i?.user?.fullName?.charAt(0)}</p>
                   </span>
                   <span className="w-[80%] flex flex-col gap-1">
@@ -215,6 +218,9 @@ const Comment = () => {
                       />
                     )}
                     <p className="text-[12px]">{i?.total_likes}</p>
+                  </span>
+                  <span>
+                    <MdDeleteOutline onClick={() => deleteMutate(i?._id)} className="text-red-500" />
                   </span>
                 </div>
               </div>

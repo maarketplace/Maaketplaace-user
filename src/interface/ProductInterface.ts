@@ -21,10 +21,11 @@ export interface IMerchant {
     verificationCode: number;
     subscribed: boolean;
     subscriptionType: string;
-    products: any[]; // Adjust the type if you have a specific product type
+    products: IProduct[]; // Adjust the type if you have a specific product type
     createdAt: string;
     updatedAt: string;
     accountStatus: string;
+    followedUsers: string[];
 }
 
 export interface IProduct {
@@ -51,8 +52,8 @@ export interface IProduct {
     category: string;
     subCategory: string;
     merchant: IMerchant;
-    user: any[]; // Adjust the type if you have a specific user type
-    comments: any[]; // Adjust the type if you have a specific comment type
+    user: string[];
+    comments: string[];
     user_likes: string[];
     merchant_likes: string[];
     total_likes: number;

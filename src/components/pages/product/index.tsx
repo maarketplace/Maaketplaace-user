@@ -57,8 +57,6 @@ function Product() {
         if (allProductData?.data?.data?.products) {
             const reversedData = [...allProductData.data.data.products].reverse();
             setAllProduct(reversedData);
-            // console.log(allProductData);
-
         }
     }, [allProductData]);
 
@@ -70,7 +68,7 @@ function Product() {
         ['userFollowMerchant'],
         userFollowMerchant,
         {
-            onSuccess: (data, merchantId) => {
+            onSuccess: (_data, merchantId) => {
                 // On successful follow, update the list of followed merchants
                 setFollowingMerchants((prev) => [...prev, merchantId]);
             },
@@ -79,7 +77,7 @@ function Product() {
 
     const handleFollowMerchant = (merchantId: string) => {
         if (isUserAuthenticated) {
-            followMutate(merchantId); // Follow the merchant
+            followMutate(merchantId);
         } else {
             toast.error("Please login to follow this merchant");
             setTimeout(() => {
@@ -168,13 +166,18 @@ function Product() {
                                                 !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover' /> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
                                             }
 
-                                            <p className='text-[18px]'>{i?.merchant?.business_name || i?.merchant.fullName}</p>
+                                            <p className='text-[18px]'>{i?.merchant?.business_name || i?.merchant?.fullName}</p>
                                         </span>
                                         <button
                                             className='text-[12px]'
                                             onClick={() => handleFollowMerchant(i?.merchant?._id)}
                                         >
-                                            {followingMerchants.includes(i?.merchant?._id) ? "Following" : "Follow"}
+                                            {
+                                                followingMerchants.includes(i?.merchant?._id) || 
+                                                i?.merchant?.followedUsers?.includes(loggedInUserId)
+                                                    ? "Following"
+                                                    : "Follow"
+                                            }
                                         </button>
                                     </div>
                                     <span >
@@ -235,14 +238,14 @@ function Product() {
                     <PaymentModal
                         isOpen={isModalOpen}
                         setIsOpen={setIsModalOpen}
-                        title={paymentDetails.source === 'payNow' ? "Complete Your Payment" : "Proceed to Payment"}
-                        amount={paymentDetails.amount}
-                        fee={paymentDetails.source === 'buyNow' ? paymentDetails.fee : ''}
-                        paymentAPI={paymentDetails.source === 'payNow' ? paymentDetails.paymentAPI : ''}
-                        payeeEmail={paymentDetails.source === 'payNow' ? paymentDetails.payeeEmail : ''}
-                        payeeName={paymentDetails.source === 'payNow' ? paymentDetails.payeeName : ''}
+                        title={paymentDetails?.source === 'payNow' ? "Complete Your Payment" : "Proceed to Payment"}
+                        amount={paymentDetails?.amount}
+                        fee={paymentDetails?.source === 'buyNow' ? paymentDetails?.fee : ''}
+                        paymentAPI={paymentDetails?.source === 'payNow' ? paymentDetails?.paymentAPI : ''}
+                        payeeEmail={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeEmail : ''}
+                        payeeName={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeName : ''}
                         primaryButton={{
-                            text: paymentDetails.source === 'payNow' ? (
+                            text: paymentDetails?.source === 'payNow' ? (
                                 <a href={paymentDetails.checkoutURL} rel="noopener noreferrer">
                                     <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]">
                                         {paymutateLoading ? "Paying" : "Pay Now"}
