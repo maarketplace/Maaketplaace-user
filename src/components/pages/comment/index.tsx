@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { IoMdArrowBack, IoMdClose, IoMdSend } from "react-icons/io";
 import { useMutation, useQuery } from "react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getProductComment } from "../../../api/query";
 import { useEffect } from "react";
 import { deleteCOmment, userComment, userLikeAComment } from "../../../api/mutation";
@@ -18,11 +18,15 @@ import ImageModal from "../../../utils/ImageModal";
 // import { RxDotsVertical } from "react-icons/rx";
 import { MdDeleteOutline } from "react-icons/md";
 
-const Comment = () => {
+interface CommentProps {
+  productId: string; // receive the productId as a prop
+}
+const Comment = ({productId}: CommentProps) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { id: productIdParam } = useParams<{ id?: any }>();
   const { data: userData } = useUser();
   const { isUserAuthenticated } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
@@ -38,7 +42,7 @@ const Comment = () => {
 
   const { register, handleSubmit, formState: { errors } } = form;
 
-  const { data: CommentData, isLoading } = useQuery(['getProductComment', productIdParam], () => getProductComment(productIdParam), {});
+  const { data: CommentData, isLoading } = useQuery(['getProductComment', productIdParam || productId], () => getProductComment(productIdParam || productId), {});
 
   useEffect(() => {
     if (CommentData) {
@@ -70,10 +74,10 @@ const Comment = () => {
     }
   };
   const handleCancelImage = () => {
-    setSelectedImage(null);  // Clear the selected image
-    setImagePreviewUrl(null);  // Remove the preview URL
+    setSelectedImage(null); 
+    setImagePreviewUrl(null); 
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';  // Reset file input field
+      fileInputRef.current.value = '';  
     }
   };
   const onSubmit: SubmitHandler<IAddComment> = (formData) => {
@@ -82,7 +86,7 @@ const Comment = () => {
 
     const newComment: IAddComment = {
       id: temporaryId,
-      comment: formData.comment, // This is just the text comment
+      comment: formData.comment, 
       createdTime: currentTime,
       productIdParam: undefined,
       user: {
@@ -104,7 +108,7 @@ const Comment = () => {
     }
 
     mutate(
-      { id: productIdParam, formData: formDataToSend },  // Pass the FormData object
+      { id: productIdParam, formData: formDataToSend }, 
       {
         onSuccess: (response) => {
           const actualComment = response.data.comment;
@@ -174,10 +178,9 @@ const Comment = () => {
     setIsModalOpen(false);
   };
   return (
-    <div className="mt-[20px] w-[100%] flex flex-col items-center justify-between h-[85vh] dark:bg-black dark:text-white">
-
-      <div className="flex h-[] w-[50%] items-center max-[650px]:w-[100%] justify-between p-1 bg-white dark:bg-black">
-        <IoMdArrowBack onClick={() => navigate('/home')} />
+    <div className={location.pathname === '/home/quicks' ? ' w-[100%] flex flex-col items-center justify-between h-[100vh] dark:bg-black dark:text-white': 'mt-[20px] w-[100%] flex flex-col items-center justify-between h-[85vh] dark:bg-black dark:text-white'}>
+      <div className="flex h-[] w-[50%] items-center max-[650px]:w-[100%] justify-between p-2 bg-white dark:bg-black">
+        <IoMdArrowBack onClick={() => navigate('/home')} className={location.pathname === '/home/quicks' ? 'hidden' : ''} />
         <p>{productComment?.length} Comments</p>
       </div>
       <div className="w-[50%] h-[80%] max-[650px]:w-[100%] overflow-y-auto">
