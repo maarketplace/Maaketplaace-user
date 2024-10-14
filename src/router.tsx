@@ -49,13 +49,13 @@ const router = createHashRouter([
       },
       {
         path: '/home/comments/:id',
-        element: <Comment />
+        element: <Comment productId={''} />
       },
       {
         path: '/home/dashboard'
       },
       {
-        path: '/home/store',
+        path: '/home/store/:businessName',
         element: <Store />
       },
       {

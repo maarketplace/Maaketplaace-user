@@ -127,7 +127,7 @@ function Product() {
         console.log(selectedProduct);
     };
     const handleMerchantClick = (businessName: string) => {
-        navigate(`/home/store?businessName=${encodeURIComponent(businessName)}`);
+        navigate(`/home/store/${businessName}`);
     };
     if (!context) {
         return null;
@@ -166,10 +166,10 @@ function Product() {
                                                 !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover' /> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
                                             }
 
-                                            <p className='text-[18px]'>{i?.merchant?.business_name || i?.merchant?.fullName}</p>
+                                            <p className='text-[18px] max-[650px]:text-[14px] max-[250px]:text-[12px]'>{i?.merchant?.business_name || i?.merchant?.fullName}</p>
                                         </span>
                                         <button
-                                            className='text-[12px]'
+                                            className='text-[10px]'
                                             onClick={() => handleFollowMerchant(i?.merchant?._id)}
                                         >
                                             {
@@ -281,7 +281,7 @@ function Product() {
                                 </h2>
                                 <h2 className="text-[20px] w-full max-[650px]:text-[15px]">{selectedProduct.productName}</h2>
                             </div>
-                            <div className='prose h-[30%] max-[650px]:w-full max-[650px]:text-[12px] text-[#000000c1] text-[14px]' dangerouslySetInnerHTML={{ __html: selectedProduct?.productDescription?.slice(0, 80) }} />
+                            <div className='prose h-[30%] max-[650px]:w-full max-[650px]:text-[12px] text-[#000000c1] dark:text-white text-[14px]' dangerouslySetInnerHTML={{ __html: selectedProduct?.productDescription?.slice(0, 80) }} />
                             {selectedProduct.pages ? (
                                 <div className='h-[50%] max-[650px]:mt-[20px] max-[650px]:text-[14px]  max-[650px]:h-auto flex flex-col gap-3 justify-center max-[650px]:w-full'>
                                     <p>E-book Details</p>
