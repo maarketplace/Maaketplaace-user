@@ -81,11 +81,11 @@ const Store = () => {
                             {/* {
                             allProduct.length > 1 ?  <BiBadgeCheck className="absolute right-[68px] text-[20px] top-[55px] text-[#FFc300]"/>: null
                            } */}
-                            <p className="text-[15px] font-bold hidden max-[650px]:flex max-[650px]: ">{AdminInfo?.profession}</p>
+                            <p className="text-[15px] font-bold hidden max-[650px]:flex max-[650px]:text-[14px] ">{AdminInfo?.profession}</p>
                         </span>
                         <span className="h-[100px] w-[100%] gap-5 max-[650px]:w-[100%] max-[650px]:flex max-[650px]:items-center max-[650px]:flex-col">
                             {
-                                AdminInfo?.business_name && <p className="text-clamp text-[25px] mb-[10px] max-[320px]:text-[18px]">@{AdminInfo?.business_name}</p>
+                                AdminInfo?.business_name && <p className="text-clamp text-[25px] mb-[10px] max-[375px]:text-[18px]">@{AdminInfo?.business_name}</p>
                             }
                             <p className="text-[12px] max-[650px]:text-center">{AdminInfo?.bio}</p>
                         </span>
@@ -98,7 +98,7 @@ const Store = () => {
             <div className="w-[70%] mb-[70px] grid grid-cols-4 gap-[20px] max-[650px]:grid-cols-2 max-[320px]:grid-cols-1  max-[650px]:w-[90%]">
                 {
                     allProduct?.map((i: IProduct) => (
-                        <div className="w-full border flex flex-col items-center p-[10px] gap-[10px] rounded-[8px]">
+                        <div className="w-full border dark:border-[grey] flex flex-col items-center p-[10px] gap-[10px] rounded-[8px]">
                             <img onClick={() => handleEyeClick(i)} src={i?.productImage} alt="" className="w-[100%] h-[200px] object-cover aspect-square" />
                             <span className="w-full">
                                 <p className="max-[650px]:text-[12px] h-[40px] text-[14px]">{i?.productName}</p>

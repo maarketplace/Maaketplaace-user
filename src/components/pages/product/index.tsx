@@ -166,7 +166,7 @@ function Product() {
                                                 !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover' /> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
                                             }
 
-                                            <p className='text-[18px] max-[650px]:text-[14px] max-[250px]:text-[12px]'>{i?.merchant?.business_name || i?.merchant?.fullName}</p>
+                                            <p className='text-[18px] max-[650px]:text-[14px] max-[250px]:text-[12px] truncate'>{i?.merchant?.business_name || i?.merchant?.fullName}</p>
                                         </span>
                                         <button
                                             className='text-[10px]'
@@ -213,7 +213,7 @@ function Product() {
                                                 <p>{i?.comments?.length}</p>
                                             </span>
                                             <span className='w-[20%]'>
-                                                <IoLink size={25} className='text-[#FFC300]' onClick={() => copyToClipboard(`https://maarketplaace.com/#/user_details/${i?._id}`)} />
+                                                <IoLink size={25} className='text-[#FFC300]' onClick={() => copyToClipboard(`https://maarketplaace.com/#/home/details/${i?._id}`)} />
                                             </span>
                                             <button
                                                 className='w-[40%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]'
