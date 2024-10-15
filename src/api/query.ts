@@ -51,10 +51,8 @@ export const getUserOrderDetails = async (id: string) => {
 
 
 export const getOneMerchantStoreProduct = async (businessName: string | null) => {
-    return await axios.get(`${VITE_ENDPOINT}/merchants/products`, {
-        params: {
-            businessName
-        }
+    return await axios.get(`${VITE_ENDPOINT}/merchants/products/${businessName}`, {
+
     });
 }
 

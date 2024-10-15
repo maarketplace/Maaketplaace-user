@@ -37,7 +37,7 @@ const Details = () => {
             checkoutURL: '',
             source: '',
         });
-        const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
+    const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
 
     const relatedProduct = data?.data?.data?.data?.related_product
     useEffect(() => {
@@ -109,7 +109,7 @@ const Details = () => {
                     )}
                     <div className="w-[90%]">
                         <button className=" bg-[#FFC300] w-[100%] text-[12px] h-[40px] rounded" onClick={() => handleCartAddingAuth(product?._id)}>
-                        {loadingStates[product?._id] ? <Loading /> : ' Pay for this course'}  
+                            {loadingStates[product?._id] ? <Loading /> : ' Pay for this course'}
                         </button>
                     </div>
                 </div>
@@ -230,7 +230,7 @@ const Details = () => {
                                 <div className="w-[100%] flex flex-col">
                                     <div className="flex items-center w-[100%] h-[50px]">
                                         <button className="w-[40%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]" onClick={() => handleCartAddingAuth(i?._id)}>
-                                        {loadingStates[i?._id] ? <Loading /> : 'Buy Now'} 
+                                            {loadingStates[i?._id] ? <Loading /> : 'Buy Now'}
                                         </button>
                                     </div>
                                 </div>
