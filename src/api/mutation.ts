@@ -105,10 +105,13 @@ export const resendVerification = async (email: string | null) => {
     return await axios.post(`${VITE_ENDPOINT}/email?email=${email}`);
 };
 
-export const deleteCOmment = async (id: string) => {
-    return await axios.post(`${VITE_ENDPOINT}/comments/${id}`, {}, {
+export const deleteComment = async ( id: string) => {
+    return await axios.delete(`${VITE_ENDPOINT}/comments/${id}`, {
         headers: {
             'Authorization': `Bearer ${userToken}`
+        },
+        params: {
+            type: 'comment'
         }
-    })
-}
+    });
+};
