@@ -24,7 +24,7 @@ const Details = () => {
     const { id: productIdParam } = useParams<{ id?: any }>();
     const [product, setProduct] = useState<IProduct | null>(null)
     const { data } = useQuery(['getoneproduct', productIdParam], () => getOneProduct(productIdParam), {})
-    const [activeTab, setActiveTab] = useState('topics');
+    const [activeTab, setActiveTab] = useState('expect');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [paymentDetails, setPaymentDetails] = useState(
         {
@@ -56,21 +56,24 @@ const Details = () => {
         handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
     };
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
     return (
         <div className="w-full h-full text-[15px] mt-[100px] flex flex-col items-center max-[650px]:mt-[40px]">
             <div className="w-[90%] flex gap-[10px] max-[650px]:flex-col max-[650px]:w-[100%]">
-                <div className="w-[20%] h-[400px] max-[650px]:h-[550px]  flex flex-col items-center p-[10px] gap-[10px] max-[650px]:w-full max-[650px]:mt-[40px]">
-                    <div className='w-full h-[250px] flex items-center justify-center '>
+                <div className="w-[30%]  max-[650px]:h-[550px]  flex flex-col items-center p-[10px] gap-[10px] max-[650px]:w-full max-[650px]:mt-[40px]">
+                    <div className='w-[70%] h-[250px] flex items-center justify-center '>
                         <img src={product?.productImage} className='w-[100%] object-cover  aspect-square max-[650px]:h-[90%] ' />
                     </div>
                     <div className="flex w-full items-center gap-[5px] mt-[10px]">
                         <span className="w-[20%]">
                             <img src={product?.merchant?.image} alt="" className="w-[40px] h-[40px] rounded-full object-cover filter brightness-225 contrast-110 transition-all duration-500 ease-in-out" />
                         </span>
-                        <p className=" w-[50%] max-[650px]:w-[80%] text-[12px] text-wrap">{product?.productName}</p>
+                        <p className=" w-[100%] max-[650px]:w-[80%] text-[12px] text-wrap">{product?.productName}</p>
                     </div>
                     {product?.pages ? (
-                        <div className='h-[50%] max-[650px]:mt-[20px] max-[650px]:text-[14px]  max-[650px]:h-auto flex flex-col gap-3 justify-center max-[650px]:w-full'>
+                        <div className='w-[100%] h-[50%] max-[650px]:mt-[20px] max-[650px]:text-[14px]  max-[650px]:h-auto flex flex-col gap-3 justify-center max-[650px]:w-full'>
                             <span className='flex items-center gap-2'>
                                 <BsDot className="text-[#FFC300] text-[30px]" />
                                 <RiPagesLine />
@@ -89,7 +92,7 @@ const Details = () => {
                             </span>
                         </div>
                     ) : (
-                        <div className='h-[50%]  max-[650px]:h-auto gap-2 flex flex-col justify-center max-[650px]:w-full'>
+                        <div className='h-[50%] w-[100%]  max-[650px]:h-auto gap-2 flex flex-col justify-center max-[650px]:w-full'>
                             <span className='flex items-center gap-2'>
                                 <BsDot className="text-[#FFC300] text-[30px]" />
                                 <IoMdTime />
@@ -114,7 +117,7 @@ const Details = () => {
                     </div>
                 </div>
                 <div className="w-[50%] max-[650px]:w-[100%] dark:bg-black p-[20px] flex flex-col gap-[20px] max-[650px]:p-[10px]">
-                    <div className="w-full flex flex-col gap-[10px]">
+                    <div className="w-full  flex flex-col gap-[10px]">
                         <p className="w-[100%] text-[20px]">{product?.productName}</p>
                         {product?.productDescription && (
                             <div
@@ -127,6 +130,13 @@ const Details = () => {
                         <div className="w-full bg-slate-50 p-[20px] dark:bg-black max-[650px]:p-[5px] flex flex-col gap-[10px]">
                             {/* Tab Buttons */}
                             <div className="flex gap-[10px]">
+                            <button
+                                    className={`${activeTab === 'expect' ? 'text-[#FFC300]' : 'text-gray-500'
+                                        }`}
+                                    onClick={() => setActiveTab('expect')}
+                                >
+                                    What to Expect
+                                </button>
                                 <button
                                     className={`${activeTab === 'topics' ? 'text-[#FFC300]' : 'text-gray-500'
                                         }`}
@@ -134,20 +144,9 @@ const Details = () => {
                                 >
                                     Topics
                                 </button>
-                                <button
-                                    className={`${activeTab === 'expect' ? 'text-[#FFC300]' : 'text-gray-500'
-                                        }`}
-                                    onClick={() => setActiveTab('expect')}
-                                >
-                                    What to Expect
-                                </button>
                             </div>
-
-                            {/* Conditionally Render Content Based on Active Tab */}
                             {activeTab === 'topics' && (
-                                <div className="p-[10px]">
-                                    {/* <p className="text-[20px] max-[650px]:text-[18px]">Topics</p> */}
-                                    {/* Add the topics content here */}
+                                <div className="p-[10px] h-[200px]">
                                     {product?.topics && (
                                         <div className="prose text-[14px] flex flex-wrap text-black dark:text-white max-[650px]:text-[12px]"
                                             dangerouslySetInnerHTML={{ __html: product?.topics }}
@@ -159,7 +158,6 @@ const Details = () => {
 
                             {activeTab === 'expect' && (
                                 <div className="p-[10px]">
-                                    {/* <p className="text-[20px] max-[650px]:text-[18px]">What to Expect</p> */}
                                     {product?.whatToExpect && (
                                         <div
                                             className="prose dark:prose-invert text-[14px] flex flex-wrap text-black dark:text-white max-[650px]:text-[12px] m-0 p-0"
@@ -173,7 +171,7 @@ const Details = () => {
                     )}
                 </div>
             </div>
-            <div className="w-[100%] mt-[50px] h-[400px] mb-[200px] flex flex-col items-center gap-[20px] ">
+            <div className="w-[100%] mt-[20px]  mb-[120px] flex flex-col items-center gap-[20px] ">
                 <p className=" w-[90%] text-[20px]">Recommended Product</p>
                 <div className="w-[100%] p-0 flex flex-wrap gap-[10px] max-[650px]:w-full ">
                     <Swiper
@@ -239,6 +237,9 @@ const Details = () => {
                     </Swiper>
 
                 </div>
+            </div>
+            <div className="">
+
             </div>
             {
                 isModalOpen &&

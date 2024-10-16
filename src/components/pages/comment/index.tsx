@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "react-query";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getProductComment } from "../../../api/query";
 import { useEffect } from "react";
-import { deleteCOmment, userComment, userLikeAComment } from "../../../api/mutation";
+import { deleteComment, userComment, userLikeAComment } from "../../../api/mutation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IAddComment } from "../../../interface/Coment.interface";
 import { format } from 'date-fns';
@@ -50,7 +50,7 @@ const Comment = ({productId}: CommentProps) => {
     }
   }, [CommentData]);
 
-  const {mutate: deleteMutate } = useMutation(['deleteComment'], deleteCOmment, )
+  const {mutate: deleteMutate } = useMutation(['deleteComment'], deleteComment, )
   const { mutate } = useMutation(['comment'], userComment, {
     onSuccess: () => {
       setSelectedImage(null);  // Reset image after successful upload
@@ -115,7 +115,7 @@ const Comment = ({productId}: CommentProps) => {
 
           setProductComment((prevComments) =>
             prevComments.map((comment) =>
-              comment.id === temporaryId ? { ...comment, ...actualComment } : comment
+              comment?.id === temporaryId ? { ...comment, ...actualComment } : comment
             )
           );
         },
@@ -177,6 +177,9 @@ const Comment = ({productId}: CommentProps) => {
     setModalImageUrl(null);
     setIsModalOpen(false);
   };
+  const handleDeleteComment = (id: string) => {
+    deleteMutate(id );
+};
   return (
     <div className={location.pathname === '/home/quicks' ? ' w-[100%] flex flex-col items-center justify-between h-[100vh] dark:bg-black dark:text-white': 'mt-[20px] w-[100%] flex flex-col items-center justify-between h-[85vh] dark:bg-black dark:text-white'}>
       <div className="flex h-[] w-[50%] items-center max-[650px]:w-[100%] justify-between p-2 bg-white dark:bg-black">
@@ -191,7 +194,7 @@ const Comment = ({productId}: CommentProps) => {
         ) : productComment.length !== 0 ? (
           <div className="w-[100%] flex flex-col gap-[10px]">
             {productComment.map((i: IAddComment) => (
-              <div key={i._id}>
+              <div key={i?._id}>
                 <div className="flex items-center justify-between p-2 gap-2">
                   <span className=" py-[2px] px-[9px] flex items-center justify-center  bg-[#FFC300] rounded-full">
                     <p>{i?.user?.fullName?.charAt(0)}</p>
@@ -223,7 +226,7 @@ const Comment = ({productId}: CommentProps) => {
                     <p className="text-[12px]">{i?.total_likes}</p>
                   </span>
                   <span>
-                    <MdDeleteOutline onClick={() => deleteMutate(i?._id)} className="text-red-500" />
+                    <MdDeleteOutline onClick={() => handleDeleteComment(i?._id)} className="text-red-500" />
                   </span>
                 </div>
               </div>
