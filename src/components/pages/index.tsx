@@ -31,7 +31,7 @@ const Home = () => {
     const isStorePage = location.pathname === `/home/store/${id}`;
     return (
         <div className="w-[100%] p-[0px] dark:bg-black max-w-fill">
-            <div className={isQuicksPage ? "hidden" : "w-[100%] h-[10vh] bg-black flex items-center justify-center fixed top-0 left-0 z-50 p-2"}>
+            <div className={isQuicksPage ? "hidden" : "w-[100%] h-[10vh] bg-white dark:bg-[black] shadow flex items-center justify-center fixed top-0 left-0 z-50 p-2"}>
                 <div className="w-[80%] h-[100%] flex items-center max-w-[650px]:w-[10%]">
                     <img src='/LOGO.svg' alt="image" className="w-[180px] h-[50px] max-[650px]:hidden " />
                     <img src='MARKET.svg' alt="image" className="w-[30px] h-[30px] hidden max-[650px]:flex " />

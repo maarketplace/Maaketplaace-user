@@ -21,6 +21,61 @@ type BuyMutateFunction = UseMutateFunction<AxiosResponse<any, any>, unknown, str
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type PayNowMutateFunction = UseMutateFunction<AxiosResponse<any, any>, unknown, string, unknown>;
 
+
+// This function adds the event listener for payment gateway responses
+export const addPaymentEventListener = (checkoutURL: string, setPaymentDetails: ISetPaymentDetails, setIsModalOpen: (value: boolean) => void) => {
+  const handleResponse = (event: MessageEvent) => {
+    // Make sure the event is from the correct origin
+    console.log('Event received:', event);
+    console.log('Event origin:', event.origin);
+    console.log('Expected checkoutURL:', checkoutURL);
+    if (event.origin === checkoutURL) {
+      const { type, data } = event.data; // Extract the type and data from the event
+      console.log('Event type:', type, 'Event data:', data);
+      switch (type) {
+        case 'success':
+          // Handle successful payment
+          setPaymentDetails({
+            amount: data.amount,
+            fee: data.fee,
+            paymentID: data.paymentID,
+            paymentAPI: data.paymentAPI,
+            payeeName: data.payeeName,
+            payeeEmail: data.payeeEmail,
+            checkoutURL: data.checkoutURL,
+            source: 'payNow', // Set the source to 'payNow' or 'buyNow' based on the flow
+          });
+          toast.success('Payment Successful!');
+          console.log('Payment successfull')
+          setIsModalOpen(false); // Close the modal
+          break;
+        case 'failed':
+          toast.error('Payment Failed');
+          setIsModalOpen(false); // Close the modal
+          break;
+        case 'pending':
+          toast('Payment is Pending');
+          break;
+        case 'close':
+          toast('Payment Window Closed');
+          setIsModalOpen(false); // Close the modal if the user closes the payment window
+          break;
+        default:
+          console.warn('Unknown event type:', type);
+      }
+    }
+  };
+
+  // Add event listener to listen to payment events
+  window.addEventListener('message', handleResponse);
+
+  // Clean up event listener when it's no longer needed
+  return () => {
+    console.log('Removing payment event listener');
+    window.removeEventListener('message', handleResponse);
+  };
+};
+
 export const handleBuyNow = (
   id: string,
   isAuthenticated: boolean,
@@ -42,6 +97,9 @@ export const handleBuyNow = (
         const paymentFee = response?.data?.data?.data?.transaction_fee || '₦0';
         const paymentID = response?.data?.data?.data?._id || '';
         const paymentAPI = response?.data?.data?.paymentData?.payment_type || '';
+        const checkoutURL = response?.data?.data?.data?.checkout_url || '';
+        console.log('Checkout URL:', checkoutURL);
+        addPaymentEventListener(checkoutURL, setPaymentDetails, setIsModalOpen);
 
         setPaymentDetails({
           amount: paymentAmount,
@@ -81,7 +139,7 @@ export const handlePayNow = (
   payNowMutate: PayNowMutateFunction, // use the updated type
   paymentID: string,
   setPaymentDetails: ISetPaymentDetails,
-  setIsModalOpen: (value: boolean) => void
+  setIsModalOpen: (value: boolean) => void,
 ) => {
   payNowMutate(paymentID, {
     onSuccess: (data) => {
@@ -103,6 +161,8 @@ export const handlePayNow = (
         checkoutURL,
         source: 'payNow',
       });
+
+      addPaymentEventListener(checkoutURL, setPaymentDetails, setIsModalOpen);
 
       setTimeout(() => {
         setIsModalOpen(true);
