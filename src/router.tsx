@@ -14,6 +14,7 @@ import Overview from './components/dashboard/overview';
 import Order from './components/dashboard/order';
 import Books from './components/dashboard/books';
 import OrderSuccess from './components/pages/orderSuccessful';
+import OrderSummary from './components/pages/orderSummary';
 
 // eslint-disable-next-line react-refresh/only-export-components
 const LoginLoader = () => import('./components/onboarding/login');
@@ -64,8 +65,12 @@ const router = createHashRouter([
         element: <Search />
       },
       {
-        path: '/home/order-success/:ref',
+        path: '/home/order-success',
         element: <OrderSuccess />
+      },
+      {
+        path: '/home/order-summary',
+        element: <OrderSummary />
       },
     ]
   },
