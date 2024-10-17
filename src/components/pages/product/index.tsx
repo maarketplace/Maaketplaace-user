@@ -21,7 +21,8 @@ import { CiMoneyCheck1 } from "react-icons/ci";
 import ProductReels from '../reels';
 import { SearchContext } from '../../../context/Search';
 import { handleBuyNow, handlePayNow } from '../../../utils/PaymentComponent';
-
+import Skeleton from '@mui/material/Skeleton';
+import Box from '@mui/material/Box';
 
 function Product() {
     const context = useContext(SearchContext);
@@ -138,17 +139,30 @@ function Product() {
     );
     return (
         <div className="w-[100%] h-[] mt-[20px] mb-[60px] max-[650px]:mt-[30px] flex justify-center flex-col items-center dark:bg-black dark:text-white overflow-scroll no-scrollbar">
-            <ProductReels />
+
 
             {
                 isLoading ?
-                    <div className="w-[100%] h-[80vh] flex justify-center">
-                        <p>Loading Product....</p>
+                    <div className='w-[95%] h-[] overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] '>
+                        {Array.from(new Array(8)).map((_, index) => (
+                            <div key={index} className='w-[280px] h-[500px] shadow-sm rounded-lg p-[10px] flex flex-col gap-[10px] max-[650px]:w-[100%]'>
+                                <Skeleton variant="rectangular" width="100%" height={350} className='dark:bg-[grey]' />
+                                <Box style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <Skeleton variant="circular" width="30px" height='30px' className='dark:bg-[grey] mt-[10px]' />
+                                    <Skeleton width="60%" className='dark:bg-[grey] mt-[10px]' />
+                                </Box>
+                                <Skeleton width="60%" className='dark:bg-[grey]' />
+                                <Skeleton width="80%" className='dark:bg-[grey]' />
+                            </div>
+                        ))}
                     </div>
                     :
+
                     filteredProducts?.length !== 0
                         ?
+
                         <div className="w-[95%] h-[] overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] ">
+                            <ProductReels />
                             {filteredProducts?.map((i: IProduct) => (
                                 <div key={i?._id} className='w-[280px] h-[500px] shadow-sm dark:shadow-[white] rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none max-[650px]:h-auto' >
                                     <div className='w-[100%] relative flex items-center justify-center mb-[10px]'>
@@ -173,8 +187,8 @@ function Product() {
                                             onClick={() => handleFollowMerchant(i?.merchant?._id)}
                                         >
                                             {
-                                                followingMerchants.includes(i?.merchant?._id) || 
-                                                i?.merchant?.followedUsers?.includes(loggedInUserId)
+                                                followingMerchants.includes(i?.merchant?._id) ||
+                                                    i?.merchant?.followedUsers?.includes(loggedInUserId)
                                                     ? "Following"
                                                     : "Follow"
                                             }
