@@ -64,7 +64,7 @@ const router = createHashRouter([
         element: <Search />
       },
       {
-        path: '/home/order-success',
+        path: '/home/order-success/:ref',
         element: <OrderSuccess />
       },
     ]
