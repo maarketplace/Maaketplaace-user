@@ -60,6 +60,10 @@ export const getProductComment = async (id: string) => {
     return await axios.get(`${VITE_ENDPOINT}/comments/products/${id}`);
 }
 
-export const getOrderSummary = async (id: string) => {
-    return await axios.get(`${VITE_ENDPOINT}/comments/products/${id}`,);
-}
+export const getOrderSummary = async (reference: string | null) => {
+    return await axios.get(`${VITE_ENDPOINT}/payment`, {
+        params: {
+            reference
+        }
+    })
+  }
