@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
 import { IoHeart, IoHeartOutline, IoLink } from "react-icons/io5";
@@ -25,6 +25,7 @@ import Skeleton from '@mui/material/Skeleton';
 import Box from '@mui/material/Box';
 
 function Product() {
+    const iframeRef = useRef(null);
     const context = useContext(SearchContext);
     const navigate = useNavigate();
     const { isUserAuthenticated } = useAuth();
@@ -116,7 +117,7 @@ function Product() {
         handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
     };
 
-    const { mutate: payNowMutate, isLoading: paymutateLoading } = useMutation(['paynow'], userPayWithKora);
+    const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
         handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
@@ -130,6 +131,60 @@ function Product() {
     const handleMerchantClick = (businessName: string) => {
         navigate(`/home/store/${businessName}`);
     };
+    const handleCheckout = () => {
+        if (iframeRef.current) {
+            console.log('Setting iframe src to:', paymentDetails.checkoutURL);
+            iframeRef.current.style.display = 'block';
+            iframeRef.current.src = paymentDetails.checkoutURL;
+        }
+    };
+    useEffect(() => {
+        if (!paymentDetails.checkoutURL) {
+            console.log("Checkout URL is not set yet.");
+            return;
+        }
+        console.log("Checkout URL is set");
+
+        const handleResponse = (event: { origin: string; data: string }) => {
+            if (event.origin === new URL(paymentDetails.checkoutURL).origin) {
+                const parsedData = JSON.parse(event.data);
+                const paymentData = parsedData.data;
+                if (paymentData && paymentData.reference) {
+                    localStorage.setItem('orderRefrence', paymentData.reference);
+                }
+                const result = parsedData.result;
+                switch (result) {
+                    case 'success':
+                        console.log('Payment successful, redirecting to success page...');
+                        navigate('/home/order-success')
+                        break;
+
+                    case 'failure':
+
+                        break;
+
+                    case 'pending':
+
+                        break;
+
+                    default:
+                        console.log('Unknown result, handling default case...');
+                        // Optional: Handle default case or stay on the current page
+                        break;
+                }
+
+            }
+            
+        };
+        window.addEventListener('message', handleResponse);
+
+        // Cleanup the event listener when the component unmounts
+        return () => {
+            window.removeEventListener('message', handleResponse);
+        };
+    }, [navigate, paymentDetails.checkoutURL, setIsModalOpen]);
+
+
     if (!context) {
         return null;
     }
@@ -247,41 +302,59 @@ function Product() {
                         </div>
             }
             {
-                isModalOpen &&
-                <div className=' w-full h-full bottom-2 fixed z-[100]'>
-                    <PaymentModal
-                        isOpen={isModalOpen}
-                        setIsOpen={setIsModalOpen}
-                        title={paymentDetails?.source === 'payNow' ? "Complete Your Payment" : "Proceed to Payment"}
-                        amount={paymentDetails?.amount}
-                        fee={paymentDetails?.source === 'buyNow' ? paymentDetails?.fee : ''}
-                        paymentAPI={paymentDetails?.source === 'payNow' ? paymentDetails?.paymentAPI : ''}
-                        payeeEmail={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeEmail : ''}
-                        payeeName={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeName : ''}
-                        primaryButton={{
-                            text: paymentDetails?.source === 'payNow' ? (
-                                <a href={paymentDetails.checkoutURL} rel="noopener noreferrer">
-                                    <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]">
-                                        {paymutateLoading ? "Paying" : "Pay Now"}
+                isModalOpen && (
+                    <div className='w-full h-full bottom-2 fixed'>
+                        <iframe
+                            ref={iframeRef}
+                            style={{
+                                position: 'fixed',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100vh',
+                                display: 'none',
+                                zIndex: 1000000,
+                                backgroundColor: 'white'
+                            }}
+                            title="Payment Checkout"
+                        />
+                        <PaymentModal
+                            isOpen={isModalOpen}
+                            setIsOpen={setIsModalOpen}
+                            title={paymentDetails?.source === 'payNow' ? "Complete Your Payment" : "Proceed to Payment"}
+                            amount={paymentDetails?.amount}
+                            fee={paymentDetails?.source === 'buyNow' ? paymentDetails?.fee : ''}
+                            paymentAPI={paymentDetails?.source === 'payNow' ? paymentDetails?.paymentAPI : ''}
+                            payeeEmail={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeEmail : ''}
+                            payeeName={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeName : ''}
+                            primaryButton={{
+                                text: paymentDetails?.source === 'payNow' ? (
+                                    <button
+                                        className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]"
+                                        onClick={handleCheckout}
+                                    >
+                                        Pay Now
                                     </button>
-                                </a>
-                            ) : (
-                                <button className="w-[70%] h-[30px] bg-[#FFC300]  text-black rounded-[8px] text-[14px] " onClick={() => handlePayment(paymentDetails.paymentID)}>
-                                    Continue
-                                </button>
-                            ),
-                            display: true,
-                            primary: true,
-                        }}
-                        secondaryButton={{
-                            text: "Cancel",
-                            onClick: () => setIsModalOpen(false),
-                            display: true,
-                            primary: true,
-                        }}
-                    />
-                </div>
+                                ) : (
+                                    <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails.paymentID)}>
+                                        Continue
+                                    </button>
+                                ),
+                                display: true,
+                                primary: true,
+                            }}
+                            secondaryButton={{
+                                text: "Cancel",
+                                onClick: () => setIsModalOpen(false),
+                                display: true,
+                                primary: true,
+                            }}
+                        />
+                    </div>
+                )
             }
+
+
             {isProductModalOpen && selectedProduct && (
                 <Modal onClose={() => setIsProductModalOpen(false)}>
                     <div className="flex w-full gap-2 max-[650px]:flex-col max-[650px]:w-full overflow-scroll">
