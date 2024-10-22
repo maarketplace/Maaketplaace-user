@@ -34,7 +34,7 @@ const OrderSummary = () => {
                     <p>{formatNumber(orderSummary?.payable_amount)}</p>
                 </span>
                 <span className="flex w-full justify-between text-[14px]">
-                    <p>Product Name:</p> 
+                    <p>Product Name:</p>
                     <p>{product?.productLocation}</p>
                 </span>
                 <span className="flex w-full justify-between text-[14px]">
