@@ -106,6 +106,7 @@ function Product() {
             toast.error("Please login to like this Product")
             setTimeout(() => {
                 navigate('/')
+                localStorage.clear()
             }, 2000)
         }
 
