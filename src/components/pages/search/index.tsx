@@ -24,6 +24,9 @@ const Search = () => {
     } = useQuery(["getallproduct"], getAllProduct);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+    useEffect(() => {
         if (allProductData?.data?.data?.products) {
             const reversedData = [...allProductData.data.data.products].reverse();
             setAllProduct(reversedData);
@@ -50,6 +53,7 @@ const Search = () => {
         setIsProductModalOpen(true);
         console.log(selectedProduct);
     };
+
     return (
         <div className="mt-[20px] w-full h-full max-[650px]:mt-[40px] hidden max-[650px]:flex max-[650px]:flex-col">
             <div className="w-[full] flex justify-center">

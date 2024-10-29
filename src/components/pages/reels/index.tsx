@@ -17,7 +17,7 @@ const ProductReels = () => {
     }, [data]);
 
     return (
-        <div className='w-[85%] h-[180px] sticky top-0'>
+        <div className='w-[85%] h-[180px] sticky top-0 max-[650px]:w-[100%]'>
             <div className='w-[100%] h-[95%] flex gap-[20px] p-[10px] overflow-x-auto whitespace-nowrap no-scrollbar'>
                 {
                     allProduct.map((i) => (

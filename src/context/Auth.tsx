@@ -14,20 +14,21 @@ interface CartProviderProps {
 }
 
 export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
-    // Initialize userToken with localStorage value
+
     const [userToken, setUserToken] = useState<string | null>(localStorage.getItem(VITE_TOKEN_USER));
 
-    // Determine if the user is authenticated based on the presence of the token
     const isUserAuthenticated = !!userToken;
 
     useEffect(() => {
-        const storedUserToken = localStorage.getItem(VITE_TOKEN_USER);
-        if (storedUserToken) {
-            setUserToken(storedUserToken);  // Only update if there is a token
-        }
+        const handleStorageChange = () => {
+            setUserToken(localStorage.getItem(VITE_TOKEN_USER));
+        };
+        window.addEventListener("storage", handleStorageChange);
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
     }, []);
-
-    // Memoize the context value to avoid re-rendering unless userToken changes
+    
     const contextValue = useMemo(() => ({
         isUserAuthenticated,
         setUserToken,
