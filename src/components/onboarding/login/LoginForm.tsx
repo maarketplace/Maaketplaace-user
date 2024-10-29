@@ -64,7 +64,7 @@ function UserLoginForm() {
                 <img src="MARKET.svg" alt="" className="max-[650px]:w-[80px]" />
                 <span className="flex items-center justify-center flex-col gap-[10px] max-[650px]:w-[100%]" >
                     <h2 className="text-2xl max-[650px]:text-[15px]">Welcome  Back to Maarketplaace</h2>
-                    <p className="italic text-center max-[650px]:text-[12px] text-wrap">Continue selling and creating wonderful <br></br>products for our consumers</p>
+                    <p className="text-center max-[650px]:text-[12px] text-wrap">Continue buying wonderful products</p>
                 </span>
             </div>
             <div className='w-[70%] flex flex-col gap-[10px] max-[650px]:w-[90%] ' >
@@ -102,7 +102,7 @@ function UserLoginForm() {
                     type="submit"
                     onClick={handleButtonClick}
                     disabled={isLoading}
-                    className="w-[100%] h-[50px] outline-none p-2 bg-[#FFC300] rounded-lg"
+                    className="w-[100%] h-[50px] outline-none p-2 bg-[#FFC300] rounded-lg text-black"
                 >
                     {isLoading ? <Loading/> : "Login"}
                 </button>
