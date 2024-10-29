@@ -26,7 +26,7 @@ const Home = () => {
 
     const isQuicksPage = location.pathname === '/home/quicks';
     return (
-        <div className="w-[100%] p-[0px] dark:bg-black max-w-fill">
+        <div className="w-[100%] p-[0px] dark:bg-black max-w-fill no-scrollbar">
             <div className={isQuicksPage ? "hidden" : "w-[100%] h-[10vh] bg-white dark:bg-[black] shadow flex items-center justify-center fixed top-0 left-0 z-50 p-2"}>
                 <div className="w-[80%] h-[100%] flex items-center max-w-[650px]:w-[10%]">
                     <img src='/LOGO.svg' alt="image" className="w-[180px] h-[50px] max-[650px]:hidden " />
@@ -43,8 +43,8 @@ const Home = () => {
                 </div>
             </div>
             <div className="w-[100%] flex h-[90vh] no-scrollbar ">
-                <div className={'w-[100%] flex flex-col items-center justify-center h-[100%] max-[650px]:w-[100%] mt-[40px] max-[650px]:ml-[0px]'}>
-                    <div className={isQuicksPage ? "mt-0" : "w-[100%] h-[92%] mt-[60px] max-[650px]:mt-[0px] max-[650px]:p-[0px] block items-center justify-center no-scrollbar no-scrollbar"}>
+                <div className={'w-[100%] flex flex-col items-center no-scrollbar justify-center h-[100%] max-[650px]:w-[100%] mt-[40px] max-[650px]:ml-[0px]'}>
+                    <div className={isQuicksPage ? "mt-0" : "w-[100%] h-[92%] mt-[60px] max-[650px]:mt-[0px] max-[650px]:p-[0px] block items-center justify-center no-scrollbar"}>
                         <Layout searchQuery={searchQuery}/>
                     </div>
                     <div className={"w-[100%] h-[8%] bg-white text-black fixed right-0 bottom-0 z-50 flex items-center justify-center dark:bg-[black] dark:text-white max-[650px]:w-[100%]"}>

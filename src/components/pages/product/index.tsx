@@ -216,10 +216,10 @@ function Product() {
                     filteredProducts?.length !== 0
                         ?
 
-                        <div className="w-[95%] h-[] overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] justify-center ">
+                        <div className="w-[95%] h-[] no-scrollbar overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] justify-center ">
                             <ProductReels />
                             {filteredProducts?.map((i: IProduct) => (
-                                <div key={i?._id} className='w-[280px] h-[500px] mb-[10px] shadow-sm dark:shadow-[white] rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none max-[650px]:h-auto' >
+                                <div key={i?._id} className='w-[250px] h-[500px] mb-[10px] shadow-sm dark:shadow-[white] rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none max-[650px]:h-auto' >
                                     <div className='w-[100%] relative flex items-center justify-center mb-[10px]'>
                                         <img src={i?.productImage} className='w-[100%] object-cover aspect-square filter brightness-225 contrast-110 transition-all duration-500 ease-in-out' />
                                         <div
@@ -357,7 +357,7 @@ function Product() {
 
             {isProductModalOpen && selectedProduct && (
                 <Modal onClose={() => setIsProductModalOpen(false)}>
-                    <div className="flex w-full gap-2 max-[650px]:flex-col max-[650px]:w-full overflow-scroll">
+                    <div className="flex w-full gap-2 max-[650px]:flex-col max-[650px]:w-full overflow-scroll no-scrollbar ">
                         <span className='w-[50%] flex items-center justify-center max-[650px]:w-full'>
                             <img src={selectedProduct.productImage} alt={selectedProduct.productName} className="object-cover w-full aspect-square" />
                         </span>

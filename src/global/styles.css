@@ -31,13 +31,12 @@ body {
 }
 
 .no-scrollbar::-webkit-scrollbar {
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .no-scrollbar {
-  /* display: none; */
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .prose ol,
 .prose li {
