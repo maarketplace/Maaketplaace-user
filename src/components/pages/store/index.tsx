@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "react-query";
 import { getOneMerchantStoreProduct } from "../../../api/query";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../context/Auth";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { IProduct } from "../../../interface/ProductInterface";
 import { CiMoneyCheck1 } from "react-icons/ci";
 import { FiUser } from "react-icons/fi";
@@ -15,7 +15,7 @@ import PaymentModal from "../../../utils/PaymentModal";
 import Loading from "../../../loader";
 
 const Store = () => {
-
+    const iframeRef = useRef(null);
     const navigate = useNavigate();
     const { isUserAuthenticated } = useAuth();
     const [allProduct, setAllProduct] = useState<IProduct[]>([]);
@@ -52,7 +52,7 @@ const Store = () => {
         handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
     };
 
-    const { mutate: payNowMutate, isLoading: paymutateLoading } = useMutation(['paynow'], userPayWithKora);
+    const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
         handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
@@ -71,12 +71,19 @@ const Store = () => {
         setIsProductModalOpen(true);
         console.log(selectedProduct);
     };
+    const handleCheckout = () => {
+        if (iframeRef.current) {
+            console.log('Setting iframe src to:', paymentDetails.checkoutURL);
+            iframeRef.current.style.display = 'block';
+            iframeRef.current.src = paymentDetails.checkoutURL;
+        }
+    };
     return (
         <div className="w-[100%] flex items-center justify-center flex-col gap-[20px] dark:text-white ">
-            <div className="w-[50%] mt-[30px] h-[auto] p-[2%] shadow-lg shadow-grey-500/50 bg-slate-50  dark:bg-[#1D1C1C] dark:shadow-white-500/50 rounded-[16px]  max-[650px]:w-[90%] max-[650px]:p-[2%]">
+            <div className="w-[70%] mt-[30px] h-[auto] p-[2%] shadow-lg shadow-grey-500/50 bg-slate-50  dark:bg-[#1D1C1C] dark:shadow-white-500/50 rounded-[16px]  max-[650px]:w-[90%] max-[650px]:p-[2%]">
                 <div className="w-[60%] flex flex-col gap-[10px] max-[650px]:w-[100%] max-[650px]:items-center ">
                     <div className=" w-[100%] flex items-center gap-5 max-[650px]:flex-col">
-                        <span className="flex w-[70%] flex-col items-center gap-[10px] relative">
+                        <span className="flex w-[70%] flex-col items-center justify-center gap-[10px] relative">
                             <img src={AdminInfo?.image} alt="" className="w-[150px] h-[150px] rounded-[100%] object-cover max-[650px]:w-[80px] max-[650px]:h-[80px] " />
                             {/* {
                             allProduct.length > 1 ?  <BiBadgeCheck className="absolute right-[68px] text-[20px] top-[55px] text-[#FFc300]"/>: null
@@ -90,8 +97,8 @@ const Store = () => {
                             <p className="text-[12px] max-[650px]:text-center">{AdminInfo?.bio}</p>
                         </span>
                     </div>
-                    <div className="w-[100%] flex  items-center ">
-                        <p className="text-[12px] font-bold max-[650px]:hidden ">{AdminInfo?.profession}</p>
+                    <div className="w-[40%] flex  justify-center ">
+                        <p className="text-[12px] font-bold max-[650px]:hidden text-center ">{AdminInfo?.profession}</p>
                     </div>
                 </div>
             </div>
@@ -101,7 +108,7 @@ const Store = () => {
                         <div className="w-full border dark:border-[grey] flex flex-col items-center p-[10px] gap-[10px] rounded-[8px]">
                             <img onClick={() => handleEyeClick(i)} src={i?.productImage} alt="" className="w-[100%] h-[200px] object-cover aspect-square" />
                             <span className="w-full">
-                                <p className="max-[650px]:text-[12px] h-[40px] text-[14px]">{i?.productName}</p>
+                                <p className="max-[650px]:text-[12px] h-[40px] text-[12px]">{i?.productName}</p>
                             </span>
                             <button className="w-full p-[2px] bg-[#FFC300] rounded-[4px]" onClick={() => handleCartAddingAuth(i?._id)}>{loadingStates[i?._id] ? <Loading /> : 'Buy now'} </button>
                         </div>
@@ -122,7 +129,7 @@ const Store = () => {
                                 </h2>
                                 <h2 className="text-[20px] w-full max-[650px]:text-[15px]">{selectedProduct.productName}</h2>
                             </div>
-                            <div className='prose h-[30%] max-[650px]:w-full max-[650px]:text-[12px] text-[lightgrey] text-[14px]' dangerouslySetInnerHTML={{ __html: selectedProduct?.productDescription?.slice(0, 80) }} />
+                            <div className='prose h-[30%] max-[650px]:w-full max-[650px]:text-[12px] text-[white] text-[14px]' dangerouslySetInnerHTML={{ __html: selectedProduct?.productDescription?.slice(0, 80) }} />
                             {selectedProduct.pages ? (
                                 <div className='h-[50%] max-[650px]:mt-[20px] max-[650px]:text-[14px]  max-[650px]:h-auto flex flex-col gap-3 justify-center max-[650px]:w-full'>
                                     <p>E-book Details</p>
@@ -166,40 +173,56 @@ const Store = () => {
                 </Modal>
             )}
             {
-                isModalOpen &&
-                <div className=' w-full h-full bottom-2 fixed z-[100] '>
-                    <PaymentModal
-                        isOpen={isModalOpen}
-                        setIsOpen={setIsModalOpen}
-                        title={paymentDetails.source === 'payNow' ? "Complete Your Payment" : "Proceed to Payment"}
-                        amount={paymentDetails.amount}
-                        fee={paymentDetails.source === 'buyNow' ? paymentDetails.fee : ''}
-                        paymentAPI={paymentDetails.source === 'payNow' ? paymentDetails.paymentAPI : ''}
-                        payeeEmail={paymentDetails.source === 'payNow' ? paymentDetails.payeeEmail : ''}
-                        payeeName={paymentDetails.source === 'payNow' ? paymentDetails.payeeName : ''}
-                        primaryButton={{
-                            text: paymentDetails.source === 'payNow' ? (
-                                <a href={paymentDetails.checkoutURL} rel="noopener noreferrer">
-                                    <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]">
-                                        {paymutateLoading ? "Paying" : "Pay Now"}
+                isModalOpen && (
+                    <div className='w-full h-full bottom-2 fixed'>
+                        <iframe
+                            ref={iframeRef}
+                            style={{
+                                position: 'fixed',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100vh',
+                                display: 'none',
+                                zIndex: 1000000,
+                                backgroundColor: 'white'
+                            }}
+                            title="Payment Checkout"
+                        />
+                        <PaymentModal
+                            isOpen={isModalOpen}
+                            setIsOpen={setIsModalOpen}
+                            title={paymentDetails?.source === 'payNow' ? "Complete Your Payment" : "Proceed to Payment"}
+                            amount={paymentDetails?.amount}
+                            fee={paymentDetails?.source === 'buyNow' ? paymentDetails?.fee : ''}
+                            paymentAPI={paymentDetails?.source === 'payNow' ? paymentDetails?.paymentAPI : ''}
+                            payeeEmail={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeEmail : ''}
+                            payeeName={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeName : ''}
+                            primaryButton={{
+                                text: paymentDetails?.source === 'payNow' ? (
+                                    <button
+                                        className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]"
+                                        onClick={handleCheckout}
+                                    >
+                                        Pay Now
                                     </button>
-                                </a>
-                            ) : (
-                                <button className="w-[70%] h-[30px] bg-[#FFC300]  text-black rounded-[8px] text-[14px] " onClick={() => handlePayment(paymentDetails.paymentID)}>
-                                    Continue
-                                </button>
-                            ),
-                            display: true,
-                            primary: true,
-                        }}
-                        secondaryButton={{
-                            text: "Cancel",
-                            onClick: () => setIsModalOpen(false),
-                            display: true,
-                            primary: true,
-                        }}
-                    />
-                </div>
+                                ) : (
+                                    <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails.paymentID)}>
+                                        Continue
+                                    </button>
+                                ),
+                                display: true,
+                                primary: true,
+                            }}
+                            secondaryButton={{
+                                text: "Cancel",
+                                onClick: () => setIsModalOpen(false),
+                                display: true,
+                                primary: true,
+                            }}
+                        />
+                    </div>
+                )
             }
         </div>
     );
