@@ -56,9 +56,9 @@ function UserLoginForm() {
     };
     return (
         <div className="h-[100vh] w-[55%] flex items-center flex-col gap-5 max-[650px]:w-[100%]">
-            <span className="w-[100%] p-[10px] max-[650px]:w-[90%] flex gap-[20px] justify-end" >
+            <span className="w-[100%] p-[5px] max-[650px]:w-[100%] flex gap-[20px] justify-end items-center" >
                 <p className="cursor-pointer p-[10px]" onClick={()=> navigate('/home')}>Product</p>
-                <p className="cursor-pointer bg-[#FFC300] p-[10px] rounded-[8px] "> <a href="http://merchant.maarketplaace.com/#/">Start Selling</a></p>
+                <p className="cursor-pointer bg-[#FFC300] w-[100px] h-[30px] flex items-center justify-center text-[14px] rounded-[8px] "> <a href="http://merchant.maarketplaace.com/#/">Start Selling</a></p>
             </span>
             <div className="w-[70%] flex items-center justify-center flex-col gap-[10px] max-[650px]:w-[100%]" >
                 <img src="MARKET.svg" alt="" className="max-[650px]:w-[80px]" />
@@ -74,7 +74,7 @@ function UserLoginForm() {
                     type="email"
                     {...register('email')}
                     placeholder="Email"
-                    className="w-[100%] h-[50px] outline-none p-2 border border-[#999BA1] max-[650px]:h-[40px] bg-transparent"
+                    className="w-[100%] h-[50px] outline-none p-2 border border-[#999BA1] max-[650px]:h-[40px] bg-transparent max-[650px]:text-[14px]"
                 />
             </div>
             <b className='w-[70%] text-[red] text-sm max-[650px]:w-[90%]'>{errors.email?.message}</b>
@@ -84,7 +84,7 @@ function UserLoginForm() {
                     <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Password"
-                        className="w-[90%] h-[50px] outline-none p-2 max-[650px]:h-[40px] bg-transparent "
+                        className="w-[90%] h-[50px] outline-none p-2 max-[650px]:h-[40px] bg-transparent max-[650px]:text-[14px] "
                         {...register('password')}
                     />
                     <span
