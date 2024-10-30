@@ -124,7 +124,7 @@ const Quicks = () => {
                         onSwiper={(swiper) => {
                             swiperRef.current = swiper;
                         }}
-                        className="w-[100%] h-[92vh] max-[650px]:h-[92vh] max-[650px]:mt-[0px]"
+                        className="w-[100%] h-[95vh] max-[650px]:h-[95vh] max-[650px]:mb-[80px] max-[650px]:mt-[0px]"
                     >
                         {allProduct.map((i: IProduct) => (
                             <SwiperSlide key={i._id} style={{ display: 'flex', height: '100%', gap: 20, justifyContent: 'center', overflow: 'hidden' }}>

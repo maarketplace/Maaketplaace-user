@@ -103,7 +103,7 @@ const Search = () => {
             </div>
             {isProductModalOpen && selectedProduct && (
                 <Modal onClose={() => setIsProductModalOpen(false)}>
-                    <div className="flex w-full gap-2 max-[650px]:flex-col max-[650px]:w-full overflow-scroll">
+                    <div className="flex w-full gap-2 max-[650px]:flex-col max-[650px]:w-full overflow-auto no-scrollbar">
                         <span className='w-[50%] flex items-center justify-center max-[650px]:w-full'>
                             <img src={selectedProduct.productImage} alt={selectedProduct.productName} className="object-cover w-full aspect-square" />
                         </span>
