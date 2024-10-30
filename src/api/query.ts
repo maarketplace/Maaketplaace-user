@@ -59,3 +59,13 @@ export const getOneMerchantStoreProduct = async (businessName: string | null) =>
 export const getProductComment = async (id: string) => {
     return await axios.get(`${VITE_ENDPOINT}/comments/products/${id}`);
 }
+export const getProductCommentResponse = async (id: string | null) => {
+    return await axios.post(`${VITE_ENDPOINT}/comments/${id}/replies`,);
+};
+export const getOrderSummary = async (reference: string | null) => {
+    return await axios.get(`${VITE_ENDPOINT}/payment`, {
+        params: {
+            reference
+        }
+    })
+  }

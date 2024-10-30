@@ -41,8 +41,9 @@ export const handleBuyNow = (
         const paymentAmount = response?.data?.data?.data?.amount || '₦0';
         const paymentFee = response?.data?.data?.data?.transaction_fee || '₦0';
         const paymentID = response?.data?.data?.data?._id || '';
-        const paymentAPI = response?.data?.data?.paymentData?.payment_type || '';
+        const paymentAPI = response?.data?.data?.paymentData?.payment_type || ''
 
+      
         setPaymentDetails({
           amount: paymentAmount,
           fee: paymentFee,
@@ -81,7 +82,7 @@ export const handlePayNow = (
   payNowMutate: PayNowMutateFunction, // use the updated type
   paymentID: string,
   setPaymentDetails: ISetPaymentDetails,
-  setIsModalOpen: (value: boolean) => void
+  setIsModalOpen: (value: boolean) => void,
 ) => {
   payNowMutate(paymentID, {
     onSuccess: (data) => {

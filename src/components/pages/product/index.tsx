@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery } from 'react-query';
 import { IoHeart, IoHeartOutline, IoLink } from "react-icons/io5";
@@ -21,9 +21,11 @@ import { CiMoneyCheck1 } from "react-icons/ci";
 import ProductReels from '../reels';
 import { SearchContext } from '../../../context/Search';
 import { handleBuyNow, handlePayNow } from '../../../utils/PaymentComponent';
-
+import Skeleton from '@mui/material/Skeleton';
+import Box from '@mui/material/Box';
 
 function Product() {
+    const iframeRef = useRef(null);
     const context = useContext(SearchContext);
     const navigate = useNavigate();
     const { isUserAuthenticated } = useAuth();
@@ -104,6 +106,7 @@ function Product() {
             toast.error("Please login to like this Product")
             setTimeout(() => {
                 navigate('/')
+                localStorage.clear()
             }, 2000)
         }
 
@@ -115,7 +118,7 @@ function Product() {
         handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
     };
 
-    const { mutate: payNowMutate, isLoading: paymutateLoading } = useMutation(['paynow'], userPayWithKora);
+    const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
         handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
@@ -129,6 +132,60 @@ function Product() {
     const handleMerchantClick = (businessName: string) => {
         navigate(`/home/store/${businessName}`);
     };
+    const handleCheckout = () => {
+        if (iframeRef.current) {
+            console.log('Setting iframe src to:', paymentDetails.checkoutURL);
+            iframeRef.current.style.display = 'block';
+            iframeRef.current.src = paymentDetails.checkoutURL;
+        }
+    };
+    useEffect(() => {
+        if (!paymentDetails.checkoutURL) {
+            console.log("Checkout URL is not set yet.");
+            return;
+        }
+        console.log("Checkout URL is set");
+
+        const handleResponse = (event: { origin: string; data: string }) => {
+            if (event.origin === new URL(paymentDetails.checkoutURL).origin) {
+                const parsedData = JSON.parse(event.data);
+                const paymentData = parsedData.data;
+                if (paymentData && paymentData.reference) {
+                    localStorage.setItem('orderRefrence', paymentData.reference);
+                }
+                const result = parsedData.result;
+                switch (result) {
+                    case 'success':
+                        console.log('Payment successful, redirecting to success page...');
+                        navigate('/home/order-success')
+                        break;
+
+                    case 'failure':
+
+                        break;
+
+                    case 'pending':
+
+                        break;
+
+                    default:
+                        console.log('Unknown result, handling default case...');
+                        // Optional: Handle default case or stay on the current page
+                        break;
+                }
+
+            }
+            
+        };
+        window.addEventListener('message', handleResponse);
+
+        // Cleanup the event listener when the component unmounts
+        return () => {
+            window.removeEventListener('message', handleResponse);
+        };
+    }, [navigate, paymentDetails.checkoutURL, setIsModalOpen]);
+
+
     if (!context) {
         return null;
     }
@@ -138,19 +195,32 @@ function Product() {
     );
     return (
         <div className="w-[100%] h-[] mt-[20px] mb-[60px] max-[650px]:mt-[30px] flex justify-center flex-col items-center dark:bg-black dark:text-white overflow-scroll no-scrollbar">
-            <ProductReels />
+
 
             {
                 isLoading ?
-                    <div className="w-[100%] h-[80vh] flex justify-center">
-                        <p>Loading Product....</p>
+                    <div className='w-[95%] h-[] overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] '>
+                        {Array.from(new Array(8)).map((_, index) => (
+                            <div key={index} className='w-[280px] h-[500px] shadow-sm rounded-lg p-[10px] flex flex-col gap-[10px] max-[650px]:w-[100%]'>
+                                <Skeleton variant="rectangular" width="100%" height={350} className='dark:bg-[grey]' />
+                                <Box style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    <Skeleton variant="circular" width="30px" height='30px' className='dark:bg-[grey] mt-[10px]' />
+                                    <Skeleton width="60%" className='dark:bg-[grey] mt-[10px]' />
+                                </Box>
+                                <Skeleton width="60%" className='dark:bg-[grey]' />
+                                <Skeleton width="80%" className='dark:bg-[grey]' />
+                            </div>
+                        ))}
                     </div>
                     :
+
                     filteredProducts?.length !== 0
                         ?
-                        <div className="w-[95%] h-[] overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] ">
+
+                        <div className="w-[100%] h-[] no-scrollbar overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] justify-center ">
+                            <ProductReels />
                             {filteredProducts?.map((i: IProduct) => (
-                                <div key={i?._id} className='w-[280px] h-[500px] shadow-sm dark:shadow-[white] rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none max-[650px]:h-auto' >
+                                <div key={i?._id} className='w-[250px] h-[500px] mb-[10px] shadow-sm dark:shadow-[white] rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none max-[650px]:h-auto' >
                                     <div className='w-[100%] relative flex items-center justify-center mb-[10px]'>
                                         <img src={i?.productImage} className='w-[100%] object-cover aspect-square filter brightness-225 contrast-110 transition-all duration-500 ease-in-out' />
                                         <div
@@ -173,8 +243,8 @@ function Product() {
                                             onClick={() => handleFollowMerchant(i?.merchant?._id)}
                                         >
                                             {
-                                                followingMerchants.includes(i?.merchant?._id) || 
-                                                i?.merchant?.followedUsers?.includes(loggedInUserId)
+                                                followingMerchants.includes(i?.merchant?._id) ||
+                                                    i?.merchant?.followedUsers?.includes(loggedInUserId)
                                                     ? "Following"
                                                     : "Follow"
                                             }
@@ -233,44 +303,62 @@ function Product() {
                         </div>
             }
             {
-                isModalOpen &&
-                <div className=' w-full h-full bottom-2 fixed z-[100]'>
-                    <PaymentModal
-                        isOpen={isModalOpen}
-                        setIsOpen={setIsModalOpen}
-                        title={paymentDetails?.source === 'payNow' ? "Complete Your Payment" : "Proceed to Payment"}
-                        amount={paymentDetails?.amount}
-                        fee={paymentDetails?.source === 'buyNow' ? paymentDetails?.fee : ''}
-                        paymentAPI={paymentDetails?.source === 'payNow' ? paymentDetails?.paymentAPI : ''}
-                        payeeEmail={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeEmail : ''}
-                        payeeName={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeName : ''}
-                        primaryButton={{
-                            text: paymentDetails?.source === 'payNow' ? (
-                                <a href={paymentDetails.checkoutURL} rel="noopener noreferrer">
-                                    <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]">
-                                        {paymutateLoading ? "Paying" : "Pay Now"}
+                isModalOpen && (
+                    <div className='w-full h-full bottom-2 fixed'>
+                        <iframe
+                            ref={iframeRef}
+                            style={{
+                                position: 'fixed',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100vh',
+                                display: 'none',
+                                zIndex: 1000000,
+                                backgroundColor: 'white'
+                            }}
+                            title="Payment Checkout"
+                        />
+                        <PaymentModal
+                            isOpen={isModalOpen}
+                            setIsOpen={setIsModalOpen}
+                            title={paymentDetails?.source === 'payNow' ? "Complete Your Payment" : "Proceed to Payment"}
+                            amount={paymentDetails?.amount}
+                            fee={paymentDetails?.source === 'buyNow' ? paymentDetails?.fee : ''}
+                            paymentAPI={paymentDetails?.source === 'payNow' ? paymentDetails?.paymentAPI : ''}
+                            payeeEmail={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeEmail : ''}
+                            payeeName={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeName : ''}
+                            primaryButton={{
+                                text: paymentDetails?.source === 'payNow' ? (
+                                    <button
+                                        className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]"
+                                        onClick={handleCheckout}
+                                    >
+                                        Pay Now
                                     </button>
-                                </a>
-                            ) : (
-                                <button className="w-[70%] h-[30px] bg-[#FFC300]  text-black rounded-[8px] text-[14px] " onClick={() => handlePayment(paymentDetails.paymentID)}>
-                                    Continue
-                                </button>
-                            ),
-                            display: true,
-                            primary: true,
-                        }}
-                        secondaryButton={{
-                            text: "Cancel",
-                            onClick: () => setIsModalOpen(false),
-                            display: true,
-                            primary: true,
-                        }}
-                    />
-                </div>
+                                ) : (
+                                    <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails.paymentID)}>
+                                        Continue
+                                    </button>
+                                ),
+                                display: true,
+                                primary: true,
+                            }}
+                            secondaryButton={{
+                                text: "Cancel",
+                                onClick: () => setIsModalOpen(false),
+                                display: true,
+                                primary: true,
+                            }}
+                        />
+                    </div>
+                )
             }
+
+
             {isProductModalOpen && selectedProduct && (
                 <Modal onClose={() => setIsProductModalOpen(false)}>
-                    <div className="flex w-full gap-2 max-[650px]:flex-col max-[650px]:w-full overflow-scroll">
+                    <div className="flex w-full gap-2 max-[650px]:flex-col max-[650px]:w-full overflow-scroll no-scrollbar ">
                         <span className='w-[50%] flex items-center justify-center max-[650px]:w-full'>
                             <img src={selectedProduct.productImage} alt={selectedProduct.productName} className="object-cover w-full aspect-square" />
                         </span>

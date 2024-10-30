@@ -37,7 +37,7 @@ const Details = () => {
             checkoutURL: '',
             source: '',
         });
-    const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
+    const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean  }>({});
 
     const relatedProduct = data?.data?.data?.data?.related_product
     useEffect(() => {

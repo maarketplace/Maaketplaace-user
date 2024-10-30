@@ -4,6 +4,7 @@ export interface IAddComment {
     total_likes: number;
     user: {
         fullName:  string
+        _id: string
     };
     _id: string;
     id: number

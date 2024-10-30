@@ -6,7 +6,7 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = () => {
   return (
-    <div className="p-0 dark:bg-black w-full">
+    <div className="p-0 dark:bg-black w-full no-scrollbar">
       <Outlet />
     </div>
   );

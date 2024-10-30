@@ -31,13 +31,15 @@ body {
 }
 
 .no-scrollbar::-webkit-scrollbar {
-  display: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 .prose ol,
 .prose li {
   margin: 0; /* Remove default margin */
   padding: 0; /* Remove default padding */
-}
-.MuiDrawer-root {
-
 }

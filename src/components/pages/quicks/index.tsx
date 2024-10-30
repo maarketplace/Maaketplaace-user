@@ -124,7 +124,7 @@ const Quicks = () => {
                         onSwiper={(swiper) => {
                             swiperRef.current = swiper;
                         }}
-                        className="w-[100%] h-[92vh] max-[650px]:h-[92vh] max-[650px]:mt-[0px]"
+                        className="w-[100%] h-[95vh] max-[650px]:h-[95vh] max-[650px]:mb-[80px] max-[650px]:mt-[0px]"
                     >
                         {allProduct.map((i: IProduct) => (
                             <SwiperSlide key={i._id} style={{ display: 'flex', height: '100%', gap: 20, justifyContent: 'center', overflow: 'hidden' }}>
@@ -190,13 +190,16 @@ const Quicks = () => {
                                             )}
                                             <p>{i.total_likes}</p>
                                         </button>
-                                        <span className="flex items-center gap-[5px]">
+                                        <span className="flex items-center gap-[5px]" onClick={() => toggleDrawer(true, i._id)}>
                                             <FaRegComment size={20} />
                                             <p>{i.comments?.length}</p>
                                         </span>
                                         <span onClick={() => copyToClipboard(i._id)} className="p-[8px] rounded-full">
                                             <IoShareSocial size={20} />
                                         </span>
+                                    </div>
+                                    <div>
+                                        {/* <Comment productId={currentProductId} /> */}
                                     </div>
                                 </div>
                             </SwiperSlide>
@@ -207,7 +210,7 @@ const Quicks = () => {
 
             <Drawer
                 anchor="bottom"
-                className="h-[100vh]"
+                className="h-[100vh] w-[100%]"
                 open={drawerOpen}
                 onClose={() => toggleDrawer(false)}
                 onTouchStart={handleTouchStart}
