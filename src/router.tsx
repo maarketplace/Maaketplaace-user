@@ -2,7 +2,6 @@ import { createHashRouter } from 'react-router-dom';
 import LazyImport from './LazyImport';
 import Signup from './components/onboarding/signup';
 import Home from './components/pages';
-import Product from './components/pages/product';
 import Details from './components/pages/details';
 import Quicks from './components/pages/quicks';
 import Verify from './components/onboarding/verify';
@@ -15,10 +14,12 @@ import Order from './components/dashboard/order';
 import Books from './components/dashboard/books';
 import OrderSuccess from './components/pages/orderSuccessful';
 import OrderSummary from './components/pages/orderSummary';
-
+import { Suspense, lazy } from 'react';
+import ProtectedRoute from './private-route';
 // eslint-disable-next-line react-refresh/only-export-components
 const LoginLoader = () => import('./components/onboarding/login');
-
+// eslint-disable-next-line react-refresh/only-export-components
+const ProductPage = lazy(() => import('./components/pages/product'));
 const router = createHashRouter([
   {
     path: '/',
@@ -39,7 +40,12 @@ const router = createHashRouter([
     children: [
       {
         path: '',
-        element: <Product />
+        element:
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProtectedRoute>
+              <ProductPage />
+            </ProtectedRoute>
+          </Suspense>
       },
       {
         path: '/home/details/:id',

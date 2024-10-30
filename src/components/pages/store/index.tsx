@@ -78,6 +78,52 @@ const Store = () => {
             iframeRef.current.src = paymentDetails.checkoutURL;
         }
     };
+    
+    useEffect(() => {
+        if (!paymentDetails.checkoutURL) {
+            console.log("Checkout URL is not set yet.");
+            return;
+        }
+        console.log("Checkout URL is set");
+
+        const handleResponse = (event: { origin: string; data: string }) => {
+            if (event.origin === new URL(paymentDetails.checkoutURL).origin) {
+                const parsedData = JSON.parse(event.data);
+                const paymentData = parsedData.data;
+                if (paymentData && paymentData.reference) {
+                    localStorage.setItem('orderRefrence', paymentData.reference);
+                }
+                const result = parsedData.result;
+                switch (result) {
+                    case 'success':
+                        console.log('Payment successful, redirecting to success page...');
+                        navigate('/home/order-success')
+                        break;
+
+                    case 'failure':
+
+                        break;
+
+                    case 'pending':
+
+                        break;
+
+                    default:
+                        console.log('Unknown result, handling default case...');
+                        // Optional: Handle default case or stay on the current page
+                        break;
+                }
+
+            }
+            
+        };
+        window.addEventListener('message', handleResponse);
+
+        // Cleanup the event listener when the component unmounts
+        return () => {
+            window.removeEventListener('message', handleResponse);
+        };
+    }, [navigate, paymentDetails.checkoutURL, setIsModalOpen]);
     return (
         <div className="w-[100%] flex items-center justify-center flex-col gap-[20px] dark:text-white ">
             <div className="w-[70%] mt-[30px] h-[auto] p-[2%] shadow-lg shadow-grey-500/50 bg-slate-50  dark:bg-[#1D1C1C] dark:shadow-white-500/50 rounded-[16px]  max-[650px]:w-[90%] max-[650px]:p-[2%]">
