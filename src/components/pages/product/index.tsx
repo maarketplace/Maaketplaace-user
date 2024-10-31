@@ -286,7 +286,7 @@ function Product() {
                                                 <IoLink size={25} className='text-[#FFC300]' onClick={() => copyToClipboard(`https://maarketplaace.com/#/home/details/${i?._id}`)} />
                                             </span>
                                             <button
-                                                className='w-[40%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]'
+                                                className='w-[40%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[15px]'
                                                 onClick={() => handleCartAddingAuth(i?._id)}
                                                 disabled={loadingStates[i?._id]}
                                             >
@@ -404,8 +404,8 @@ function Product() {
                                     <CiMoneyCheck1 />
                                     <p>Amount: {selectedProduct?.paymentPrice}</p>
                                 </span>
-                                <button className=" bg-[#FFC300] w-[120px] text-[12px] h-[40px] rounded" onClick={() => navigate(`/home/details/${selectedProduct._id}`)}>
-                                    View more Details
+                                <button className=" bg-[#FFC300] text-black w-[120px] text-[12px] h-[30px] rounded" onClick={() => navigate(`/home/details/${selectedProduct._id}`)}>
+                                    View more
                                 </button>
                             </div>
                         </div>
