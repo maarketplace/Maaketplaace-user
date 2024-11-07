@@ -135,17 +135,17 @@ const Quicks = () => {
                                 {isVideo(i.file) ? (
                                         <video
                                             src={i.file}
-                                            className="relative mt-[20px] w-full h-full object-cover"
+                                            className="relative  w-full h-full object-cover"
                                             controls={false} 
                                             autoPlay 
-                                            muted 
+                                            // muted 
                                             loop
                                         />
                                     ) : (
                                         <img
                                             src={i.file}
                                             alt=""
-                                            className="relative mt-[20px] w-full h-full object-cover"
+                                            className="relative  w-full h-full object-cover"
                                         />
                                     )}
                                     <div className="w-[100%] h-[100%] bg-[#00000038] opacity-90 flex items-end absolute top-0 left-0 right-0 bottom-0">
