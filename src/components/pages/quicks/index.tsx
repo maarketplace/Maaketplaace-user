@@ -103,31 +103,31 @@ const Quicks = () => {
         setTouchStartY(e.touches[0].clientY);
     };
 
-    // Handle touch move event
     const handleTouchMove = (e: React.TouchEvent) => {
         setTouchEndY(e.touches[0].clientY);
     };
 
-    // Handle touch end event to detect dragging down
     const handleTouchEnd = () => {
-        if (touchEndY - touchStartY > 150) { // Change threshold as needed
+        if (touchEndY - touchStartY > 150) {
             setDrawerOpen(false);
         }
     };
     const handleSlideChange = (swiper: SwiperCore) => {
         setActiveSlideIndex(swiper.activeIndex);
-
         videoRefs.current.forEach((video, index) => {
             if (video) {
                 if (index === swiper.activeIndex) {
                     video.play();
+                    video.muted = false;
                 } else {
                     video.pause();
-                    video.currentTime = 0; // Reset video to start
+                    video.currentTime = 0;
+                    video.muted = true;
                 }
             }
         });
     };
+
 
     return (
         <div className="w-full h-full flex gap-[10px]">
@@ -158,7 +158,6 @@ const Quicks = () => {
                                             ref={el => (videoRefs.current[index] = el!)} // Assign ref to each video
                                             src={i.file}
                                             controls={index === activeSlideIndex}
-                                            muted={index === activeSlideIndex}
                                             loop
                                             className="relative mt-[20px] w-full h-full object-cover"
                                         />
