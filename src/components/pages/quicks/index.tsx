@@ -18,6 +18,10 @@ import SwiperCore from 'swiper';
 import { Drawer } from "@mui/material";
 import Comment from "../comment";
 
+const isVideoFile = (fileUrl: string) => {
+    const videoExtensions = [".mp4", ".mov", ".avi", ".webm"];
+    return videoExtensions.some(extension => fileUrl.endsWith(extension));
+};
 const Quicks = () => {
     const [allProduct, setAllProduct] = useState<IQuicks[]>([]);
     const { data } = useUser();
@@ -27,20 +31,22 @@ const Quicks = () => {
     const location = useLocation();
     const [touchStartY, setTouchStartY] = useState<number>(0);
     const [touchEndY, setTouchEndY] = useState<number>(0);
+    const [activeSlideIndex, setActiveSlideIndex] = useState(0);
     const swiperRef = useRef<SwiperCore>();
+    const videoRefs = useRef<HTMLVideoElement[]>([]);
 
     const loggedInUserId = data?._id;
     const {
         data: allQuicksData, isLoading
     } = useQuery(["getallproduct"], getAllQuciks);
 
-    useEffect(() => {        
+    useEffect(() => {
         if (allQuicksData && allQuicksData?.data && allQuicksData?.data?.data?.data) {
             const reversedData = [...allQuicksData.data.data.data]?.reverse();
             setAllProduct(reversedData);
         }
         console.log(allQuicksData);
-        
+
     }, [allQuicksData]);
 
     useEffect(() => {
@@ -108,7 +114,21 @@ const Quicks = () => {
             setDrawerOpen(false);
         }
     };
-    const isVideo = (file: string) => /\.(mp4|webm|ogg)$/i.test(file);
+    const handleSlideChange = (swiper: SwiperCore) => {
+        setActiveSlideIndex(swiper.activeIndex);
+
+        videoRefs.current.forEach((video, index) => {
+            if (video) {
+                if (index === swiper.activeIndex) {
+                    video.play();
+                } else {
+                    video.pause();
+                    video.currentTime = 0; // Reset video to start
+                }
+            }
+        });
+    };
+
     return (
         <div className="w-full h-full flex gap-[10px]">
             {isLoading ? (
@@ -127,19 +147,20 @@ const Quicks = () => {
                         onSwiper={(swiper) => {
                             swiperRef.current = swiper;
                         }}
+                        onSlideChange={handleSlideChange}
                         className="w-[100%] h-[95vh] max-[650px]:h-[90vh] max-[650px]:mb-[100px] max-[650px]:mt-[0px] "
                     >
-                        {allProduct.map((i: IQuicks) => (
+                        {allProduct.map((i: IQuicks, index) => (
                             <SwiperSlide key={i._id} style={{ display: 'flex', height: '100%', gap: 20, justifyContent: 'center', overflow: 'hidden' }}>
                                 <div className="w-[40%] max-[650px]:w-[100%] bg-black">
-                                {isVideo(i.file) ? (
+                                    {isVideoFile(i.file) ? (
                                         <video
+                                            ref={el => (videoRefs.current[index] = el!)} // Assign ref to each video
                                             src={i.file}
-                                            className="relative  w-full h-full object-cover"
-                                            controls={false} 
-                                            autoPlay 
-                                            // muted 
+                                            controls={index === activeSlideIndex}
+                                            muted={index === activeSlideIndex}
                                             loop
+                                            className="relative mt-[20px] w-full h-full object-cover"
                                         />
                                     ) : (
                                         <img
@@ -169,7 +190,7 @@ const Quicks = () => {
                                                     {/* <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]" onClick={() => toggleDrawer(true, i._id)}>
                                                         <FaRegComment className="text-[black] text-[25px]" />
                                                     </span> */}
-                                                    <p className="text-white text-lg font-bold shadow-md">{i?.product_id?.comments?.length}</p>
+                                                    {/* <p className="text-white text-lg font-bold shadow-md">{i?.product_id?.comments?.length}</p> */}
                                                     <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]" onClick={() => copyToClipboard(i._id)}>
                                                         <IoShareSocial className="text-[black] text-[25px]" />
                                                     </span>
