@@ -89,3 +89,66 @@ export interface ICart {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface IQuicks {
+    _id: string;
+    name: string;
+    product_id: Product;
+    description: string;
+    merchant_id: Merchant;
+    file: string;
+    file_cloud_url: string;
+    image_collections: string[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface Product {
+    _id: string;
+    productName: string;
+    productDescription: string;
+    productPrice: number;
+    paymentPrice: number;
+    discountPrice: number;
+    productImage: string;
+    status: string;
+    author: string;
+    duration: string;
+    topics: string;
+    whatToExpect: string;
+    productImageUrl: string;
+    imageGallery: string[];
+    imageGalleryUrl: string[];
+    inStock: boolean;
+    quantity: number;
+    category: string;
+    merchant: string;
+    productLocation: string;
+    comments: string[];
+    user_likes: string[];
+    merchant_likes: string[];
+    total_likes: number;
+    createdAt: string;
+    updatedAt: string;
+}
+
+interface Merchant {
+    _id: string;
+    fullName: string;
+    email: string;
+    business_name: string;
+    phoneNumber: string;
+    is_admin: boolean;
+    bio: string;
+    profession: string;
+    role_slug: string;
+    accountStatus: string;
+    image: string;
+    imageCloudUrl: string;
+    verified: boolean;
+    subscribed: boolean;
+    subscriptionType: string;
+    products: string[];
+    createdAt: string;
+    updatedAt: string;
+}

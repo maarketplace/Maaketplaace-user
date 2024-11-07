@@ -21,7 +21,7 @@ import Skeleton from '@mui/material/Skeleton';
 import Box from '@mui/material/Box';
 
 interface CommentProps {
-  productId: string;
+  productId: string |  null;
 }
 const Comment = ({ productId }: CommentProps) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,7 +45,7 @@ const Comment = ({ productId }: CommentProps) => {
     resolver: yupResolver(CommentSchema) as any
   });
 
-  const { register, handleSubmit, formState: { errors }, setValue } = form;
+  const { register, handleSubmit, formState: { errors }} = form;
 
   const { data: CommentData, isLoading } = useQuery(['getProductComment', productIdParam || productId], () => getProductComment(productIdParam || productId), {});
   const { data: CommentResponse, } = useQuery(
@@ -104,11 +104,11 @@ const Comment = ({ productId }: CommentProps) => {
       fileInputRef.current.value = '';
     }
   };
-  const handleReplyClick = (commentId: string, userName: string) => {
-    setReplyTo(userName);
-    setSelectedCommentId(commentId);
-    setValue("comment", `@${userName} `);
-  };
+  // const handleReplyClick = (commentId: string, userName: string) => {
+  //   setReplyTo(userName);
+  //   setSelectedCommentId(commentId);
+  //   setValue("comment", `@${userName} `);
+  // };
   const onSubmit: SubmitHandler<IAddComment> = (formData) => {
     const currentTime = format(new Date(), 'HH:mm a');
     const temporaryId = Date.now();
@@ -270,12 +270,12 @@ const Comment = ({ productId }: CommentProps) => {
                           onClick={() => handleImageClick(i?.image)}
                         />
                       )}
-                      <p
+                      {/* <p
                         onClick={() => handleReplyClick(i?._id, i.user?.fullName || '',)}
                         className="reply-button text-[10px] text-blue-500"
                       >
                         Reply
-                      </p>
+                      </p> */}
                     </span>
                     <span className="flex flex-col justify-center items-center">
                       {i?.user_likes?.includes(loggedInUserId) ? (

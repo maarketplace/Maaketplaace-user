@@ -69,3 +69,12 @@ export const getOrderSummary = async (reference: string | null) => {
         }
     })
   }
+
+  export const getAllQuciks = async () => {
+    const usertoken = getToken();
+    return await axios.get(`${VITE_ENDPOINT}/quicks`, {
+        headers: {
+            'Authorization': `Bearer ${usertoken}`
+        }
+    });
+};
