@@ -11,7 +11,7 @@ import { IoHeart, IoHeartOutline, IoShareSocial } from "react-icons/io5";
 import { FaRegComment, FaUser } from "react-icons/fa";
 import { userLike } from "../../../api/mutation";
 import { useUser } from "../../../context/GetUser";
-import { IoMdAdd } from "react-icons/io";
+// import { IoMdAdd } from "react-icons/io";
 import toast from "react-hot-toast";
 import { useLocation } from 'react-router-dom';
 import SwiperCore from 'swiper';
@@ -34,6 +34,8 @@ const Quicks = () => {
     const [activeSlideIndex, setActiveSlideIndex] = useState(0);
     const swiperRef = useRef<SwiperCore>();
     const videoRefs = useRef<HTMLVideoElement[]>([]);
+    const [isPlaying, setIsPlaying] = useState<boolean[]>(new Array(allProduct.length).fill(false));
+
 
     const loggedInUserId = data?._id;
     const {
@@ -112,23 +114,48 @@ const Quicks = () => {
             setDrawerOpen(false);
         }
     };
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            entries => {
+                entries.forEach(entry => {
+                    const video = entry.target as HTMLVideoElement;
+                    if (entry.isIntersecting) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                });
+            },
+            { threshold: 0.5 }
+        );
+
+        videoRefs.current.forEach(video => {
+            if (video) observer.observe(video);
+        });
+
+        return () => observer.disconnect();
+    }, [allProduct]);
+
     const handleSlideChange = (swiper: SwiperCore) => {
         setActiveSlideIndex(swiper.activeIndex);
-        videoRefs.current.forEach((video, index) => {
-            if (video) {
-                if (index === swiper.activeIndex) {
-                    video.play();
-                    video.muted = false;
-                } else {
-                    video.pause();
-                    video.currentTime = 0;
-                    video.muted = true;
-                }
-            }
-        });
     };
 
-
+    const handleOverlayClick = (index: number) => {
+        const videoElement = videoRefs.current[index];
+        if (videoElement) {
+          if (isPlaying[index]) {
+            videoElement.pause();
+          } else {
+            videoElement.play();
+          }
+          // Toggle play/pause state for this video
+          setIsPlaying((prev) => {
+            const updatedIsPlaying = [...prev];
+            updatedIsPlaying[index] = !prev[index];
+            return updatedIsPlaying;
+          });
+        }
+      };
     return (
         <div className="w-full h-full flex gap-[10px]">
             {isLoading ? (
@@ -148,35 +175,36 @@ const Quicks = () => {
                             swiperRef.current = swiper;
                         }}
                         onSlideChange={handleSlideChange}
-                        className="w-[100%] h-[95vh] max-[650px]:h-[90vh] max-[650px]:mb-[100px] max-[650px]:mt-[0px] "
+                        className="w-[100%] h-[100vh] max-[650px]:h-[90vh] max-[650px]:mb-[100px] max-[650px]:mt-[0px] "
                     >
                         {allProduct.map((i: IQuicks, index) => (
                             <SwiperSlide key={i._id} style={{ display: 'flex', height: '100%', gap: 20, justifyContent: 'center', overflow: 'hidden' }}>
                                 <div className="w-[40%] max-[650px]:w-[100%] bg-black">
                                     {isVideoFile(i.file) ? (
                                         <video
-                                            ref={el => (videoRefs.current[index] = el!)} // Assign ref to each video
+                                            ref={el => (videoRefs.current[index] = el!)}
                                             src={i.file}
-                                            controls={index === activeSlideIndex}
-                                            loop
-                                            className="relative mt-[20px] w-full h-full object-cover"
+                                            controls={false}
+                                            loop={index === activeSlideIndex}
+                                            className="relative w-full h-full object-cover"
+                                            muted={false}
                                         />
                                     ) : (
                                         <img
                                             src={i.file}
                                             alt=""
-                                            className="relative  w-full h-full object-cover"
+                                            className="relative w-full h-full object-cover"
                                         />
                                     )}
-                                    <div className="w-[100%] h-[100%] bg-[#00000038] opacity-90 flex items-end absolute top-0 left-0 right-0 bottom-0">
+                                    <div className="w-[100%] h-[100%] bg-[#00000038] opacity-90 flex items-end absolute inset-0" onClick={() => handleOverlayClick(index)}>
                                         <div className="w-[100%] max-[650px]:h-[400px] hidden max-[650px]:flex max-[650px]:flex-col max-[650px]:gap-[10px]">
                                             <div className="w-[100%] max-[650px]:h-[75%] flex justify-end">
                                                 <div className="w-[20%] h-[100%] flex flex-col items-center justify-center gap-[10px]">
                                                     <span className="gap-[10px] w-[40px] flex items-center justify-center relative">
-                                                        {!i?.merchant_id?.image ? <FaUser className="w-[30px] h-[30px] rounded-full object-cover" /> : <img src={i.merchant_id?.image} alt="MerchantImage" className="w-[40px] h-[40px] rounded-full object-cover" />}
-                                                        <span className="absolute top-7 w-[20px] h-[20px] bg-red-500 rounded-full flex items-center justify-center">
+                                                        {/* {!i?.merchant_id?.image ? <FaUser className="w-[30px] h-[30px] rounded-full object-cover" /> : <img src={i.merchant_id?.image} alt="MerchantImage" className="w-[40px] h-[40px] rounded-full object-cover" />} */}
+                                                        {/* <span className="absolute top-7 w-[20px] h-[20px] bg-red-500 rounded-full flex items-center justify-center">
                                                             <IoMdAdd className="text-[15px]" />
-                                                        </span>
+                                                        </span> */}
                                                     </span>
                                                     <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]">
                                                         {i?.product_id?.user_likes && i?.product_id?.user_likes.includes(loggedInUserId) ? (
@@ -196,10 +224,17 @@ const Quicks = () => {
                                                 </div>
                                             </div>
                                             <div className="w-[100%] max-[650px]:h-[40%] flex">
-                                                <div className="w-[90%] h-[40%]flex ml-[10px]">
-                                                    <span className="flex items-center gap-[10px] w-[100%]">
-                                                        <p className="text-white text-lg font-bold shadow-md truncate">{i.merchant_id?.business_name || i.merchant_id?.fullName}</p>
+                                                <div className="w-[90%] h-[40%] flex ml-[10px]  justify-between">
+                                                    <span className="flex items-center gap-[10px] w-[60%]">
+                                                    {!i?.merchant_id?.image ? <FaUser className="w-[30px] h-[30px] rounded-full object-cover" /> : <img src={i.merchant_id?.image} alt="MerchantImage" className="w-[40px] h-[40px] rounded-full object-cover" />}
+                                                        <p className="text-white text-[14px] font-bold shadow-md truncate">{i.merchant_id?.business_name || i.merchant_id?.fullName}</p>
                                                     </span>
+                                                    <button
+                                                        className="text-[12px]"
+                                                        // onClick={}
+                                                    >
+                                                        Buy Now
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
