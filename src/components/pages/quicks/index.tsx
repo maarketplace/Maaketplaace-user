@@ -11,18 +11,24 @@ import { IoHeart, IoHeartOutline, IoShareSocial } from "react-icons/io5";
 import { FaRegComment, FaUser } from "react-icons/fa";
 import { userLike } from "../../../api/mutation";
 import { useUser } from "../../../context/GetUser";
-// import { IoMdAdd } from "react-icons/io";
+import { useAuth } from "../../../context/Auth";
 import toast from "react-hot-toast";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import SwiperCore from 'swiper';
 import { Drawer } from "@mui/material";
 import Comment from "../comment";
+import { userBuyNow, userPayWithKora } from "../../../api/mutation";
+import { handleBuyNow, handlePayNow } from "../../../utils/PaymentComponent";
+import PaymentModal from "../../../utils/PaymentModal";
+import Loading from "../../../loader";
 
 const isVideoFile = (fileUrl: string) => {
     const videoExtensions = [".mp4", ".mov", ".avi", ".webm"];
     return videoExtensions.some(extension => fileUrl.endsWith(extension));
 };
 const Quicks = () => {
+    const navigate = useNavigate();
+    const iframeRef = useRef(null);
     const [allProduct, setAllProduct] = useState<IQuicks[]>([]);
     const { data } = useUser();
     const queryClient = useQueryClient();
@@ -35,8 +41,20 @@ const Quicks = () => {
     const swiperRef = useRef<SwiperCore>();
     const videoRefs = useRef<HTMLVideoElement[]>([]);
     const [isPlaying, setIsPlaying] = useState<boolean[]>(new Array(allProduct.length).fill(false));
-
-
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [paymentDetails, setPaymentDetails] = useState(
+        {
+            amount: '',
+            fee: '',
+            paymentID: '',
+            paymentAPI: '',
+            payeeName: '',
+            payeeEmail: '',
+            checkoutURL: '',
+            source: '',
+        });
+    const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
+    const { isUserAuthenticated } = useAuth();
     const loggedInUserId = data?._id;
     const {
         data: allQuicksData, isLoading
@@ -71,7 +89,72 @@ const Quicks = () => {
             console.log('Error:', err);
         },
     });
+    const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
+    const handleCartAddingAuth = (id: string) => {
+        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
+    };
+
+    const { mutate: payNowMutate} = useMutation(['paynow'], userPayWithKora);
+
+    const handlePayment = (paymentID: string) => {
+        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
+    };
+    const handleCheckout = () => {
+        if (iframeRef.current) {
+            console.log('Setting iframe src to:', paymentDetails.checkoutURL);
+            iframeRef.current.style.display = 'block';
+            iframeRef.current.src = paymentDetails.checkoutURL;
+        }
+    };
+    useEffect(() => {
+        if (!paymentDetails.checkoutURL) {
+            console.log("Checkout URL is not set yet.");
+            return;
+        }
+        console.log("Checkout URL is set");
+
+        const handleResponse = (event: { origin: string; data: string }) => {
+            if (event.origin === new URL(paymentDetails.checkoutURL).origin) {
+                const parsedData = JSON.parse(event.data);
+                const paymentData = parsedData.data;
+                if (paymentData && paymentData.reference) {
+                    localStorage.setItem('orderRefrence', paymentData.reference);
+                }
+                const result = parsedData.result;
+                switch (result) {
+                    case 'success':
+                        console.log('Payment successful, redirecting to success page...');
+                        navigate('/home/order-success')
+                        break;
+
+                    case 'failure':
+
+                        break;
+
+                    case 'pending':
+
+                        break;
+
+                    default:
+                        console.log('Unknown result, handling default case...');
+                        // Optional: Handle default case or stay on the current page
+                        break;
+                }
+
+            }
+
+        };
+        window.addEventListener('message', handleResponse);
+
+        // Cleanup the event listener when the component unmounts
+        return () => {
+            window.removeEventListener('message', handleResponse);
+        };
+    }, [navigate, paymentDetails.checkoutURL, setIsModalOpen]);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     const handleLikeClick = async (productId: string) => {
         const updateLikeProduct = [...allProduct];
         const existingItem = updateLikeProduct.findIndex(product => product._id === productId);
@@ -143,19 +226,19 @@ const Quicks = () => {
     const handleOverlayClick = (index: number) => {
         const videoElement = videoRefs.current[index];
         if (videoElement) {
-          if (isPlaying[index]) {
-            videoElement.pause();
-          } else {
-            videoElement.play();
-          }
-          // Toggle play/pause state for this video
-          setIsPlaying((prev) => {
-            const updatedIsPlaying = [...prev];
-            updatedIsPlaying[index] = !prev[index];
-            return updatedIsPlaying;
-          });
+            if (isPlaying[index]) {
+                videoElement.pause();
+            } else {
+                videoElement.play();
+            }
+            // Toggle play/pause state for this video
+            setIsPlaying((prev) => {
+                const updatedIsPlaying = [...prev];
+                updatedIsPlaying[index] = !prev[index];
+                return updatedIsPlaying;
+            });
         }
-      };
+    };
     return (
         <div className="w-full h-full flex gap-[10px]">
             {isLoading ? (
@@ -224,16 +307,13 @@ const Quicks = () => {
                                                 </div>
                                             </div>
                                             <div className="w-[100%] max-[650px]:h-[40%] flex">
-                                                <div className="w-[90%] h-[40%] flex ml-[10px]  justify-between">
+                                                <div className="w-[90%] max-[650px]:w-full p-2 h-[40%] flex  items-center  justify-between">
                                                     <span className="flex items-center gap-[10px] w-[60%]">
-                                                    {!i?.merchant_id?.image ? <FaUser className="w-[30px] h-[30px] rounded-full object-cover" /> : <img src={i.merchant_id?.image} alt="MerchantImage" className="w-[40px] h-[40px] rounded-full object-cover" />}
+                                                        {!i?.merchant_id?.image ? <FaUser className="w-[30px] h-[30px] rounded-full object-cover" /> : <img src={i.merchant_id?.image} alt="MerchantImage" className="w-[40px] h-[40px] rounded-full object-cover" />}
                                                         <p className="text-white text-[14px] font-bold shadow-md truncate">{i.merchant_id?.business_name || i.merchant_id?.fullName}</p>
                                                     </span>
-                                                    <button
-                                                        className="text-[12px]"
-                                                        // onClick={}
-                                                    >
-                                                        Buy Now
+                                                    <button className=" bg-[#FFC300] text-black text-[12px] h-[25px] px-2 rounded" onClick={() => handleCartAddingAuth(i?.product_id?._id)}>
+                                                        {loadingStates[i?._id] ? <Loading /> : 'Buy Now'}
                                                     </button>
                                                 </div>
                                             </div>
@@ -280,7 +360,58 @@ const Quicks = () => {
                     </Swiper>
                 </div>
             )}
-
+            {
+                isModalOpen && (
+                    <div className='w-full h-full bottom-2 fixed z-[10000000]'>
+                        <iframe
+                            ref={iframeRef}
+                            style={{
+                                position: 'fixed',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100vh',
+                                display: 'none',
+                                zIndex: 1000000,
+                                backgroundColor: 'white'
+                            }}
+                            title="Payment Checkout"
+                        />
+                        <PaymentModal
+                            isOpen={isModalOpen}
+                            setIsOpen={setIsModalOpen}
+                            title={paymentDetails?.source === 'payNow' ? "Complete Your Payment" : "Proceed to Payment"}
+                            amount={paymentDetails?.amount}
+                            fee={paymentDetails?.source === 'buyNow' ? paymentDetails?.fee : ''}
+                            paymentAPI={paymentDetails?.source === 'payNow' ? paymentDetails?.paymentAPI : ''}
+                            payeeEmail={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeEmail : ''}
+                            payeeName={paymentDetails?.source === 'payNow' ? paymentDetails?.payeeName : ''}
+                            primaryButton={{
+                                text: paymentDetails?.source === 'payNow' ? (
+                                    <button
+                                        className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]"
+                                        onClick={handleCheckout}
+                                    >
+                                        Pay Now
+                                    </button>
+                                ) : (
+                                    <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails.paymentID)}>
+                                        Continue
+                                    </button>
+                                ),
+                                display: true,
+                                primary: true,
+                            }}
+                            secondaryButton={{
+                                text: "Cancel",
+                                onClick: () => setIsModalOpen(false),
+                                display: true,
+                                primary: true,
+                            }}
+                        />
+                    </div>
+                )
+            }
             <Drawer
                 anchor="bottom"
                 className="h-[100vh] w-[100%]"
