@@ -178,7 +178,7 @@ function Product() {
                         break;
 
                     case 'failure':
-
+                        navigate('/home/order-failure')
                         break;
 
                     case 'pending':

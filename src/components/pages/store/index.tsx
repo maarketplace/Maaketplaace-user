@@ -101,7 +101,7 @@ const Store = () => {
                         break;
 
                     case 'failure':
-
+                        navigate('/home/order-failure')
                         break;
 
                     case 'pending':
@@ -142,6 +142,7 @@ const Store = () => {
                             }
                             <p className="text-[12px] max-[650px]:text-center">{AdminInfo?.bio}</p>
                         </span>
+                        <p className="text-[14px]">{AdminInfo?.followedUsers?.length} Followers</p>
                     </div>
                     <div className="w-[40%] flex  justify-center ">
                         <p className="text-[12px] font-bold max-[650px]:hidden text-center ">{AdminInfo?.profession}</p>
