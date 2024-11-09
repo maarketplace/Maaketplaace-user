@@ -16,24 +16,37 @@ interface Order {
     createdAt: string | number | Date;
     products: IProduct[];
     id: string;
-  }
+}
 const Order = () => {
     const [allOrder, setAllOrder] = useState<IOrder[]>([]);
+    const [courseOrders, setCourseOrders] = useState<IOrder[]>([]);
+    const [ebookOrders, setEbookOrders] = useState<IOrder[]>([]);
     const [statusFilter, setStatusFilter] = useState<string>("All");
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [orderDetails, setOrderDetails] = useState<Order | null>(null);
     const [isDetailsLoading, setIsDetailsLoading] = useState(false);
     const [detailsError, setDetailsError] = useState<string | null>(null);
-
+    const [showCourses, setShowCourses] = useState(true);
     const { data, isLoading, isError } = useQuery(['getUserOrders'], getUserOrders, {});
 
     useEffect(() => {
         if (data?.data?.data) {
-            const reversedData = data?.data?.data?.data.reverse();
-            setAllOrder(reversedData);
+            const orders = data.data.data.data.reverse();
+            setAllOrder(orders);
+
+            // Filter orders by productType
+            setCourseOrders(orders.filter((order: { products: IProduct[]; }) =>
+                order.products.some(product => product.productType === 'course')
+            ));
+            setEbookOrders(orders.filter((order: { products: IProduct[]; }) =>
+                order.products.some(product => product.productType === 'ebook')
+            ));
         }
-    }, [data, selectedOrder]);
+    }, [data]);
+
+
+    const displayedOrders = showCourses ? courseOrders : ebookOrders;
 
     if (isLoading) {
         return <p>Loading...</p>;
@@ -49,7 +62,7 @@ const Order = () => {
         "Date",
     ];
 
-    const formattedData = allOrder.map(transaction => ({
+    const formattedData = displayedOrders.map(transaction => ({
         "Amount": transaction?.amount || "N/A",
         "Status": transaction.status,
         "Date": new Date(transaction?.createdAt).toLocaleDateString(),
@@ -65,9 +78,9 @@ const Order = () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleRowClick = async (row: any, orderId: string) => {
-        setSelectedOrder(row); 
+        setSelectedOrder(row);
         setIsModalOpen(true);
-        setIsDetailsLoading(true); 
+        setIsDetailsLoading(true);
         setDetailsError(null);
 
         try {
@@ -83,18 +96,26 @@ const Order = () => {
     };
 
     const closeModal = () => {
-        setIsModalOpen(false); 
-        setOrderDetails(null); 
+        setIsModalOpen(false);
+        setOrderDetails(null);
     };
 
     return (
         <div className="w-full flex items-center justify-center mt-[50px] max-[650px]:mt-[70px]">
             <div className="w-[100%] mb-[50px] flex flex-col gap-[20px]">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex w-[100%] justify-between items-center mb-4 flex-col max-[650px]:w-[full] gap-2 ">
+                    <div>
+                        <button onClick={() => setShowCourses(true)} className={`w-[100px] h-[30px] text-[12px] ${showCourses ? 'bg-[#FFC300]' : 'bg-gray-300'} text-black rounded`}>
+                            Courses
+                        </button>
+                        <button onClick={() => setShowCourses(false)} className={`w-[100px] h-[30px] text-[12px] ${!showCourses ? 'bg-[#FFC300]' : 'bg-gray-300'} text-black rounded ml-2`}>
+                            Ebooks
+                        </button>
+                    </div>
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-4 py-2 border rounded text-black outline-none"
+                        className="px-4 py-2 w-[30%] border rounded text-black outline-none max-[650px]:w-full bg-transparent dark:text-white"
                     >
                         <option value="All">All</option>
                         <option value="pending">Pending</option>
@@ -102,6 +123,7 @@ const Order = () => {
                         <option value="completed">Completed</option>
                         <option value="canceled">Canceled</option>
                     </select>
+
                 </div>
 
                 <Table
@@ -137,7 +159,7 @@ const Order = () => {
                                                 {
                                                     product.eBook ? (
                                                         <div style={{ height: '250px' }}>
-                                                            <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
+                                                            <Worker workerUrl="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.12.0/build/pdf.worker.min.js">
                                                                 <Viewer fileUrl={product?.eBook} />
                                                             </Worker>
                                                         </div>

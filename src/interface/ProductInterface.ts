@@ -29,6 +29,7 @@ export interface IMerchant {
 }
 
 export interface IProduct {
+    productType: string;
     _id: string;
     productName: string;
     productDescription: string;
