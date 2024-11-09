@@ -22,7 +22,6 @@ export const logOutUser = async (id: string) => {
     // console.log(id)
     return await axios.post(`${VITE_ENDPOINT}/user/logout/${id}`)
 }
-
 export const userLike = async (id: string) => {
     const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT}/product/${id}/like/user`, {}, {

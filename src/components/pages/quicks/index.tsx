@@ -173,7 +173,7 @@ const Quicks = () => {
     };
 
     const copyToClipboard = (reelId: string) => {
-        const shareUrl = `http://localhost:5174/#/home/quicks?reelId=${reelId}`;
+        const shareUrl = `http://maarketplaace.com/#/home/quicks?reelId=${reelId}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
             toast.success('Link copied successfully!');
         });
@@ -317,7 +317,7 @@ const Quicks = () => {
                                                         {loadingStates[i?._id] ? <Loading /> : 'Buy Now'}
                                                     </button>
                                                 </div>
-                                                <span className="ml-[20px] text-[12px]">
+                                                <span className="ml-[20px] mt-[10px] text-[12px]">
                                                     <p>{i?.description}</p>
                                                 </span>
                                             </div>
