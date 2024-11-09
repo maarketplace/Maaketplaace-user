@@ -130,7 +130,7 @@ const Quicks = () => {
                         break;
 
                     case 'failure':
-
+                        navigate('/home/order-failure')
                         break;
 
                     case 'pending':
