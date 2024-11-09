@@ -91,6 +91,9 @@ export interface ICart {
 }
 
 export interface IQuicks {
+    comments: any;
+    total_likes: number;
+    user_likes: any;
     _id: string;
     name: string;
     product_id: Product;

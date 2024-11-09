@@ -58,6 +58,16 @@ export const userComment = async ({ id, formData }: { id: string | undefined, fo
         },
     });
 };
+export const userQuicksComment = async ({ id, formData }: { id: string | undefined, formData: FormData }) => {
+    const useToken = localStorage.getItem(VITE_TOKEN_USER);
+
+    return await axios.post(`${VITE_ENDPOINT}/quicks/comment/${id}`, formData, {
+        headers: {
+            'Authorization': `Bearer ${useToken}`,
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+};
 
 export const userReplyComment = async ({ id, comment }: { id: string | null, comment: string }) => {
     const useToken = localStorage.getItem(VITE_TOKEN_USER);
@@ -77,7 +87,14 @@ export const userLikeAComment = async (id: string | undefined) => {
         }
     })
 }
-
+export const userLikeAQuicks = async (id: string | undefined) => {
+    const useToken = localStorage.getItem(VITE_TOKEN_USER)
+    return await axios.post(`${VITE_ENDPOINT}/quicks/${id}/like/user`, {}, {
+        headers: {
+            'Authorization': `Bearer ${useToken}`
+        }
+    })
+}
 export const userForgotPassword = async (email: string) => {
     return await axios.post(`${VITE_ENDPOINT}/user/forgot`, email)
 }
@@ -112,7 +129,7 @@ export const userFollowMerchant = async (id: string) => {
 }
 
 export const resendVerification = async (email: string | null) => {
-    return await axios.post(`${VITE_ENDPOINT}/email?email=${email}`);
+    return await axios.post(`${VITE_ENDPOINT}/email?email=${email}&type=user`,);
 };
 
 export const deleteComment = async (id: string) => {

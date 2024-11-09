@@ -16,6 +16,7 @@ import OrderSuccess from './components/pages/orderSuccessful';
 import OrderSummary from './components/pages/orderSummary';
 import { Suspense, lazy } from 'react';
 import ProtectedRoute from './private-route';
+import ResetPassword from './components/onboarding/resetpassword';
 // eslint-disable-next-line react-refresh/only-export-components
 const LoginLoader = () => import('./components/onboarding/login');
 // eslint-disable-next-line react-refresh/only-export-components
@@ -34,6 +35,10 @@ const router = createHashRouter([
     path: '/verify',
     element: <Verify />
   },
+  {
+    path: '/reset-password/:id',
+    element: <ResetPassword />
+},
   {
     path: 'home',
     element: <Home />,

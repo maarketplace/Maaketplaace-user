@@ -9,18 +9,19 @@ import { Mousewheel, Pagination } from 'swiper/modules';
 import parse from 'html-react-parser';
 import { IoHeart, IoHeartOutline, IoShareSocial } from "react-icons/io5";
 import { FaRegComment, FaUser } from "react-icons/fa";
-import { userLike } from "../../../api/mutation";
+import { userLikeAQuicks } from "../../../api/mutation";
 import { useUser } from "../../../context/GetUser";
 import { useAuth } from "../../../context/Auth";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from 'react-router-dom';
 import SwiperCore from 'swiper';
 import { Drawer } from "@mui/material";
-import Comment from "../comment";
+// import Comment from "../comment";
 import { userBuyNow, userPayWithKora } from "../../../api/mutation";
 import { handleBuyNow, handlePayNow } from "../../../utils/PaymentComponent";
 import PaymentModal from "../../../utils/PaymentModal";
 import Loading from "../../../loader";
+import QuciksComment from "./quicksComment";
 
 const isVideoFile = (fileUrl: string) => {
     const videoExtensions = [".mp4", ".mov", ".avi", ".webm"];
@@ -58,7 +59,7 @@ const Quicks = () => {
     const loggedInUserId = data?._id;
     const {
         data: allQuicksData, isLoading
-    } = useQuery(["getallproduct"], getAllQuciks);
+    } = useQuery(["getAllQuciks"], getAllQuciks);
 
     useEffect(() => {
         if (allQuicksData && allQuicksData?.data && allQuicksData?.data?.data?.data) {
@@ -81,9 +82,9 @@ const Quicks = () => {
         }
     }, [location.search, allProduct]);
 
-    const { mutate } = useMutation(userLike, {
+    const { mutate } = useMutation(userLikeAQuicks, {
         onSuccess: () => {
-            queryClient.invalidateQueries('getallproduct');
+            queryClient.invalidateQueries('getAllQuciks');
         },
         onError: (err) => {
             console.log('Error:', err);
@@ -95,7 +96,7 @@ const Quicks = () => {
         handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
     };
 
-    const { mutate: payNowMutate} = useMutation(['paynow'], userPayWithKora);
+    const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
         handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
@@ -159,12 +160,12 @@ const Quicks = () => {
         const updateLikeProduct = [...allProduct];
         const existingItem = updateLikeProduct.findIndex(product => product._id === productId);
         if (existingItem !== -1) {
-            if (!updateLikeProduct[existingItem].product_id.user_likes.includes(loggedInUserId)) {
-                updateLikeProduct[existingItem].product_id.total_likes += 1;
-                updateLikeProduct[existingItem].product_id.user_likes.push(loggedInUserId);
+            if (!updateLikeProduct[existingItem].user_likes.includes(loggedInUserId)) {
+                updateLikeProduct[existingItem].total_likes += 1;
+                updateLikeProduct[existingItem].user_likes.push(loggedInUserId);
             } else {
-                updateLikeProduct[existingItem].product_id.total_likes -= 1;
-                updateLikeProduct[existingItem].product_id.user_likes = updateLikeProduct[existingItem].product_id.user_likes.filter(id => id !== loggedInUserId);
+                updateLikeProduct[existingItem].total_likes -= 1;
+                updateLikeProduct[existingItem].user_likes = updateLikeProduct[existingItem].user_likes.filter((id: string) => id !== loggedInUserId);
             }
             setAllProduct(updateLikeProduct);
             mutate(productId);
@@ -280,8 +281,8 @@ const Quicks = () => {
                                         />
                                     )}
                                     <div className="w-[100%] h-[100%] bg-[#00000038] opacity-90 flex items-end absolute inset-0" onClick={() => handleOverlayClick(index)}>
-                                        <div className="w-[100%] max-[650px]:h-[400px] hidden max-[650px]:flex max-[650px]:flex-col max-[650px]:gap-[10px]">
-                                            <div className="w-[100%] max-[650px]:h-[75%] flex justify-end">
+                                        <div className="w-[100%] max-[650px]:h-[350px] hidden max-[650px]:flex max-[650px]:flex-col max-[650px]:gap-[10px]">
+                                            <div className="w-[100%] max-[650px]:h-[80%] flex justify-end">
                                                 <div className="w-[20%] h-[100%] flex flex-col items-center justify-center gap-[10px]">
                                                     <span className="gap-[10px] w-[40px] flex items-center justify-center relative">
                                                         {/* {!i?.merchant_id?.image ? <FaUser className="w-[30px] h-[30px] rounded-full object-cover" /> : <img src={i.merchant_id?.image} alt="MerchantImage" className="w-[40px] h-[40px] rounded-full object-cover" />} */}
@@ -290,23 +291,23 @@ const Quicks = () => {
                                                         </span> */}
                                                     </span>
                                                     <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]">
-                                                        {i?.product_id?.user_likes && i?.product_id?.user_likes.includes(loggedInUserId) ? (
+                                                        {i?.user_likes && i?.user_likes.includes(loggedInUserId) ? (
                                                             <IoHeart size={23} className="text-[#FFc300] text-[25px]" onClick={() => handleLikeClick(i._id)} />
                                                         ) : (
                                                             <IoHeartOutline size={23} className="text-[black] text-[25px]" onClick={() => handleLikeClick(i._id)} />
                                                         )}
                                                     </span>
-                                                    <p className="text-white text-lg font-bold shadow-md">{i?.product_id?.total_likes}</p>
-                                                    {/* <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]" onClick={() => toggleDrawer(true, i._id)}>
+                                                    <p className="text-white text-lg font-bold shadow-md">{i?.total_likes}</p>
+                                                    <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]" onClick={() => toggleDrawer(true, i?._id)}>
                                                         <FaRegComment className="text-[black] text-[25px]" />
-                                                    </span> */}
-                                                    {/* <p className="text-white text-lg font-bold shadow-md">{i?.product_id?.comments?.length}</p> */}
+                                                    </span>
+                                                    <p className="text-white text-lg font-bold shadow-md">{i?.comments?.length}</p>
                                                     <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]" onClick={() => copyToClipboard(i._id)}>
                                                         <IoShareSocial className="text-[black] text-[25px]" />
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div className="w-[100%] max-[650px]:h-[40%] flex">
+                                            <div className="w-[100%] max-[650px]:h-[40%] flex flex-col">
                                                 <div className="w-[90%] max-[650px]:w-full p-2 h-[40%] flex  items-center  justify-between">
                                                     <span className="flex items-center gap-[10px] w-[60%]">
                                                         {!i?.merchant_id?.image ? <FaUser className="w-[30px] h-[30px] rounded-full object-cover" /> : <img src={i.merchant_id?.image} alt="MerchantImage" className="w-[40px] h-[40px] rounded-full object-cover" />}
@@ -316,7 +317,11 @@ const Quicks = () => {
                                                         {loadingStates[i?._id] ? <Loading /> : 'Buy Now'}
                                                     </button>
                                                 </div>
+                                                <span className="ml-[20px] text-[12px]">
+                                                    <p>{i?.description}</p>
+                                                </span>
                                             </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -345,7 +350,7 @@ const Quicks = () => {
                                         </button>
                                         <span className="flex items-center gap-[5px]" onClick={() => toggleDrawer(true, i._id)}>
                                             <FaRegComment size={20} />
-                                            <p>{i.product_id?.comments?.length}</p>
+                                            <p>{i?.comments?.length}</p>
                                         </span>
                                         <span onClick={() => copyToClipboard(i._id)} className="p-[8px] rounded-full">
                                             <IoShareSocial size={20} />
@@ -421,7 +426,7 @@ const Quicks = () => {
                 onTouchMove={handleTouchMove}
                 onTouchEnd={handleTouchEnd}
             >
-                {currentProductId && <Comment productId={currentProductId} />}
+                <QuciksComment quicksId={currentProductId} />
             </Drawer>
         </div>
     );

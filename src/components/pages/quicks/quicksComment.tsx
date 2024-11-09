@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
 import { IoMdArrowBack, IoMdClose, IoMdSend } from "react-icons/io";
 import { useMutation, useQuery } from "react-query";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getProductComment, getProductCommentResponse } from "../../../api/query";
+import { useLocation, useNavigate } from "react-router-dom";
+import { getProductCommentResponse, getQuicksComment } from "../../../api/query";
 import { useEffect } from "react";
-import { deleteComment, userComment, userLikeAComment, userReplyComment } from "../../../api/mutation";
+import { deleteComment, userLikeAComment, userQuicksComment, userReplyComment } from "../../../api/mutation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { IAddComment } from "../../../interface/Coment.interface";
 import { format } from 'date-fns';
@@ -15,17 +15,15 @@ import { useUser } from "../../../context/GetUser";
 import { useAuth } from "../../../context/Auth";
 import toast from "react-hot-toast";
 import ImageModal from "../../../utils/ImageModal";
-// import { RxDotsVertical } from "react-icons/rx";
 import { MdDeleteOutline } from "react-icons/md";
 import Skeleton from '@mui/material/Skeleton';
 import Box from '@mui/material/Box';
 
 interface CommentProps {
-  productId: string |  null;
+    quicksId: string |  null;
 }
-const Comment = ({ productId }: CommentProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { id: productIdParam } = useParams<{ id?: any }>();
+const QuciksComment = ({quicksId}: CommentProps) => {
+
   const { data: userData } = useUser();
   const { isUserAuthenticated } = useAuth();
   const location = useLocation();
@@ -47,7 +45,7 @@ const Comment = ({ productId }: CommentProps) => {
 
   const { register, handleSubmit, formState: { errors }} = form;
 
-  const { data: CommentData, isLoading } = useQuery(['getProductComment', productIdParam || productId], () => getProductComment(productIdParam || productId), {});
+  const { data: CommentData, isLoading } = useQuery(['getQuicksComment', quicksId], () => getQuicksComment(quicksId as string), {});
   const { data: CommentResponse, } = useQuery(
     ['getProductCommentResponse', selectedCommentId],
     () => getProductCommentResponse(selectedCommentId),
@@ -67,7 +65,7 @@ const Comment = ({ productId }: CommentProps) => {
   }, [CommentData]);
 
   const { mutate: deleteMutate } = useMutation(['deleteComment'], deleteComment,)
-  const { mutate } = useMutation(['userComment'], userComment, {
+  const { mutate } = useMutation(['userQuicksComment'], userQuicksComment, {
     onSuccess: () => {
       setSelectedImage(null);
     },
@@ -152,7 +150,7 @@ const Comment = ({ productId }: CommentProps) => {
     } else {
       // Normal comment submission
       mutate(
-        { id: productIdParam, formData: formDataToSend },
+        { id: quicksId as string, formData: formDataToSend },
         {
           onSuccess: (response) => {
             const actualComment = response.data.comment;
@@ -351,6 +349,6 @@ const Comment = ({ productId }: CommentProps) => {
   );
 };
 
-export default Comment;
+export default QuciksComment;
 
 

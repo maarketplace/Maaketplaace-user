@@ -78,3 +78,6 @@ export const getOrderSummary = async (reference: string | null) => {
         }
     });
 };
+export const getQuicksComment = async (id: string) => {
+    return await axios.get(`${VITE_ENDPOINT}/quicks/comments/${id}`);
+}
