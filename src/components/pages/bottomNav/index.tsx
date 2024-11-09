@@ -17,9 +17,9 @@ const Bottom = () => {
     const handleQuicksClick = () => {
         navigate('/home/quicks')
     };
-    const handleSettingClick = () => {
-        navigate('')
-    };
+    // const handleSettingClick = () => {
+    //     navigate('')
+    // };
     const handleUserClick = () => {
         navigate('/dashboard')
     };
@@ -36,11 +36,11 @@ const Bottom = () => {
                         className=''
                         onClick={handleQuicksClick} />
                 </span>
-                <span className={location.pathname === '/home/profile/adminsetting' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
+                {/* <span className={location.pathname === '/home/profile/adminsetting' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
                     <IoIosNotificationsOutline
                         className=''
                         onClick={handleSettingClick} />
-                </span>
+                </span> */}
                 <span className={location.pathname === '/dashboard' ? 'text-[#FFC300] text-[20px]' : 'text-[25px]'}>
                     <FiUser
                         className=''
