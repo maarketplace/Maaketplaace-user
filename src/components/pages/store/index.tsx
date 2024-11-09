@@ -155,7 +155,7 @@ const Store = () => {
                         <div className="w-full border dark:border-[grey] flex flex-col items-center p-[10px] gap-[10px] rounded-[8px]">
                             <img onClick={() => handleEyeClick(i)} src={i?.productImage} alt="" className="w-[100%] h-[200px] object-cover aspect-square" />
                             <span className="w-full">
-                                <p className="max-[650px]:text-[12px] h-[40px] text-[12px]">{i?.productName}</p>
+                                <p className="max-[650px]:text-[12px] h-[40px] text-[12px]">{i?.productName.slice(0, 35)}</p>
                             </span>
                             <button className="w-full p-[2px] bg-[#FFC300] rounded-[4px]" onClick={() => handleCartAddingAuth(i?._id)}>{loadingStates[i?._id] ? <Loading /> : 'Buy now'} </button>
                         </div>
