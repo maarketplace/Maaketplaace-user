@@ -48,6 +48,7 @@ const OrderSummary = () => {
                     <p>Status:</p>
                     <p>{orderSummary?.status ? capitalizeFirstLetter(orderSummary.status) : ''}</p>
                 </span>
+                <p className="text-center text-[12px]">Go to your Dashboard to view your your product </p>
             </div>
             <span className="w-[30%] flex items-center justify-center max-[650px]:w-[100%]">
                 <button className="w-[90%] h-[40px] bg-[#FFC300] text-black rounded-[8px]" onClick={()=> navigate('/home')}>Go Home</button>

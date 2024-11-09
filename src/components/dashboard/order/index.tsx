@@ -15,9 +15,7 @@ interface Order {
     status: string;
     createdAt: string | number | Date;
     products: IProduct[];
-    // Define order properties here
     id: string;
-    // Add other relevant properties
   }
 const Order = () => {
     const [allOrder, setAllOrder] = useState<IOrder[]>([]);
