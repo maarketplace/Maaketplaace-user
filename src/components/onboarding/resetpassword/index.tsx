@@ -18,7 +18,7 @@ function ResetPassword() {
         resolver: yupResolver(ResetPasswordSchema) as any
     });
     const { register, handleSubmit, formState: { errors } } = form;
-    const { isLoading, mutate } = useMutation(['merchantResetPassword'], userResetPassword, {
+    const { isLoading, mutate } = useMutation(['userResetPassword'], userResetPassword, {
         onSuccess: (data) => {
             console.log(data)
             toast.success(data?.data?.data?.message)
