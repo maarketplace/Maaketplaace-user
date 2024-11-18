@@ -71,7 +71,7 @@ function Product() {
         onMutate: async (merchantId) => {
             // Cancel any outgoing refetches
             await queryClient.cancelQueries(['getallproduct']);
-            
+
             // Snapshot the previous value
             const previousFollowing = followingMerchants;
 
@@ -147,8 +147,11 @@ function Product() {
         console.log(selectedProduct);
     };
     const handleMerchantClick = (businessName: string) => {
-        navigate(`/home/store/${businessName}`);
+        const formattedName = businessName.trim().replace(/\s+/g, "-"); // Replace spaces with hyphens
+        navigate(`/home/store/${formattedName}`);
     };
+    
+    
     const handleCheckout = () => {
         if (iframeRef.current) {
             console.log('Setting iframe src to:', paymentDetails.checkoutURL);
@@ -187,12 +190,12 @@ function Product() {
 
                     default:
                         console.log('Unknown result, handling default case...');
-                        // Optional: Handle default case or stay on the current page
+                        navigate('/home/order-failure')
                         break;
                 }
 
             }
-            
+
         };
         window.addEventListener('message', handleResponse);
 
@@ -260,7 +263,7 @@ function Product() {
                                             onClick={() => handleFollowMerchant(i?.merchant?._id)}
                                         >
                                             {
-                                                    i?.merchant?.followedUsers?.includes(loggedInUserId)
+                                                i?.merchant?.followedUsers?.includes(loggedInUserId)
                                                     ? "Following"
                                                     : "Follow"
                                             }
@@ -328,10 +331,10 @@ function Product() {
                                 top: 0,
                                 left: 0,
                                 width: '100%',
-                                height: '100vh',
+                                height: '90vh',
                                 display: 'none',
-                                zIndex: 1000000,
-                                backgroundColor: 'white'
+                                zIndex: 100000000,
+                                backgroundColor: 'white',
                             }}
                             title="Payment Checkout"
                         />

@@ -18,6 +18,7 @@ import { Suspense, lazy } from 'react';
 import ProtectedRoute from './private-route';
 import ResetPassword from './components/onboarding/resetpassword';
 import ForgotPassword from './components/onboarding/forgetpassword';
+import OrderFailure from './components/pages/orderSuccessful/OrderFailure';
 // eslint-disable-next-line react-refresh/only-export-components
 const LoginLoader = () => import('./components/onboarding/login');
 // eslint-disable-next-line react-refresh/only-export-components
@@ -87,6 +88,10 @@ const router = createHashRouter([
       {
         path: '/home/order-summary',
         element: <OrderSummary />
+      },
+      {
+        path: '/home/order-failure',
+        element: <OrderFailure />
       },
     ]
   },

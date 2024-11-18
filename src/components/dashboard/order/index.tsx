@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 import Modal from 'react-modal';
 import { IOrder } from "../../../interface/Order.interface";
 import { IProduct } from "../../../interface/ProductInterface";
-import { Worker, Viewer } from '@react-pdf-viewer/core';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import { saveAs } from "file-saver";
 
 Modal.setAppElement('#root');
 interface Order {
@@ -94,7 +92,13 @@ const Order = () => {
             setIsDetailsLoading(false);
         }
     };
-
+    const downloadEbook = (product: IProduct) => {
+        if (product?.eBook) {
+            saveAs(product.eBook, `${product.productName}.pdf`);
+        } else {
+            alert("File URL not available for download.");
+        }
+    };
     const closeModal = () => {
         setIsModalOpen(false);
         setOrderDetails(null);
@@ -149,22 +153,21 @@ const Order = () => {
                             <div className="flex flex-col gap-[]">
                                 <p className="flex justify-between"><strong className="font-semibold text-[14px]">Amount:</strong> {orderDetails?.payable_amount}</p>
                                 <p className="flex justify-between"><strong className="font-semibold text-[14px]">Status:</strong> {orderDetails?.status}</p>
-                                <p className="flex justify-between"><strong className="font-semibold text-[14px]">Created At:</strong> {new Date(orderDetails.createdAt).toLocaleDateString()}</p>
+                                <p className="flex justify-between"><strong className="font-semibold text-[14px]">Purchase Date:</strong> {new Date(orderDetails.createdAt).toLocaleDateString()}</p>
                                 {orderDetails?.products?.length > 0 && (
                                     <div className="mt-4">
-                                        <h3 className="text-lg font-bold">Products</h3>
+                                        <h3 className="text-lg font-semibold">Products</h3>
                                         {orderDetails.products.map((product: IProduct) => (
                                             <div key={product._id} className="border p-4 mb-4">
                                                 <p><strong className="font-semibold text-[14px]">Product Name:</strong> {product?.productName}</p>
-                                                {
-                                                    product.eBook ? (
-                                                        <div style={{ height: '250px' }}>
-                                                            <Worker workerUrl="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.12.0/build/pdf.worker.min.js">
-                                                                <Viewer fileUrl={product?.eBook} />
-                                                            </Worker>
-                                                        </div>
-                                                    ) : ''
-                                                }
+                                                {product.productType === 'ebook' &&  (
+                                                    <button
+                                                        onClick={() => downloadEbook(product)}
+                                                        className="w-[100px] h-[30px] text-[14px] mt-[10px] bg-blue-500 text-white rounded"
+                                                    >
+                                                        Download eBook
+                                                    </button>
+                                                )}
                                             </div>
                                         ))}
                                     </div>

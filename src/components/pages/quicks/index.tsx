@@ -263,21 +263,21 @@ const Quicks = () => {
                     >
                         {allProduct.map((i: IQuicks, index) => (
                             <SwiperSlide key={i._id} style={{ display: 'flex', height: '100%', gap: 20, justifyContent: 'center', overflow: 'hidden' }}>
-                                <div className="w-[40%] max-[650px]:w-[100%] bg-black">
+                                <div className="w-[40%] max-[650px]:w-[100%] bg-black p-0">
                                     {isVideoFile(i.file) ? (
                                         <video
                                             ref={el => (videoRefs.current[index] = el!)}
                                             src={i.file}
                                             controls={false}
                                             loop={index === activeSlideIndex}
-                                            className="relative w-full h-full object-cover"
+                                            className="relative w-full h-full object-cover max-[650px]:w-[100%]"
                                             muted={false}
                                         />
                                     ) : (
                                         <img
                                             src={i.file}
                                             alt=""
-                                            className="relative w-full h-full object-cover"
+                                            className="relative w-full h-full object-cover max-[650px]:w-[100%]"
                                         />
                                     )}
                                     <div className="w-[100%] h-[100%] bg-[#00000038] opacity-90 flex items-end absolute inset-0" onClick={() => handleOverlayClick(index)}>
@@ -285,10 +285,6 @@ const Quicks = () => {
                                             <div className="w-[100%] max-[650px]:h-[80%] flex justify-end">
                                                 <div className="w-[20%] h-[100%] flex flex-col items-center justify-center gap-[10px]">
                                                     <span className="gap-[10px] w-[40px] flex items-center justify-center relative">
-                                                        {/* {!i?.merchant_id?.image ? <FaUser className="w-[30px] h-[30px] rounded-full object-cover" /> : <img src={i.merchant_id?.image} alt="MerchantImage" className="w-[40px] h-[40px] rounded-full object-cover" />} */}
-                                                        {/* <span className="absolute top-7 w-[20px] h-[20px] bg-red-500 rounded-full flex items-center justify-center">
-                                                            <IoMdAdd className="text-[15px]" />
-                                                        </span> */}
                                                     </span>
                                                     <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]">
                                                         {i?.user_likes && i?.user_likes.includes(loggedInUserId) ? (
@@ -318,7 +314,7 @@ const Quicks = () => {
                                                     </button>
                                                 </div>
                                                 <span className="ml-[20px] mt-[10px] text-[12px]">
-                                                    <p>{i?.description}</p>
+                                                    <p className="text-white">{i?.description}</p>
                                                 </span>
                                             </div>
 

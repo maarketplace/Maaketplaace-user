@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Lottie from 'lottie-react';
-import Error from '../../../../public/success.json'
+import Error from '../../../../public/Error.json'
 const OrderFailure = () => {
     const navigate = useNavigate();
 
@@ -21,8 +21,8 @@ const OrderFailure = () => {
                 animationData={Error}
                 style={{ height: '300px', width: '200px' }}
             />
-            <h1 className="text-2xl font-bold">Order Successful!</h1>
-            <p className="text-center">Thank you for your purchase. Your order has been placed successfully.</p>
+            <h1 className="text-2xl font-bold">Order cancelled!</h1>
+            <p className="text-center">Sorry your order was cancelled</p>
         </div>
     );
 };
