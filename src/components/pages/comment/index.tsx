@@ -254,7 +254,7 @@ const Comment = ({ productId }: CommentProps) => {
               .map((i: IAddComment) => (
                 <div key={i?._id} className="justify-center items-center">
                   <div className="flex items-center justify-between p-2 gap-2">
-                    <span className="py-[2px] px-[9px] flex items-center justify-center bg-[#FFC300] rounded-full">
+                    <span className="h-[28px] w-[30px] flex items-center justify-center bg-[#FFC300] rounded-full">
                       <p>{i?.user?.fullName?.charAt(0)}</p>
                     </span>
                     <span className="w-[80%] flex flex-col gap-1">

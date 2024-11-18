@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { IoHeart, IoHeartOutline, IoLink } from "react-icons/io5";
 import { FaRegComment, FaUser } from 'react-icons/fa';
 import { useAuth } from '../../../context/Auth';
@@ -25,6 +25,7 @@ import Skeleton from '@mui/material/Skeleton';
 import Box from '@mui/material/Box';
 
 function Product() {
+    const queryClient = useQueryClient();
     const iframeRef = useRef(null);
     const context = useContext(SearchContext);
     const navigate = useNavigate();
@@ -66,20 +67,36 @@ function Product() {
         ['userlike'],
         userLike,
     );
-    const { mutate: followMutate } = useMutation(
-        ['userFollowMerchant'],
-        userFollowMerchant,
-        {
-            onSuccess: (_data, merchantId) => {
-                // On successful follow, update the list of followed merchants
-                setFollowingMerchants((prev) => [...prev, merchantId]);
-            },
+    const followMutation = useMutation(userFollowMerchant, {
+        onMutate: async (merchantId) => {
+            // Cancel any outgoing refetches
+            await queryClient.cancelQueries(['getallproduct']);
+
+            // Snapshot the previous value
+            const previousFollowing = followingMerchants;
+
+            // Optimistically update to the new value
+            setFollowingMerchants((prev) =>
+                prev.includes(merchantId)
+                    ? prev.filter(id => id !== merchantId) // Unfollow
+                    : [...prev, merchantId]                // Follow
+            );
+
+            // Return a context object with the snapshot value
+            return { previousFollowing };
+        },
+        onError: () => {
+            toast.error("An error occurred. Please try again.");
+        },
+        onSettled: () => {
+            // Refetch the product list to ensure the UI reflects the latest data
+            queryClient.invalidateQueries(['getallproduct']);
         }
-    );
+    });
 
     const handleFollowMerchant = (merchantId: string) => {
         if (isUserAuthenticated) {
-            followMutate(merchantId);
+            followMutation.mutate(merchantId);
         } else {
             toast.error("Please login to follow this merchant");
             setTimeout(() => {
@@ -130,8 +147,11 @@ function Product() {
         console.log(selectedProduct);
     };
     const handleMerchantClick = (businessName: string) => {
-        navigate(`/home/store/${businessName}`);
+        const formattedName = businessName.trim().replace(/\s+/g, "-"); // Replace spaces with hyphens
+        navigate(`/home/store/${formattedName}`);
     };
+    
+    
     const handleCheckout = () => {
         if (iframeRef.current) {
             console.log('Setting iframe src to:', paymentDetails.checkoutURL);
@@ -161,7 +181,7 @@ function Product() {
                         break;
 
                     case 'failure':
-
+                        navigate('/home/order-failure')
                         break;
 
                     case 'pending':
@@ -170,12 +190,12 @@ function Product() {
 
                     default:
                         console.log('Unknown result, handling default case...');
-                        // Optional: Handle default case or stay on the current page
+                        navigate('/home/order-failure')
                         break;
                 }
 
             }
-            
+
         };
         window.addEventListener('message', handleResponse);
 
@@ -243,8 +263,7 @@ function Product() {
                                             onClick={() => handleFollowMerchant(i?.merchant?._id)}
                                         >
                                             {
-                                                followingMerchants.includes(i?.merchant?._id) ||
-                                                    i?.merchant?.followedUsers?.includes(loggedInUserId)
+                                                i?.merchant?.followedUsers?.includes(loggedInUserId)
                                                     ? "Following"
                                                     : "Follow"
                                             }
@@ -312,10 +331,10 @@ function Product() {
                                 top: 0,
                                 left: 0,
                                 width: '100%',
-                                height: '100vh',
+                                height: '90vh',
                                 display: 'none',
-                                zIndex: 1000000,
-                                backgroundColor: 'white'
+                                zIndex: 100000000,
+                                backgroundColor: 'white',
                             }}
                             title="Payment Checkout"
                         />

@@ -6,17 +6,14 @@ const ProtectedRoute = ({ children }) => {
     const [delayedRedirect, setDelayedRedirect] = useState(false);
 
     useEffect(() => {
-        // Check token in localStorage on component mount
         const token = localStorage.getItem('user/maarketplaace');
         setLoading(false);
-
-        // Set up delayed redirection if no token is available
         if (!token) {
             const timer = setTimeout(() => {
                 setDelayedRedirect(true);
-            }, 2000); // 2-second delay before redirect
+            }, 2000);
 
-            return () => clearTimeout(timer); // Clear timer on unmount
+            return () => clearTimeout(timer);
         }
     }, []);
 

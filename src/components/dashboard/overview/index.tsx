@@ -1,7 +1,14 @@
+import { useUser } from "../../../context/GetUser";
 
 const Overview = () => {
+  const { data } = useUser();
   return (
-    <div className="w-full mt-[50px] max-[650px]:mt-[70px]">Overview</div>
+    <div className="w-full mt-[50px] h-[80vh] max-[650px]:mt-[70px] flex items-center justify-center ">
+      <div className="w-[100%] h-[50%] flex items-center justify-center flex-col gap-2">
+        <img src="/login.png" alt="" className="w-[100px]" />
+        <p className="text-center">Welcome to your dashboard  {data?.fullName} </p>
+      </div>
+    </div>
   )
 }
 

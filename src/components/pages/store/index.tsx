@@ -23,6 +23,7 @@ const Store = () => {
     const [isProductModalOpen, setIsProductModalOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { businessName } = useParams<{ businessName?: string }>()
+    const decodedName = businessName?.replace(/-/g, " ");
     const [paymentDetails, setPaymentDetails] = useState(
         {
             amount: '',
@@ -38,8 +39,8 @@ const Store = () => {
     const {
         data
     } = useQuery(
-        ["getOneMerchantStoreProduct", businessName],
-        () => getOneMerchantStoreProduct(businessName || null),
+        ["getOneMerchantStoreProduct", decodedName],
+        () => getOneMerchantStoreProduct(decodedName || null),
         {
             onSuccess: () => { },
             onError: () => { },
@@ -69,7 +70,6 @@ const Store = () => {
     const handleEyeClick = (product: IProduct) => {
         setSelectedProduct(product);
         setIsProductModalOpen(true);
-        console.log(selectedProduct);
     };
     const handleCheckout = () => {
         if (iframeRef.current) {
@@ -78,14 +78,11 @@ const Store = () => {
             iframeRef.current.src = paymentDetails.checkoutURL;
         }
     };
-    
+
     useEffect(() => {
         if (!paymentDetails.checkoutURL) {
-            console.log("Checkout URL is not set yet.");
             return;
         }
-        console.log("Checkout URL is set");
-
         const handleResponse = (event: { origin: string; data: string }) => {
             if (event.origin === new URL(paymentDetails.checkoutURL).origin) {
                 const parsedData = JSON.parse(event.data);
@@ -101,7 +98,7 @@ const Store = () => {
                         break;
 
                     case 'failure':
-
+                        navigate('/home/order-failure')
                         break;
 
                     case 'pending':
@@ -109,13 +106,12 @@ const Store = () => {
                         break;
 
                     default:
-                        console.log('Unknown result, handling default case...');
-                        // Optional: Handle default case or stay on the current page
+                        navigate('/home/order-failure')
                         break;
                 }
 
             }
-            
+
         };
         window.addEventListener('message', handleResponse);
 
@@ -126,9 +122,9 @@ const Store = () => {
     }, [navigate, paymentDetails.checkoutURL, setIsModalOpen]);
     return (
         <div className="w-[100%] flex items-center justify-center flex-col gap-[20px] dark:text-white ">
-            <div className="w-[70%] mt-[30px] h-[auto] p-[2%] shadow-lg shadow-grey-500/50 bg-slate-50  dark:bg-[#1D1C1C] dark:shadow-white-500/50 rounded-[16px]  max-[650px]:w-[90%] max-[650px]:p-[2%]">
-                <div className="w-[60%] flex flex-col gap-[10px] max-[650px]:w-[100%] max-[650px]:items-center ">
-                    <div className=" w-[100%] flex items-center gap-5 max-[650px]:flex-col">
+            <div className="w-[70%] mt-[30px] h-[auto] p-[2%] shadow-lg shadow-grey-500/50 bg-slate-50  dark:bg-[#1D1C1C] dark:shadow-white-500/50 rounded-[16px]  max-[650px]:w-[90%] max-[650px]:p-[2%] max-[320px]:h-[350px]">
+                <div className="w-[60%] flex flex-col gap-[10px] max-[650px]:w-[100%] max-[650px]:items-center max-[650px]:h-[100%] ">
+                    <div className=" w-[100%] flex items-center gap-5 max-[650px]:flex-col max-[650px]:h-[60%]">
                         <span className="flex w-[70%] flex-col items-center justify-center gap-[10px] relative">
                             <img src={AdminInfo?.image} alt="" className="w-[150px] h-[150px] rounded-[100%] object-cover max-[650px]:w-[80px] max-[650px]:h-[80px] " />
                             {/* {
@@ -136,11 +132,16 @@ const Store = () => {
                            } */}
                             <p className="text-[15px] font-bold hidden max-[650px]:flex max-[650px]:text-[14px] ">{AdminInfo?.profession}</p>
                         </span>
-                        <span className="h-[100px] w-[100%] gap-5 max-[650px]:w-[100%] max-[650px]:flex max-[650px]:items-center max-[650px]:flex-col">
+                        <span className=" w-[100%] gap-5 max-[650px]:w-[100%] max-[650px]:flex max-[650px]:items-center max-[650px]:flex-col">
                             {
-                                AdminInfo?.business_name && <p className="text-clamp text-[25px] mb-[10px] max-[375px]:text-[18px]">@{AdminInfo?.business_name}</p>
+                                AdminInfo?.business_name && <p className="text-clamp text-[25px] mb-[10px] max-[375px]:text-[18px] text-center">@{AdminInfo?.business_name}</p>
                             }
                             <p className="text-[12px] max-[650px]:text-center">{AdminInfo?.bio}</p>
+                        </span>
+                        <span className="flex gap-2">
+                            <p className="text-[12px] bg-[#eae7e7] p-1 rounded-[4px] dark:bg-[#2c2c2c]">{AdminInfo?.followedUsers?.length} Followers</p>
+                            <p className="text-[12px] bg-[#eae7e7] p-1 rounded-[4px] dark:bg-[#2c2c2c]">{allProduct?.length} Product</p>
+                            <p className="text-[12px] bg-[#eae7e7] p-1 rounded-[4px] dark:bg-[#2c2c2c]"> Share store</p>
                         </span>
                     </div>
                     <div className="w-[40%] flex  justify-center ">
@@ -148,15 +149,15 @@ const Store = () => {
                     </div>
                 </div>
             </div>
-            <div className="w-[70%] mb-[70px] grid grid-cols-4 gap-[20px] max-[650px]:grid-cols-2 max-[320px]:grid-cols-1  max-[650px]:w-[90%]">
+            <div className="w-[70%] mb-[70px] flex flex-wrap gap-[20px] max-[650px]:gap-[10px] max-[650px]:w-[100%] max-[650px]:p-[10px] justify-center">
                 {
                     allProduct?.map((i: IProduct) => (
-                        <div className="w-full border dark:border-[grey] flex flex-col items-center p-[10px] gap-[10px] rounded-[8px]">
+                        <div className="w-[150px] max-[320px]:w-[90%] border dark:border-[grey] items-center p-[10px] gap-[10px] rounded-[8px]">
                             <img onClick={() => handleEyeClick(i)} src={i?.productImage} alt="" className="w-[100%] h-[200px] object-cover aspect-square" />
                             <span className="w-full">
-                                <p className="max-[650px]:text-[12px] h-[40px] text-[12px]">{i?.productName}</p>
+                                <p className="max-[650px]:text-[12px] h-[40px] text-[12px]">{i?.productName.slice(0, 35)}</p>
                             </span>
-                            <button className="w-full p-[2px] bg-[#FFC300] rounded-[4px]" onClick={() => handleCartAddingAuth(i?._id)}>{loadingStates[i?._id] ? <Loading /> : 'Buy now'} </button>
+                            <button className="w-full p-[2px] bg-[#FFC300] rounded-[4px] text-black" onClick={() => handleCartAddingAuth(i?._id)}>{loadingStates[i?._id] ? <Loading /> : 'Buy now'} </button>
                         </div>
                     ))
                 }
@@ -210,7 +211,7 @@ const Store = () => {
                                     <CiMoneyCheck1 />
                                     <p>Amount: {selectedProduct?.paymentPrice}</p>
                                 </span>
-                                <button className=" bg-[#FFC300] w-[120px] text-[12px] h-[40px] rounded" onClick={() => navigate(`/home/details/${selectedProduct._id}`)}>
+                                <button className=" bg-[#FFC300] w-[120px] text-[12px] h-[40px] rounded text-black" onClick={() => navigate(`/home/details/${selectedProduct._id}`)}>
                                     View more Details
                                 </button>
                             </div>
@@ -228,7 +229,7 @@ const Store = () => {
                                 top: 0,
                                 left: 0,
                                 width: '100%',
-                                height: '100vh',
+                                height: '90vh',
                                 display: 'none',
                                 zIndex: 1000000,
                                 backgroundColor: 'white'

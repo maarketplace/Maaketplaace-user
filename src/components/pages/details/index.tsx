@@ -51,7 +51,7 @@ const Details = () => {
         handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
     };
 
-    const { mutate: payNowMutate, isLoading: paymutateLoading } = useMutation(['paynow'], userPayWithKora);
+    const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
         handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
@@ -85,7 +85,7 @@ const Details = () => {
                         break;
 
                     case 'failure':
-
+                        navigate('/home/order-failure')
                         break;
 
                     case 'pending':
@@ -95,6 +95,7 @@ const Details = () => {
                     default:
                         console.log('Unknown result, handling default case...');
                         // Optional: Handle default case or stay on the current page
+                        navigate('/home/order-failure')
                         break;
                 }
 
@@ -162,11 +163,19 @@ const Details = () => {
                             </span>
                         </div>
                     )}
-                    <div className="w-[90%]">
-                        <button className=" bg-[#FFC300] text-black w-[100%] text-[12px] h-[40px] rounded" onClick={() => handleCartAddingAuth(product?._id)}>
-                            {loadingStates[product?._id] ? <Loading /> : ' Pay for this course'}
-                        </button>
-                    </div>
+                    {
+                        product?.pages ?
+                            <div className="w-[90%]">
+                                <button className=" bg-[#FFC300] text-black w-[100%] text-[12px] h-[40px] rounded" onClick={() => handleCartAddingAuth(product?._id)}>
+                                    {loadingStates[product?._id] ? <Loading /> : ' Pay for this Book'}
+                                </button>
+                            </div>
+                            : <div className="w-[90%]">
+                                <button className=" bg-[#FFC300] text-black w-[100%] text-[12px] h-[40px] rounded" onClick={() => handleCartAddingAuth(product?._id)}>
+                                    {product && loadingStates[product?._id] ? <Loading /> : ' Pay for this Course'}
+                                </button>
+                            </div>
+                    }
                 </div>
                 <div className="w-[50%] max-[650px]:w-[100%] dark:bg-black p-[20px] flex flex-col gap-[20px] max-[650px]:p-[10px]">
                     <div className="w-full  flex flex-col gap-[10px]">
@@ -295,7 +304,7 @@ const Details = () => {
             </div>
             {
                 isModalOpen && (
-                    <div className='w-full h-full bottom-2 fixed'>
+                    <div className='w-full h-full bottom-2 fixed z-10'>
                         <iframe
                             ref={iframeRef}
                             style={{
@@ -303,10 +312,10 @@ const Details = () => {
                                 top: 0,
                                 left: 0,
                                 width: '100%',
-                                height: '100vh',
+                                height: '90vh',
                                 display: 'none',
                                 zIndex: 1000000,
-                                backgroundColor: 'white'
+                                backgroundColor: 'white',
                             }}
                             title="Payment Checkout"
                         />

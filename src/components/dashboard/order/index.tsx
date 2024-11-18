@@ -5,9 +5,7 @@ import { useEffect, useState } from "react";
 import Modal from 'react-modal';
 import { IOrder } from "../../../interface/Order.interface";
 import { IProduct } from "../../../interface/ProductInterface";
-import { Worker, Viewer } from '@react-pdf-viewer/core';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import { saveAs } from "file-saver";
 
 Modal.setAppElement('#root');
 interface Order {
@@ -15,31 +13,36 @@ interface Order {
     status: string;
     createdAt: string | number | Date;
     products: IProduct[];
-    // Define order properties here
     id: string;
-    // Add other relevant properties
-  }
+}
 const Order = () => {
-    const [allOrder, setAllOrder] = useState<IOrder[]>([]);
+    const [courseOrders, setCourseOrders] = useState<IOrder[]>([]);
+    const [ebookOrders, setEbookOrders] = useState<IOrder[]>([]);
     const [statusFilter, setStatusFilter] = useState<string>("All");
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [orderDetails, setOrderDetails] = useState<Order | null>(null);
     const [isDetailsLoading, setIsDetailsLoading] = useState(false);
     const [detailsError, setDetailsError] = useState<string | null>(null);
+    const [showCourses, setShowCourses] = useState(true);
+
 
     const { data, isLoading, isError } = useQuery(['getUserOrders'], getUserOrders, {});
 
     useEffect(() => {
         if (data?.data?.data) {
-            const reversedData = data?.data?.data?.data.reverse();
-            setAllOrder(reversedData);
+            const orders = data.data.data.data.reverse();
+            setCourseOrders(orders.filter((order: { products: IProduct[]; }) =>
+                order.products.some(product => product.productType === 'course')
+            ));
+            setEbookOrders(orders.filter((order: { products: IProduct[]; }) =>
+                order.products.some(product => product.productType === 'ebook')
+            ));
         }
-    }, [data, selectedOrder]);
+    }, [data]);
 
-    if (isLoading) {
-        return <p>Loading...</p>;
-    }
+
+    const displayedOrders = showCourses ? ebookOrders : courseOrders;
 
     if (isError) {
         return <p>An error occurred while fetching the data.</p>;
@@ -51,7 +54,7 @@ const Order = () => {
         "Date",
     ];
 
-    const formattedData = allOrder.map(transaction => ({
+    const formattedData = displayedOrders.map(transaction => ({
         "Amount": transaction?.amount || "N/A",
         "Status": transaction.status,
         "Date": new Date(transaction?.createdAt).toLocaleDateString(),
@@ -67,9 +70,9 @@ const Order = () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleRowClick = async (row: any, orderId: string) => {
-        setSelectedOrder(row); 
+        setSelectedOrder(row);
         setIsModalOpen(true);
-        setIsDetailsLoading(true); 
+        setIsDetailsLoading(true);
         setDetailsError(null);
 
         try {
@@ -83,20 +86,34 @@ const Order = () => {
             setIsDetailsLoading(false);
         }
     };
-
+    const downloadEbook = (product: IProduct) => {
+        if (product?.eBook) {
+            saveAs(product.eBook, `${product.productName}.pdf`);
+        } else {
+            alert("File URL not available for download.");
+        }
+    };
     const closeModal = () => {
-        setIsModalOpen(false); 
-        setOrderDetails(null); 
+        setIsModalOpen(false);
+        setOrderDetails(null);
     };
 
     return (
         <div className="w-full flex items-center justify-center mt-[50px] max-[650px]:mt-[70px]">
             <div className="w-[100%] mb-[50px] flex flex-col gap-[20px]">
-                <div className="flex justify-between items-center mb-4">
+                <div className="flex w-[100%] justify-between items-center mb-4 flex-col max-[650px]:w-[full] gap-2 ">
+                    <div>
+                        <button onClick={() => setShowCourses(true)} className={`w-[100px] h-[30px] text-[12px] ${showCourses ? 'bg-[#FFC300]' : 'bg-gray-300'} text-black rounded`}>
+                            Ebooks
+                        </button>
+                        <button onClick={() => setShowCourses(false)} className={`w-[100px] h-[30px] text-[12px] ${!showCourses ? 'bg-[#FFC300]' : 'bg-gray-300'} text-black rounded ml-2`}>
+                            Courses
+                        </button>
+                    </div>
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="px-4 py-2 border rounded text-black outline-none"
+                        className="px-4 py-2 w-[30%] border rounded text-black outline-none max-[650px]:w-full bg-transparent dark:text-white"
                     >
                         <option value="All">All</option>
                         <option value="pending">Pending</option>
@@ -104,12 +121,14 @@ const Order = () => {
                         <option value="completed">Completed</option>
                         <option value="canceled">Canceled</option>
                     </select>
+
                 </div>
 
                 <Table
                     data={filteredOrders}
                     columns={columns}
                     onRowClick={(row) => handleRowClick(row, row?.id)}
+                    loading={isLoading}
                 />
                 <Modal
                     isOpen={isModalOpen}
@@ -118,7 +137,7 @@ const Order = () => {
                     className="bg-white p-6 rounded-md shadow-lg dark:bg-black dark:text-white"
                     overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
                 >
-                    <h2 className="text-xl font-bold mb-4">Order Details</h2>
+                    <h2 className="text-xl mb-4">Order Details</h2>
 
                     {isDetailsLoading ? (
                         <p>Loading details...</p>
@@ -129,22 +148,21 @@ const Order = () => {
                             <div className="flex flex-col gap-[]">
                                 <p className="flex justify-between"><strong className="font-semibold text-[14px]">Amount:</strong> {orderDetails?.payable_amount}</p>
                                 <p className="flex justify-between"><strong className="font-semibold text-[14px]">Status:</strong> {orderDetails?.status}</p>
-                                <p className="flex justify-between"><strong className="font-semibold text-[14px]">Created At:</strong> {new Date(orderDetails.createdAt).toLocaleDateString()}</p>
+                                <p className="flex justify-between"><strong className="font-semibold text-[14px]">Purchase Date:</strong> {new Date(orderDetails.createdAt).toLocaleDateString()}</p>
                                 {orderDetails?.products?.length > 0 && (
                                     <div className="mt-4">
-                                        <h3 className="text-lg font-bold">Products</h3>
+                                        <h3 className="text-lg font-semibold">Products</h3>
                                         {orderDetails.products.map((product: IProduct) => (
                                             <div key={product._id} className="border p-4 mb-4">
                                                 <p><strong className="font-semibold text-[14px]">Product Name:</strong> {product?.productName}</p>
-                                                {
-                                                    product.eBook ? (
-                                                        <div style={{ height: '250px' }}>
-                                                            <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js`}>
-                                                                <Viewer fileUrl={product?.eBook} />
-                                                            </Worker>
-                                                        </div>
-                                                    ) : ''
-                                                }
+                                                {product.productType === 'ebook' && (
+                                                    <button
+                                                        onClick={() => downloadEbook(product)}
+                                                        className="w-[100px] h-[30px] text-[14px] mt-[10px] bg-blue-500 text-white rounded"
+                                                    >
+                                                        Download
+                                                    </button>
+                                                )}
                                             </div>
                                         ))}
                                     </div>
