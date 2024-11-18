@@ -16,7 +16,6 @@ interface Order {
     id: string;
 }
 const Order = () => {
-    const [allOrder, setAllOrder] = useState<IOrder[]>([]);
     const [courseOrders, setCourseOrders] = useState<IOrder[]>([]);
     const [ebookOrders, setEbookOrders] = useState<IOrder[]>([]);
     const [statusFilter, setStatusFilter] = useState<string>("All");
@@ -26,14 +25,13 @@ const Order = () => {
     const [isDetailsLoading, setIsDetailsLoading] = useState(false);
     const [detailsError, setDetailsError] = useState<string | null>(null);
     const [showCourses, setShowCourses] = useState(true);
+
+
     const { data, isLoading, isError } = useQuery(['getUserOrders'], getUserOrders, {});
 
     useEffect(() => {
         if (data?.data?.data) {
             const orders = data.data.data.data.reverse();
-            setAllOrder(orders);
-
-            // Filter orders by productType
             setCourseOrders(orders.filter((order: { products: IProduct[]; }) =>
                 order.products.some(product => product.productType === 'course')
             ));
@@ -44,11 +42,7 @@ const Order = () => {
     }, [data]);
 
 
-    const displayedOrders = showCourses ? courseOrders : ebookOrders;
-
-    if (isLoading) {
-        return <p>Loading...</p>;
-    }
+    const displayedOrders = showCourses ? ebookOrders : courseOrders;
 
     if (isError) {
         return <p>An error occurred while fetching the data.</p>;
@@ -110,10 +104,10 @@ const Order = () => {
                 <div className="flex w-[100%] justify-between items-center mb-4 flex-col max-[650px]:w-[full] gap-2 ">
                     <div>
                         <button onClick={() => setShowCourses(true)} className={`w-[100px] h-[30px] text-[12px] ${showCourses ? 'bg-[#FFC300]' : 'bg-gray-300'} text-black rounded`}>
-                            Courses
+                            Ebooks
                         </button>
                         <button onClick={() => setShowCourses(false)} className={`w-[100px] h-[30px] text-[12px] ${!showCourses ? 'bg-[#FFC300]' : 'bg-gray-300'} text-black rounded ml-2`}>
-                            Ebooks
+                            Courses
                         </button>
                     </div>
                     <select
@@ -134,6 +128,7 @@ const Order = () => {
                     data={filteredOrders}
                     columns={columns}
                     onRowClick={(row) => handleRowClick(row, row?.id)}
+                    loading={isLoading}
                 />
                 <Modal
                     isOpen={isModalOpen}
@@ -142,7 +137,7 @@ const Order = () => {
                     className="bg-white p-6 rounded-md shadow-lg dark:bg-black dark:text-white"
                     overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
                 >
-                    <h2 className="text-xl font-bold mb-4">Order Details</h2>
+                    <h2 className="text-xl mb-4">Order Details</h2>
 
                     {isDetailsLoading ? (
                         <p>Loading details...</p>
@@ -160,12 +155,12 @@ const Order = () => {
                                         {orderDetails.products.map((product: IProduct) => (
                                             <div key={product._id} className="border p-4 mb-4">
                                                 <p><strong className="font-semibold text-[14px]">Product Name:</strong> {product?.productName}</p>
-                                                {product.productType === 'ebook' &&  (
+                                                {product.productType === 'ebook' && (
                                                     <button
                                                         onClick={() => downloadEbook(product)}
                                                         className="w-[100px] h-[30px] text-[14px] mt-[10px] bg-blue-500 text-white rounded"
                                                     >
-                                                        Download eBook
+                                                        Download
                                                     </button>
                                                 )}
                                             </div>
