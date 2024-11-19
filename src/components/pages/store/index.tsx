@@ -141,7 +141,7 @@ const Store = () => {
                             <p className="text-[12px] bg-[#eae7e7] p-1 rounded-[4px] dark:bg-[#2c2c2c]">{allProduct?.length} Product</p>
                             <p
                                 className="text-[12px] bg-[#eae7e7] p-1 rounded-[4px] dark:bg-[#2c2c2c]"
-                                onClick={() => copyToClipboard(`https://maarketplaace.com/#/home/store/${AdminInfo?.business_name}`)}
+                                onClick={() => copyToClipboard(`https://maarketplaace.com/#/home/store/${decodedName}`)}
                             >
                                 Share store
                             </p>
