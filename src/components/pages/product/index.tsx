@@ -8,7 +8,7 @@ import { getAllProduct } from '../../../api/query';
 import { userBuyNow, userFollowMerchant, userLike, userPayWithKora } from '../../../api/mutation';
 import { IProduct } from '../../../interface/ProductInterface';
 import { useUser } from '../../../context/GetUser';
-import { copyToClipboard } from '../../../utils/CopytoClip';
+import { copyToClipboard } from '../../../utils/Utils';
 import PaymentModal from '../../../utils/PaymentModal';
 import toast from 'react-hot-toast';
 import Loading from '../../../loader';
@@ -150,8 +150,8 @@ function Product() {
         const formattedName = businessName.trim().replace(/\s+/g, "-"); // Replace spaces with hyphens
         navigate(`/home/store/${formattedName}`);
     };
-    
-    
+
+
     const handleCheckout = () => {
         if (iframeRef.current) {
             console.log('Setting iframe src to:', paymentDetails.checkoutURL);
@@ -253,7 +253,7 @@ function Product() {
                                     <div className='flex items-center gap-[5px] justify-between' >
                                         <span className='w-[80%] flex items-center gap-[10px]  cursor-pointer' onClick={() => handleMerchantClick(i?.merchant?.business_name)}>
                                             {
-                                                !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover' /> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover' />
+                                                !i?.merchant?.image ? <FaUser className='w-[30px] h-[30px] rounded-full object-cover' /> : <img src={i?.merchant?.image} alt='MerchantImage' className='w-[40px] h-[40px] rounded-full object-cover aspect-square' />
                                             }
 
                                             <p className='text-[18px] max-[650px]:text-[14px] max-[250px]:text-[12px] truncate'>{i?.merchant?.business_name || i?.merchant?.fullName}</p>
@@ -377,7 +377,7 @@ function Product() {
 
             {isProductModalOpen && selectedProduct && (
                 <Modal onClose={() => setIsProductModalOpen(false)}>
-                    <div className="flex w-full gap-2 max-[650px]:flex-col max-[650px]:w-full overflow-scroll no-scrollbar ">
+                    <div className="flex w-full gap-2 max-[650px]:flex-col max-[650px]:w-full overflow-auto no-scrollbar  ">
                         <span className='w-[50%] flex items-center justify-center max-[650px]:w-full'>
                             <img src={selectedProduct.productImage} alt={selectedProduct.productName} className="object-cover w-full aspect-square" />
                         </span>

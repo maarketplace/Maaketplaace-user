@@ -3,7 +3,7 @@ import { FaRegComment, FaUser } from 'react-icons/fa';
 import { IProduct } from '../../../interface/ProductInterface';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../../../loader';
-import { copyToClipboard } from '../../../utils/CopytoClip';
+import { copyToClipboard } from '../../../utils/Utils';
 
 interface ProductCardProps {
   product: IProduct;

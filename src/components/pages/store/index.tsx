@@ -13,6 +13,7 @@ import { userBuyNow, userPayWithKora } from "../../../api/mutation";
 import { handleBuyNow, handlePayNow } from "../../../utils/PaymentComponent";
 import PaymentModal from "../../../utils/PaymentModal";
 import Loading from "../../../loader";
+import { copyToClipboard } from "../../../utils/Utils";
 
 const Store = () => {
     const iframeRef = useRef(null);
@@ -122,29 +123,31 @@ const Store = () => {
     }, [navigate, paymentDetails.checkoutURL, setIsModalOpen]);
     return (
         <div className="w-[100%] flex items-center justify-center flex-col gap-[20px] dark:text-white ">
-            <div className="w-[70%] mt-[30px] h-[auto] p-[2%] shadow-lg shadow-grey-500/50 bg-slate-50  dark:bg-[#1D1C1C] dark:shadow-white-500/50 rounded-[16px]  max-[650px]:w-[90%] max-[650px]:p-[2%] max-[320px]:h-[350px]">
-                <div className="w-[60%] flex flex-col gap-[10px] max-[650px]:w-[100%] max-[650px]:items-center max-[650px]:h-[100%] ">
+            <div className="w-[60%] mt-[30px] h-[auto] p-[2%] shadow-lg shadow-grey-500/50 bg-slate-50  dark:bg-[#1D1C1C] dark:shadow-white-500/50 rounded-[16px]  max-[650px]:w-[90%] max-[650px]:p-[2%] max-[320px]:h-[350px]">
+                <div className="w-[100%] flex flex-col gap-[10px] max-[650px]:w-[100%] max-[650px]:items-center max-[650px]:h-[100%] ">
                     <div className=" w-[100%] flex items-center gap-5 max-[650px]:flex-col max-[650px]:h-[60%]">
-                        <span className="flex w-[70%] flex-col items-center justify-center gap-[10px] relative">
+                        <span className="flex w-[40%] flex-col items-center justify-center gap-[10px] relative max-[650px]:w-[100%]">
                             <img src={AdminInfo?.image} alt="" className="w-[150px] h-[150px] rounded-[100%] object-cover max-[650px]:w-[80px] max-[650px]:h-[80px] " />
-                            {/* {
-                            allProduct.length > 1 ?  <BiBadgeCheck className="absolute right-[68px] text-[20px] top-[55px] text-[#FFc300]"/>: null
-                           } */}
                             <p className="text-[15px] font-bold hidden max-[650px]:flex max-[650px]:text-[14px] ">{AdminInfo?.profession}</p>
                         </span>
-                        <span className=" w-[100%] gap-5 max-[650px]:w-[100%] max-[650px]:flex max-[650px]:items-center max-[650px]:flex-col">
+                        <span className=" w-[40%] gap-5 max-[650px]:w-[100%] max-[650px]:flex max-[650px]:items-center max-[650px]:flex-col">
                             {
-                                AdminInfo?.business_name && <p className="text-clamp text-[25px] mb-[10px] max-[375px]:text-[18px] text-center">@{AdminInfo?.business_name}</p>
+                                AdminInfo?.business_name && <p className="text-clamp text-[25px] mb-[10px] max-[375px]:text-[18px] text-center">{AdminInfo?.business_name}</p>
                             }
                             <p className="text-[12px] max-[650px]:text-center">{AdminInfo?.bio}</p>
                         </span>
-                        <span className="flex gap-2">
+                        <span className="flex gap-2 w-[40%] justify-center max-[650px]:w-[100%]">
                             <p className="text-[12px] bg-[#eae7e7] p-1 rounded-[4px] dark:bg-[#2c2c2c]">{AdminInfo?.followedUsers?.length} Followers</p>
                             <p className="text-[12px] bg-[#eae7e7] p-1 rounded-[4px] dark:bg-[#2c2c2c]">{allProduct?.length} Product</p>
-                            <p className="text-[12px] bg-[#eae7e7] p-1 rounded-[4px] dark:bg-[#2c2c2c]"> Share store</p>
+                            <p
+                                className="text-[12px] bg-[#eae7e7] p-1 rounded-[4px] dark:bg-[#2c2c2c]"
+                                onClick={() => copyToClipboard(`https://maarketplaace.com/#/home/store/${AdminInfo?.business_name}`)}
+                            >
+                                Share store
+                            </p>
                         </span>
                     </div>
-                    <div className="w-[40%] flex  justify-center ">
+                    <div className="w-[25%] flex  justify-center max-[650px]:w-[100%] ">
                         <p className="text-[12px] font-bold max-[650px]:hidden text-center ">{AdminInfo?.profession}</p>
                     </div>
                 </div>
