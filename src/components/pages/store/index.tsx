@@ -147,7 +147,7 @@ const Store = () => {
                             </p>
                         </span>
                     </div>
-                    <div className="w-[25%] flex  justify-center max-[650px]:w-[100%] ">
+                    <div className="w-[30%] flex justify-center max-[650px]:w-[100%] ">
                         <p className="text-[12px] font-bold max-[650px]:hidden text-center ">{AdminInfo?.profession}</p>
                     </div>
                 </div>
@@ -157,9 +157,7 @@ const Store = () => {
                     allProduct?.map((i: IProduct) => (
                         <div className="w-[150px] max-[320px]:w-[90%] border dark:border-[grey] items-center p-[10px] gap-[10px] rounded-[8px]">
                             <img onClick={() => handleEyeClick(i)} src={i?.productImage} alt="" className="w-[100%] h-[200px] object-cover aspect-square" />
-                            <span className="w-full">
                                 <p className="max-[650px]:text-[12px] h-[40px] text-[12px]">{i?.productName.slice(0, 35)}</p>
-                            </span>
                             <button className="w-full p-[2px] bg-[#FFC300] rounded-[4px] text-black" onClick={() => handleCartAddingAuth(i?._id)}>{loadingStates[i?._id] ? <Loading /> : 'Buy now'} </button>
                         </div>
                     ))
