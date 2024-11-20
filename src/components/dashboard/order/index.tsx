@@ -6,6 +6,7 @@ import Modal from 'react-modal';
 import { IOrder } from "../../../interface/Order.interface";
 import { IProduct } from "../../../interface/ProductInterface";
 import { saveAs } from "file-saver";
+import toast from "react-hot-toast";
 
 Modal.setAppElement('#root');
 interface Order {
@@ -89,8 +90,9 @@ const Order = () => {
     const downloadEbook = (product: IProduct) => {
         if (product?.eBook) {
             saveAs(product.eBook, `${product.productName}.pdf`);
+            toast.success('Download Successful')
         } else {
-            alert("File URL not available for download.");
+            toast.error("File URL not available for download.");
         }
     };
     const closeModal = () => {

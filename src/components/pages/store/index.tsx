@@ -98,7 +98,7 @@ const Store = () => {
                         navigate('/home/order-success')
                         break;
 
-                    case 'failure':
+                    case 'failed':
                         navigate('/home/order-failure')
                         break;
 

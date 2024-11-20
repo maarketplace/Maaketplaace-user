@@ -147,7 +147,7 @@ function Product() {
         console.log(selectedProduct);
     };
     const handleMerchantClick = (businessName: string) => {
-        const formattedName = businessName.trim().replace(/\s+/g, "-"); // Replace spaces with hyphens
+        const formattedName = businessName.trim().replace(/\s+/g, "-");
         navigate(`/home/store/${formattedName}`);
     };
 
@@ -180,7 +180,7 @@ function Product() {
                         navigate('/home/order-success')
                         break;
 
-                    case 'failure':
+                    case 'failed':
                         navigate('/home/order-failure')
                         break;
 
@@ -214,7 +214,7 @@ function Product() {
         product?.productName?.toLowerCase().includes(searchQuery?.trim().toLowerCase())
     );
     return (
-        <div className="w-[100%] h-[] mt-[20px] mb-[60px] max-[650px]:mt-[30px] flex justify-center flex-col items-center dark:bg-black dark:text-white overflow-scroll no-scrollbar">
+        <div className="w-[100%] h-[] flex justify-center flex-col items-center dark:bg-black dark:text-white overflow-scroll no-scrollbar">
 
 
             {

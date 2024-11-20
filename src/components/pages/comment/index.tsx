@@ -229,14 +229,14 @@ const Comment = ({ productId }: CommentProps) => {
     setProductComment((prevComments) => [...prevComments]);
   };
   return (
-    <div className={location.pathname === '/home/quicks' ? ' w-[100%] flex flex-col items-center justify-between h-[100vh] dark:bg-black dark:text-white no-scrollbar ' : 'mt-[20px] w-[100%] flex flex-col items-center justify-between h-[85vh] dark:bg-black dark:text-white no-scrollbar'}>
+    <div className={'w-[100%] flex flex-col items-center justify-between h-[80vh] dark:bg-black dark:text-white no-scrollbar'}>
       <div className="flex h-[] w-[45%] items-center max-[650px]:w-[100%] justify-between p-2 bg-white dark:bg-black">
         <IoMdArrowBack onClick={() => navigate('/home')} className={location.pathname === '/home/quicks' ? 'hidden' : ''} />
         <p>{productComment?.length} Comments</p>
       </div>
-      <div className="w-[45%] h-[80%] max-[650px]:w-[100%] overflow-y-auto justify-center items-center">
+      <div className="w-[45%] h-[90%] max-[650px]:w-[100%] overflow-y-auto justify-center items-center">
         {isLoading ? (
-          <div className="w-[100%] h-[90%] mt-[30px] flex flex-col items-center justify-center">
+          <div className="w-[100%] h-[80%] mt-[30px] flex flex-col items-center justify-center">
             {Array.from(new Array(7)).map((_, index) => (
               <div key={index} className='w-[280px] h-[500px] shadow-sm rounded-lg p-[10px] flex flex-col gap-[10px] max-[650px]:w-[100%]'>
                 <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -322,7 +322,7 @@ const Comment = ({ productId }: CommentProps) => {
           <ImageModal imageUrl={modalImageUrl} onClose={handleCloseModal} />
         )
       }
-      <div className="w-[40%] mb-[60px] max-[650px]:mt-[40px] h-[10%] max-[650px]:w-[100%] flex items-center justify-center flex-col gap-[5px] max-[650px]:bg-white dark:bg-black">
+      <div className="w-[40%]  h-[10%] max-[650px]:w-[100%] flex items-center justify-center flex-col gap-[5px] max-[650px]:bg-white dark:bg-black">
         <div className="flex gap-[5px] w-[100%] items-center border max-[650px]:w-[96%]">
           <button className="flex items-center" onClick={handlePlusIconClick}>
             <IoAdd className="text-[20px] max-[650px]:text-[black] dark:text-white" />

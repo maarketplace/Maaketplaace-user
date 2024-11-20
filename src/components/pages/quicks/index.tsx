@@ -129,7 +129,7 @@ const Quicks = () => {
                         navigate('/home/order-success')
                         break;
 
-                    case 'failure':
+                    case 'failed':
                         navigate('/home/order-failure')
                         break;
 
@@ -306,7 +306,7 @@ const Quicks = () => {
                                             <div className="w-[100%] max-[650px]:h-[40%] flex flex-col">
                                                 <div className="w-[90%] max-[650px]:w-full p-1 h-[40%] flex  items-center  justify-between">
                                                     <span className="flex items-center gap-[10px] w-[60%]">
-                                                        {!i?.merchant_id?.image ? <FaUser className="w-[40px] h-[30px] rounded-full object-cover" /> : <img src={i.merchant_id?.image} alt="MerchantImage" className="w-[40px] h-[30px] rounded-full object-cover" />}
+                                                        {!i?.merchant_id?.image ? <FaUser className="w-[30px] h-[30px] rounded-full object-cover" /> : <img src={i.merchant_id?.image} alt="MerchantImage" className="w-[30px] h-[30px] rounded-full object-cover aspect-square" />}
                                                         <p className="text-white text-[14px] font-bold shadow-md truncate">{i.merchant_id?.business_name || i.merchant_id?.fullName}</p>
                                                     </span>
                                                     <button className=" bg-[#FFC300] text-black text-[12px] h-[25px] px-2 rounded" onClick={() => handleCartAddingAuth(i?.product_id?._id)}>
@@ -314,7 +314,7 @@ const Quicks = () => {
                                                     </button>
                                                 </div>
                                                 <span className="ml-[20px] mt-[10px] text-[12px]">
-                                                    <p className="text-white">{i?.description}</p>
+                                                    <p className="text-white">{i?.description.slice(0, 120)}</p>
                                                 </span>
                                             </div>
 
