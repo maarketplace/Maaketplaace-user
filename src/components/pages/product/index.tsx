@@ -69,27 +69,19 @@ function Product() {
     );
     const followMutation = useMutation(userFollowMerchant, {
         onMutate: async (merchantId) => {
-            // Cancel any outgoing refetches
             await queryClient.cancelQueries(['getallproduct']);
-
-            // Snapshot the previous value
             const previousFollowing = followingMerchants;
-
-            // Optimistically update to the new value
             setFollowingMerchants((prev) =>
                 prev.includes(merchantId)
-                    ? prev.filter(id => id !== merchantId) // Unfollow
-                    : [...prev, merchantId]                // Follow
+                    ? prev.filter(id => id !== merchantId)
+                    : [...prev, merchantId]                
             );
-
-            // Return a context object with the snapshot value
             return { previousFollowing };
         },
         onError: () => {
             toast.error("An error occurred. Please try again.");
         },
         onSettled: () => {
-            // Refetch the product list to ensure the UI reflects the latest data
             queryClient.invalidateQueries(['getallproduct']);
         }
     });
@@ -106,7 +98,7 @@ function Product() {
     };
 
     const handleLikeClick = async (productId: string) => {
-        // if (isUserAuthenticated) {
+        if (isUserAuthenticated) {
             const updateLikeProduct = [...allProduct];
             const existingItem = updateLikeProduct.findIndex((product: { _id: string; }) => product._id === productId);
             if (existingItem !== -1 && !updateLikeProduct[existingItem]?.user_likes?.includes(loggedInUserId)) {
@@ -119,20 +111,14 @@ function Product() {
                 mutate(productId);
             }
             setAllProduct(updateLikeProduct);
-        // } else {
-        //     toast.error("Please login to like this Product")
-        //     setTimeout(() => {
-        //         navigate('/')
-        //         localStorage.clear()
-        //     }, 2000)
-        // }
+        }
 
     };
 
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
+        handleBuyNow(id,isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);

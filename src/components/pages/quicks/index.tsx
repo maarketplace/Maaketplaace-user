@@ -22,6 +22,7 @@ import { handleBuyNow, handlePayNow } from "../../../utils/PaymentComponent";
 import PaymentModal from "../../../utils/PaymentModal";
 import Loading from "../../../loader";
 import QuciksComment from "./quicksComment";
+import { useAuth } from "../../../context/Auth";
 
 const isVideoFile = (fileUrl: string) => {
     const videoExtensions = [".mp4", ".mov", ".avi", ".webm"];
@@ -55,7 +56,7 @@ const Quicks = () => {
             source: '',
         });
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
-    // const { isUserAuthenticated } = useAuth();
+    const { isUserAuthenticated } = useAuth();
     const loggedInUserId = data?._id;
     const {
         data: allQuicksData, isLoading
@@ -93,7 +94,7 @@ const Quicks = () => {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
+        handleBuyNow(id, isUserAuthenticated,setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);

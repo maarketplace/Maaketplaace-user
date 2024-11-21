@@ -14,13 +14,13 @@ import { BsDot } from "react-icons/bs";
 import { userBuyNow, userPayWithKora } from "../../../api/mutation";
 import { handleBuyNow, handlePayNow } from "../../../utils/PaymentComponent";
 import PaymentModal from "../../../utils/PaymentModal";
-// import { useAuth } from "../../../context/Auth";
+import { useAuth } from "../../../context/Auth";
 import Loading from "../../../loader";
 
 const Details = () => {
     const iframeRef = useRef(null);
     const navigate = useNavigate();
-    // const { isUserAuthenticated } = useAuth();
+    const { isUserAuthenticated } = useAuth();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { id: productIdParam } = useParams<{ id?: any }>();
     const [product, setProduct] = useState<IProduct | null>(null)
@@ -48,7 +48,7 @@ const Details = () => {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
+        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
@@ -84,7 +84,7 @@ const Details = () => {
                         navigate('/home/order-success')
                         break;
 
-                    case 'failure':
+                    case 'failued':
                         navigate('/home/order-failure')
                         break;
 
@@ -94,7 +94,6 @@ const Details = () => {
 
                     default:
                         console.log('Unknown result, handling default case...');
-                        // Optional: Handle default case or stay on the current page
                         navigate('/home/order-failure')
                         break;
                 }
@@ -171,7 +170,7 @@ const Details = () => {
                                 </button>
                             </div>
                             : <div className="w-[90%]">
-                                <button className=" bg-[#FFC300] text-black w-[100%] text-[12px] h-[40px] rounded" onClick={() => handleCartAddingAuth(product?._id)}>
+                                <button className=" bg-[#FFC300] text-black w-[100%] text-[12px] h-[40px] rounded" onClick={() => handleCartAddingAuth(product?._id as string)}>
                                     {product && loadingStates[product?._id] ? <Loading /> : ' Pay for this Course'}
                                 </button>
                             </div>
