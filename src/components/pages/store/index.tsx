@@ -1,7 +1,7 @@
 import { useMutation, useQuery } from "react-query";
 import { getOneMerchantStoreProduct } from "../../../api/query";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../../context/Auth";
+// import { useAuth } from "../../../context/Auth";
 import { useEffect, useState, useRef } from "react";
 import { IProduct } from "../../../interface/ProductInterface";
 import { CiMoneyCheck1 } from "react-icons/ci";
@@ -18,7 +18,7 @@ import { copyToClipboard } from "../../../utils/Utils";
 const Store = () => {
     const iframeRef = useRef(null);
     const navigate = useNavigate();
-    const { isUserAuthenticated } = useAuth();
+    // const { isUserAuthenticated } = useAuth();
     const [allProduct, setAllProduct] = useState<IProduct[]>([]);
     const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
     const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -51,7 +51,7 @@ const Store = () => {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
+        handleBuyNow(id, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);

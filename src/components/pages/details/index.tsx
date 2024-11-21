@@ -14,13 +14,13 @@ import { BsDot } from "react-icons/bs";
 import { userBuyNow, userPayWithKora } from "../../../api/mutation";
 import { handleBuyNow, handlePayNow } from "../../../utils/PaymentComponent";
 import PaymentModal from "../../../utils/PaymentModal";
-import { useAuth } from "../../../context/Auth";
+// import { useAuth } from "../../../context/Auth";
 import Loading from "../../../loader";
 
 const Details = () => {
     const iframeRef = useRef(null);
     const navigate = useNavigate();
-    const { isUserAuthenticated } = useAuth();
+    // const { isUserAuthenticated } = useAuth();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { id: productIdParam } = useParams<{ id?: any }>();
     const [product, setProduct] = useState<IProduct | null>(null)
@@ -48,7 +48,7 @@ const Details = () => {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
+        handleBuyNow(id, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);

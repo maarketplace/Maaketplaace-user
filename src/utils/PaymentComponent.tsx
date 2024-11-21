@@ -1,4 +1,4 @@
-import { toast } from 'react-hot-toast'; 
+// import { toast } from 'react-hot-toast'; 
 import { UseMutateFunction } from 'react-query';
 import { AxiosResponse } from 'axios';
 
@@ -23,14 +23,14 @@ type PayNowMutateFunction = UseMutateFunction<AxiosResponse<any, any>, unknown, 
 
 export const handleBuyNow = (
   id: string,
-  isAuthenticated: boolean,
+  // isAuthenticated: boolean,
   setLoadingStates: React.Dispatch<React.SetStateAction<Record<string, boolean>>>,
   setPaymentDetails: ISetPaymentDetails,
   setIsModalOpen: (value: boolean) => void,
   buyMutate: BuyMutateFunction, 
-  navigate: (path: string) => void
+  // navigate: (path: string) => void
 ) => {
-  if (isAuthenticated) {
+  // if (isAuthenticated) {
     setLoadingStates((prevState) => ({
       ...prevState,
       [id]: true,
@@ -72,10 +72,10 @@ export const handleBuyNow = (
         }));
       },
     });
-  } else {
-    toast.error('Please login to buy this Product');
-    navigate('/');
-  }
+  // } else {
+  //   toast.error('Please login to buy this Product');
+  //   navigate('/');
+  // }
 };
 
 export const handlePayNow = (

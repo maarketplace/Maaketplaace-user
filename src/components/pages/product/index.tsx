@@ -106,7 +106,7 @@ function Product() {
     };
 
     const handleLikeClick = async (productId: string) => {
-        if (isUserAuthenticated) {
+        // if (isUserAuthenticated) {
             const updateLikeProduct = [...allProduct];
             const existingItem = updateLikeProduct.findIndex((product: { _id: string; }) => product._id === productId);
             if (existingItem !== -1 && !updateLikeProduct[existingItem]?.user_likes?.includes(loggedInUserId)) {
@@ -119,27 +119,32 @@ function Product() {
                 mutate(productId);
             }
             setAllProduct(updateLikeProduct);
-        } else {
-            toast.error("Please login to like this Product")
-            setTimeout(() => {
-                navigate('/')
-                localStorage.clear()
-            }, 2000)
-        }
+        // } else {
+        //     toast.error("Please login to like this Product")
+        //     setTimeout(() => {
+        //         navigate('/')
+        //         localStorage.clear()
+        //     }, 2000)
+        // }
 
     };
 
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
+        handleBuyNow(id, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
-        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
+        if (paymentDetails.amount === '0' || Number(paymentDetails.amount) === 0) {
+            navigate('/home/order-success'); // Navigate directly to success page
+        } else {
+            handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
+        }
     };
+    
 
     const handleEyeClick = (product: IProduct) => {
         setSelectedProduct(product);

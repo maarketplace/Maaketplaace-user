@@ -26,7 +26,7 @@ const Order = () => {
     const [isDetailsLoading, setIsDetailsLoading] = useState(false);
     const [detailsError, setDetailsError] = useState<string | null>(null);
     const [showCourses, setShowCourses] = useState(true);
-
+    const [isDownloadLoading, setIsDownloadLoading] = useState<string | null>(null);
 
     const { data, isLoading, isError } = useQuery(['getUserOrders'], getUserOrders, {});
 
@@ -87,10 +87,17 @@ const Order = () => {
             setIsDetailsLoading(false);
         }
     };
-    const downloadEbook = (product: IProduct) => {
+    const downloadEbook = async (product: IProduct) => {
         if (product?.eBook) {
-            saveAs(product.eBook, `${product.productName}.pdf`);
-            toast.success('Download Successful')
+            setIsDownloadLoading(product._id);
+            try {
+                await saveAs(product.eBook, `${product.productName}.pdf`);
+                toast.success('Download Successful');
+            } catch (error) {
+                toast.error("Failed to download the file.");
+            } finally {
+                setIsDownloadLoading(null);
+            }
         } else {
             toast.error("File URL not available for download.");
         }
@@ -160,9 +167,13 @@ const Order = () => {
                                                 {product.productType === 'ebook' && (
                                                     <button
                                                         onClick={() => downloadEbook(product)}
-                                                        className="w-[100px] h-[30px] text-[14px] mt-[10px] bg-blue-500 text-white rounded"
+                                                        disabled={isDownloadLoading === product._id} // Disable button if loading
+                                                        className={`w-[100px] h-[30px] text-[14px] mt-[10px] rounded ${isDownloadLoading === product._id
+                                                                ? "bg-gray-400 cursor-not-allowed"
+                                                                : "bg-[#FFC300] text-black"
+                                                            }`}
                                                     >
-                                                        Download
+                                                        {isDownloadLoading === product._id ? "Loading..." : "Download"}
                                                     </button>
                                                 )}
                                             </div>
@@ -175,7 +186,7 @@ const Order = () => {
 
                     <button
                         onClick={closeModal}
-                        className="mt-4 px-4 py-2 bg-red-500 text-white rounded"
+                        className="mt-4 w-[80px] h-[30px] text-[12px] bg-red-500 text-white rounded"
                     >
                         Close
                     </button>

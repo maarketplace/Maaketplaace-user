@@ -19,6 +19,7 @@ import ProtectedRoute from './private-route';
 import ResetPassword from './components/onboarding/resetpassword';
 import ForgotPassword from './components/onboarding/forgetpassword';
 import OrderFailure from './components/pages/orderSuccessful/OrderFailure';
+import OrderSummaryDetails from './components/pages/orderSummary/OrderSummary';
 // eslint-disable-next-line react-refresh/only-export-components
 const LoginLoader = () => import('./components/onboarding/login');
 // eslint-disable-next-line react-refresh/only-export-components
@@ -88,6 +89,10 @@ const router = createHashRouter([
       {
         path: '/home/order-summary',
         element: <OrderSummary />
+      },
+      {
+        path: '/home/order-summary/:refrence',
+        element: <OrderSummaryDetails />
       },
       {
         path: '/home/order-failure',

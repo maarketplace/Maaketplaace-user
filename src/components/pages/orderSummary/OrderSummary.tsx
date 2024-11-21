@@ -5,7 +5,7 @@ import { capitalizeFirstLetter, formatNumber } from "../../../utils/Utils";
 import { IOrderSummary } from "../../../interface/OrderSummaryInterface";
 import { useNavigate } from "react-router-dom";
 
-const OrderSummary = () => {
+const OrderSummaryDetails = () => {
     const navigate = useNavigate()
     const refrence = localStorage.getItem('orderRefrence')
     const [orderSummary, setorderSummary] = useState<IOrderSummary | null>(null);
@@ -61,4 +61,4 @@ const OrderSummary = () => {
     );
 };
 
-export default OrderSummary;
+export default OrderSummaryDetails;

@@ -11,7 +11,7 @@ import { IoHeart, IoHeartOutline, IoShareSocial } from "react-icons/io5";
 import { FaRegComment, FaUser } from "react-icons/fa";
 import { userLikeAQuicks } from "../../../api/mutation";
 import { useUser } from "../../../context/GetUser";
-import { useAuth } from "../../../context/Auth";
+// import { useAuth } from "../../../context/Auth";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from 'react-router-dom';
 import SwiperCore from 'swiper';
@@ -55,7 +55,7 @@ const Quicks = () => {
             source: '',
         });
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
-    const { isUserAuthenticated } = useAuth();
+    // const { isUserAuthenticated } = useAuth();
     const loggedInUserId = data?._id;
     const {
         data: allQuicksData, isLoading
@@ -93,7 +93,7 @@ const Quicks = () => {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
+        handleBuyNow(id, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
