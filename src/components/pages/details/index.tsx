@@ -86,11 +86,8 @@ const Details = () => {
     };
     useEffect(() => {
         if (!paymentDetails.checkoutURL) {
-            console.log("Checkout URL is not set yet.");
             return;
         }
-        console.log("Checkout URL is set");
-
         const handleResponse = (event: { origin: string; data: string }) => {
             if (event.origin === new URL(paymentDetails.checkoutURL).origin) {
                 const parsedData = JSON.parse(event.data);
@@ -121,8 +118,6 @@ const Details = () => {
             }
         };
         window.addEventListener('message', handleResponse);
-
-        // Cleanup the event listener when the component unmounts
         return () => {
             window.removeEventListener('message', handleResponse);
         };
@@ -131,16 +126,16 @@ const Details = () => {
         window.scrollTo(0, 0);
     }, []);
     return (
-        <div className="w-full h-full text-[15px] mt-[100px] flex flex-col items-center max-[650px]:mt-[40px]">
+        <div className="w-full h-full text-[15px] mt-[100px] flex flex-col items-center max-[650px]:mt-[10px]">
             <div className="w-[90%] flex gap-[10px] max-[650px]:flex-col max-[650px]:w-[100%]">
-                <div className="w-[30%]  max-[650px]:h-[550px]  flex flex-col items-center p-[10px] gap-[10px] max-[650px]:w-full max-[650px]:mt-[40px]">
-                    <div className='w-[70%] h-[250px] flex items-center justify-center '>
+                <div className="w-[30%]  max-[650px]:h-[550px]  flex flex-col items-center p-[10px] gap-[10px] max-[650px]:w-full">
+                    <div className='w-[70%] h-[280px] flex items-center justify-center max-[650px]:w-full'>
                         <img src={product?.productImage} className='w-[100%] object-cover  aspect-square max-[650px]:h-[90%] ' />
                     </div>
-                    <div className="flex w-full items-center gap-[5px] mt-[10px]">
-                        <span className="w-[20%]">
+                    <div className="flex w-full items-center gap-[10px] mt-[10px]">
+                        {/* <span className="w-[20%]"> */}
                             <img src={product?.merchant?.image} alt="" className="w-[40px] h-[40px] rounded-full object-cover filter brightness-225 contrast-110 transition-all duration-500 ease-in-out" />
-                        </span>
+                        {/* </span> */}
                         <p className=" w-[100%] max-[650px]:w-[80%] text-[12px] text-wrap">{product?.productName}</p>
                     </div>
                     {product?.pages ? (

@@ -6,7 +6,7 @@ const FreeOrderSuccess = () => {
     const navigate = useNavigate();
 
     const handleGoHome = () => {
-        navigate('/home')
+        navigate('/dashboard/order')
         localStorage.removeItem('orderRefrence')
     }
     return (
