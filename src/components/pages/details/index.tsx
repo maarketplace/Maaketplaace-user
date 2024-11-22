@@ -50,9 +50,7 @@ const Details = () => {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        console.log("Auth Check - isUserAuthenticated:", isUserAuthenticated);
         if (isUserAuthenticated) {
-            console.log("Product ID being processed:", id);
             handleBuyNow(
                 id,
                 isUserAuthenticated,
@@ -63,7 +61,6 @@ const Details = () => {
                 navigate
             );
         } else {
-            console.log("User not authenticated. Redirecting to login...");
             localStorage.setItem("redirectPath", location.pathname);
             navigate("/");
             toast.error('Please login to complete your purchase')
