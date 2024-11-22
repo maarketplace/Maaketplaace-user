@@ -41,7 +41,7 @@ const Details = () => {
             source: '',
         });
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
-
+    const [payLoadingState, setPayLoadingStates] = useState<Record<string, boolean>>({});
     const relatedProduct = data?.data?.data?.data?.related_product
     useEffect(() => {
         setProduct(data?.data?.data?.data?.product?.[0])
@@ -70,7 +70,7 @@ const Details = () => {
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
-        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
+        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen, setPayLoadingStates);
     };
     const handleCheckout = () => {
         if (paymentDetails.amount === '₦0') {
@@ -351,7 +351,9 @@ const Details = () => {
                                     </button>
                                 ) : (
                                     <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails.paymentID)}>
-                                        Continue
+                                        {
+                                            payLoadingState[paymentDetails.paymentID] ? <Loading/> : 'Continue'
+                                        }
                                     </button>
                                 ),
                                 display: true,

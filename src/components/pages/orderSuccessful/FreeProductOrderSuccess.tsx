@@ -10,7 +10,7 @@ const FreeOrderSuccess = () => {
         localStorage.removeItem('orderRefrence')
     }
     return (
-        <div className="w-full h-[80vh] gap-2 flex flex-col items-center justify-center">
+        <div className="w-full h-[80vh] gap-4 flex flex-col items-center justify-center">
             <Lottie
                 autoplay
                 loop
@@ -21,7 +21,7 @@ const FreeOrderSuccess = () => {
             <p className="text-center text-[14px]">Thank you for your purchase. Your order has been placed successfully.</p>
             <p className="text-center text-[12px]">Check your dashboard to download the product</p>
             <span className="w-[30%] flex items-center justify-center max-[650px]:w-[100%]">
-                <button className="w-[90%] h-[40px] bg-[#FFC300] text-black rounded-[8px]" onClick={handleGoHome}>Go Home</button>
+                <button className="w-[90%] h-[40px] bg-[#FFC300] text-black rounded-[8px]" onClick={handleGoHome}>Go To Dashboard</button>
             </span>
         </div>
     );

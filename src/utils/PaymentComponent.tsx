@@ -58,7 +58,7 @@ export const handleBuyNow = (
 
         setTimeout(() => {
           setIsModalOpen(true);
-        }, 2000);
+        }, 1000);
 
         setLoadingStates((prevState) => ({
           ...prevState,
@@ -80,11 +80,18 @@ export const handleBuyNow = (
 };
 
 export const handlePayNow = (
-  payNowMutate: PayNowMutateFunction, // use the updated type
+  payNowMutate: PayNowMutateFunction,
   paymentID: string,
   setPaymentDetails: ISetPaymentDetails,
   setIsModalOpen: (value: boolean) => void,
+  setPayLoadingStates: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
 ) => {
+  // Set loading state to true for the given payment ID
+  setPayLoadingStates((prevState) => ({
+    ...prevState,
+    [paymentID]: true,
+  }));
+
   payNowMutate(paymentID, {
     onSuccess: (data) => {
       const innerData = data?.data?.data?.data?.data?.data;
@@ -100,7 +107,7 @@ export const handlePayNow = (
         fee: '',
         paymentID: paymentData?._id || '',
         paymentAPI,
-        payeeName, 
+        payeeName,
         payeeEmail,
         checkoutURL,
         source: 'payNow',
@@ -109,11 +116,25 @@ export const handlePayNow = (
       setTimeout(() => {
         setIsModalOpen(true);
       }, 2000);
+
+      // Set loading state to false
+      setPayLoadingStates((prevState) => ({
+        ...prevState,
+        [paymentID]: false,
+      }));
     },
     onError: (error: unknown) => {
+      console.error('Error:', error);
+
+      // Set loading state to false
+      setPayLoadingStates((prevState) => ({
+        ...prevState,
+        [paymentID]: false,
+      }));
+
       setIsModalOpen(false);
-      console.log(error);
     },
   });
 };
+
 
