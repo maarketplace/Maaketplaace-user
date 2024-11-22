@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "react-query";
-import { useNavigate, useParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { getOneProduct } from "../../../api/query";
 import { IProduct } from "../../../interface/ProductInterface";
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -20,6 +20,7 @@ import Loading from "../../../loader";
 const Details = () => {
     const iframeRef = useRef(null);
     const navigate = useNavigate();
+    const location = useLocation();
     const { isUserAuthenticated } = useAuth();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { id: productIdParam } = useParams<{ id?: any }>();
@@ -48,7 +49,12 @@ const Details = () => {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
+        if (isUserAuthenticated) {
+            handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
+        } else {
+            localStorage.setItem('redirectPath', location.pathname);
+            navigate('/')
+        }
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
@@ -66,7 +72,7 @@ const Details = () => {
                 iframeRef.current.src = paymentDetails.checkoutURL;
             }
         }
-        
+
     };
     useEffect(() => {
         if (!paymentDetails.checkoutURL) {
