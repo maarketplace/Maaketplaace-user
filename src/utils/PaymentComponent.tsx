@@ -1,5 +1,7 @@
+
 import { UseMutateFunction } from 'react-query';
 import { AxiosResponse } from 'axios';
+import toast from 'react-hot-toast';
 
 interface ISetPaymentDetails {
   (details: {
@@ -27,6 +29,7 @@ export const handleBuyNow = (
   setPaymentDetails: ISetPaymentDetails,
   setIsModalOpen: (value: boolean) => void,
   buyMutate: BuyMutateFunction, 
+  navigate: (path: string) => void
 ) => {
   if (isAuthenticated) {
     setLoadingStates((prevState) => ({
@@ -70,6 +73,9 @@ export const handleBuyNow = (
         }));
       },
     });
+  } else {
+    toast.error('Please login to buy this Product');
+    navigate('/');
   }
 };
 

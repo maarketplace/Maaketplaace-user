@@ -94,7 +94,7 @@ const Quicks = () => {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id, isUserAuthenticated,setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
+        handleBuyNow(id, isUserAuthenticated,setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);

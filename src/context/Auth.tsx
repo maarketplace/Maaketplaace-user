@@ -11,20 +11,17 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [userToken, setUserToken] = useState<string | null>();
-    const [loading, setLoading] = useState(true);
+    const [userToken, setUserToken] = useState<string | null>(() => localStorage.getItem(VITE_TOKEN_USER));
+    const [loading, setLoading] = useState(!userToken); // Initial loading depends on token presence
 
     useEffect(() => {
-        const storedToken = localStorage.getItem(VITE_TOKEN_USER);
-        setUserToken(storedToken);
-        setLoading(false); // Stop loading after token retrieval
-    }, []);
-
-    // Memoize context values
-    const isUserAuthenticated = !!userToken;
+        if (userToken !== null) {
+            setLoading(false);
+        }
+    }, [userToken]);
 
     const contextValue = useMemo(() => ({
-        isUserAuthenticated,
+        isUserAuthenticated: !!userToken,
         setUserToken: (token: string | null) => {
             if (token) {
                 localStorage.setItem(VITE_TOKEN_USER, token);
@@ -34,7 +31,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setUserToken(token);
         },
         loading,
-    }), [isUserAuthenticated, loading]);
+    }), [userToken, loading]);
 
     return (
         <CartContext.Provider value={contextValue}>

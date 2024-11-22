@@ -118,17 +118,12 @@ function Product() {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
+        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
-        // if (paymentDetails.amount === '0' || Number(paymentDetails.amount) === 0) {
-        //     navigate('/home/order-success');
-        // } else {
-           
-        // }
         handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
     };
 
