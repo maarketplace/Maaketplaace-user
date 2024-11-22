@@ -26,7 +26,7 @@ import Box from '@mui/material/Box';
 
 function Product() {
     const queryClient = useQueryClient();
-    const iframeRef = useRef(null);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
     const context = useContext(SearchContext);
     const navigate = useNavigate();
     const { isUserAuthenticated } = useAuth();
@@ -49,7 +49,7 @@ function Product() {
     const [isProductModalOpen, setIsProductModalOpen] = useState(false);
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
     const [followingMerchants, setFollowingMerchants] = useState<string[]>([]);
-
+    const [payLoadingState, setPayLoadingStates] = useState<Record<string, boolean>>({});
     const loggedInUserId = data?._id;
 
     const {
@@ -124,7 +124,7 @@ function Product() {
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
-        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
+        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen, setPayLoadingStates);
     };
 
 
@@ -251,7 +251,7 @@ function Product() {
                                             <p className='text-[18px] max-[650px]:text-[14px] max-[250px]:text-[12px] truncate'>{i?.merchant?.business_name || i?.merchant?.fullName}</p>
                                         </span>
                                         <button
-                                            className='text-[10px]'
+                                            className='text-[10px] border border-[grey] rounded-[5px] p-1'
                                             onClick={() => handleFollowMerchant(i?.merchant?._id)}
                                         >
                                             {
@@ -357,7 +357,9 @@ function Product() {
                                     </button>
                                 ) : (
                                     <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails.paymentID)}>
-                                        Continue
+                                         {
+                                            payLoadingState[paymentDetails.paymentID] ? <Loading/> : 'Continue'
+                                        }
                                     </button>
                                 ),
                                 display: true,

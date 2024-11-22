@@ -16,7 +16,7 @@ import Loading from "../../../loader";
 import { copyToClipboard } from "../../../utils/Utils";
 
 const Store = () => {
-    const iframeRef = useRef(null);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
     const navigate = useNavigate();
     const { isUserAuthenticated } = useAuth();
     const [allProduct, setAllProduct] = useState<IProduct[]>([]);
@@ -37,6 +37,7 @@ const Store = () => {
             source: '',
         });
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
+    const [payLoadingState, setPayLoadingStates] = useState<Record<string, boolean>>({});
     const {
         data
     } = useQuery(
@@ -57,7 +58,7 @@ const Store = () => {
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
-        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
+        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen, setPayLoadingStates);
     };
     const AdminInfo = data?.data?.data?.merchant[0];
 
@@ -261,7 +262,9 @@ const Store = () => {
                                     </button>
                                 ) : (
                                     <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails.paymentID)}>
-                                        Continue
+                                        {
+                                            payLoadingState[paymentDetails.paymentID] ? <Loading/> : 'Continue'
+                                        }
                                     </button>
                                 ),
                                 display: true,

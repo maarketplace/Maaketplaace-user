@@ -30,7 +30,7 @@ const isVideoFile = (fileUrl: string) => {
 };
 const Quicks = () => {
     const navigate = useNavigate();
-    const iframeRef = useRef(null);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
     const [allProduct, setAllProduct] = useState<IQuicks[]>([]);
     const { data } = useUser();
     const queryClient = useQueryClient();
@@ -56,6 +56,7 @@ const Quicks = () => {
             source: '',
         });
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
+    const [payLoadingState, setPayLoadingStates] = useState<Record<string, boolean>>({});
     const { isUserAuthenticated } = useAuth();
     const loggedInUserId = data?._id;
     const {
@@ -100,7 +101,7 @@ const Quicks = () => {
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
-        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
+        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen,setPayLoadingStates );
     };
     const handleCheckout = () => {
         if (paymentDetails.amount === '₦0') {
@@ -403,7 +404,9 @@ const Quicks = () => {
                                     </button>
                                 ) : (
                                     <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails.paymentID)}>
-                                        Continue
+                                         {
+                                            payLoadingState[paymentDetails.paymentID] ? <Loading/> : 'Continue'
+                                        }
                                     </button>
                                 ),
                                 display: true,

@@ -19,7 +19,7 @@ import Loading from "../../../loader";
 import toast from "react-hot-toast";
 
 const Details = () => {
-    const iframeRef = useRef(null);
+    const iframeRef = useRef<HTMLIFrameElement>(null);
     const navigate = useNavigate();
     const location = useLocation();
     const { isUserAuthenticated } = useAuth();

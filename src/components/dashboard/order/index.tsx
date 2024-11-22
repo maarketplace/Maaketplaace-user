@@ -21,7 +21,7 @@ const Order = () => {
     const [courseOrders, setCourseOrders] = useState<IOrder[]>([]);
     const [ebookOrders, setEbookOrders] = useState<IOrder[]>([]);
     const [statusFilter, setStatusFilter] = useState<string>("All");
-    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    // const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [orderDetails, setOrderDetails] = useState<Order | null>(null);
     const [isDetailsLoading, setIsDetailsLoading] = useState(false);
@@ -71,8 +71,7 @@ const Order = () => {
     });
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleRowClick = async (row: any, orderId: string) => {
-        setSelectedOrder(row);
+    const handleRowClick = async (orderId: string) => {
         setIsModalOpen(true);
         setIsDetailsLoading(true);
         setDetailsError(null);
@@ -137,7 +136,7 @@ const Order = () => {
                 <Table
                     data={filteredOrders}
                     columns={columns}
-                    onRowClick={(row) => handleRowClick(row, row?.id)}
+                    onRowClick={(row) => handleRowClick(row?.id)}
                     loading={isLoading}
                 />
                 <Modal
