@@ -103,11 +103,16 @@ const Quicks = () => {
         handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
     };
     const handleCheckout = () => {
-        if (iframeRef.current) {
-            console.log('Setting iframe src to:', paymentDetails.checkoutURL);
-            iframeRef.current.style.display = 'block';
-            iframeRef.current.src = paymentDetails.checkoutURL;
+        if (paymentDetails.amount === '₦0') {
+            navigate('/home/free-order-summary');
+            return;
+        } else {
+            if (iframeRef.current) {
+                iframeRef.current.style.display = 'block';
+                iframeRef.current.src = paymentDetails.checkoutURL;
+            }
         }
+        
     };
     useEffect(() => {
         if (!paymentDetails.checkoutURL) {

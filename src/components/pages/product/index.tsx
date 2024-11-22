@@ -74,7 +74,7 @@ function Product() {
             setFollowingMerchants((prev) =>
                 prev.includes(merchantId)
                     ? prev.filter(id => id !== merchantId)
-                    : [...prev, merchantId]                
+                    : [...prev, merchantId]
             );
             return { previousFollowing };
         },
@@ -118,19 +118,20 @@ function Product() {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id,isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
+        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate);
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
-        if (paymentDetails.amount === '0' || Number(paymentDetails.amount) === 0) {
-            navigate('/home/order-success'); // Navigate directly to success page
-        } else {
-            handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
-        }
+        // if (paymentDetails.amount === '0' || Number(paymentDetails.amount) === 0) {
+        //     navigate('/home/order-success');
+        // } else {
+           
+        // }
+        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen);
     };
-    
+
 
     const handleEyeClick = (product: IProduct) => {
         setSelectedProduct(product);
@@ -144,11 +145,16 @@ function Product() {
 
 
     const handleCheckout = () => {
-        if (iframeRef.current) {
-            console.log('Setting iframe src to:', paymentDetails.checkoutURL);
-            iframeRef.current.style.display = 'block';
-            iframeRef.current.src = paymentDetails.checkoutURL;
+        if (paymentDetails.amount === '₦0') {
+            navigate('/home/free-order-summary');
+            return;
+        } else {
+            if (iframeRef.current) {
+                iframeRef.current.style.display = 'block';
+                iframeRef.current.src = paymentDetails.checkoutURL;
+            }
         }
+        
     };
     useEffect(() => {
         if (!paymentDetails.checkoutURL) {
@@ -264,8 +270,16 @@ function Product() {
                                         <p className='text-[14px] truncate'>{i?.productName} </p>
                                     </span>
                                     <span className='flex gap-[10px]'>
-                                        <p className='text-[12px] line-through text-[lightgrey]'>₦{i?.productPrice}</p>
-                                        <p className='text-[12px]'>₦{i?.paymentPrice}</p>
+                                        {
+                                            i.paymentPrice === 0 ? (
+                                                <p className='text-[12px]'>Free</p>
+                                            ) : (
+                                                <>
+                                                    <p className='text-[12px] line-through text-[lightgrey]'>₦{i?.productPrice}</p>
+                                                    <p className='text-[12px]'>₦{i?.paymentPrice}</p>
+                                                </>
+                                            )
+                                        }
                                     </span>
                                     <span className='flex gap-[10px] text-[12px] '>
                                         <div className='' dangerouslySetInnerHTML={{ __html: i?.productDescription?.slice(0, 45) }} />

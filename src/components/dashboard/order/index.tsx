@@ -7,6 +7,7 @@ import { IOrder } from "../../../interface/Order.interface";
 import { IProduct } from "../../../interface/ProductInterface";
 import { saveAs } from "file-saver";
 import toast from "react-hot-toast";
+import { capitalizeFirstLetter } from "../../../utils/Utils";
 
 Modal.setAppElement('#root');
 interface Order {
@@ -39,7 +40,7 @@ const Order = () => {
             setEbookOrders(orders.filter((order: { products: IProduct[]; }) =>
                 order.products.some(product => product.productType === 'ebook')
             ));
-        }
+        }        
     }, [data]);
 
 
@@ -56,8 +57,8 @@ const Order = () => {
     ];
 
     const formattedData = displayedOrders.map(transaction => ({
-        "Amount": transaction?.amount || "N/A",
-        "Status": transaction.status,
+        "Amount": transaction?.amount,
+        "Status": capitalizeFirstLetter(transaction?.status),
         "Date": new Date(transaction?.createdAt).toLocaleDateString(),
         "id": transaction._id
     }));
@@ -169,8 +170,8 @@ const Order = () => {
                                                         onClick={() => downloadEbook(product)}
                                                         disabled={isDownloadLoading === product._id} // Disable button if loading
                                                         className={`w-[100px] h-[30px] text-[14px] mt-[10px] rounded ${isDownloadLoading === product._id
-                                                                ? "bg-gray-400 cursor-not-allowed"
-                                                                : "bg-[#FFC300] text-black"
+                                                            ? "bg-gray-400 cursor-not-allowed"
+                                                            : "bg-[#FFC300] text-black"
                                                             }`}
                                                     >
                                                         {isDownloadLoading === product._id ? "Loading..." : "Download"}

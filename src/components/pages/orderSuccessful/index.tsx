@@ -14,12 +14,12 @@ const OrderSuccess = () => {
     }, [navigate]);
 
     return (
-        <div className="w-full h-[80vh] flex flex-col items-center justify-center">
+        <div className="w-full h-[80vh] gap-2 flex flex-col items-center justify-center">
             <Lottie
                 autoplay
                 loop
                 animationData={Success}
-                style={{ height: '300px', width: '200px' }}
+                style={{ height: '100px', width: '100px' }}
             />
             <h1 className="text-2xl font-bold">Order Successful!</h1>
             <p className="text-center">Thank you for your purchase. Your order has been placed successfully.</p>
