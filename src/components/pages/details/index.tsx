@@ -49,11 +49,22 @@ const Details = () => {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
+        console.log("Auth Check - isUserAuthenticated:", isUserAuthenticated);
         if (isUserAuthenticated) {
-            handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
+            console.log("Product ID being processed:", id);
+            handleBuyNow(
+                id,
+                isUserAuthenticated,
+                setLoadingStates,
+                setPaymentDetails,
+                setIsModalOpen,
+                buyMutate,
+                navigate
+            );
         } else {
-            localStorage.setItem('redirectPath', location.pathname);
-            navigate('/')
+            console.log("User not authenticated. Redirecting to login...");
+            localStorage.setItem("redirectPath", location.pathname);
+            navigate("/");
         }
     };
 
