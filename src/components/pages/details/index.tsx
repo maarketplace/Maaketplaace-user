@@ -16,6 +16,7 @@ import { handleBuyNow, handlePayNow } from "../../../utils/PaymentComponent";
 import PaymentModal from "../../../utils/PaymentModal";
 import { useAuth } from "../../../context/Auth";
 import Loading from "../../../loader";
+import toast from "react-hot-toast";
 
 const Details = () => {
     const iframeRef = useRef(null);
@@ -65,6 +66,7 @@ const Details = () => {
             console.log("User not authenticated. Redirecting to login...");
             localStorage.setItem("redirectPath", location.pathname);
             navigate("/");
+            toast.error('Please login to complete your purchase')
         }
     };
 
