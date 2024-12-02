@@ -41,7 +41,7 @@ const OrderSummary = () => {
     return (
         <div className="w-full h-[90vh] flex flex-col items-center justify-center gap-[20px] ">
             <div>
-                <p className="">Hi {user?.fullName} thank you for your purchase </p>
+                <p className="text-center">Hi {user?.fullName} thank you for your purchase </p>
             </div>
             <div className="w-[400px]  dark:bg-black bg-[#eeeded] p-[10px] max-[650px]:w-[100%] flex flex-col items-center gap-[20px] rounded-lg">
                 <span className="flex w-full justify-between text-[12px] items-center">
