@@ -23,6 +23,7 @@ import { SearchContext } from '../../../context/Search';
 import { handleBuyNow, handlePayNow } from '../../../utils/PaymentComponent';
 import Skeleton from '@mui/material/Skeleton';
 import Box from '@mui/material/Box';
+import { getCachedAuthData } from '../../../utils/auth.cache.utility';
 
 function Product() {
     const queryClient = useQueryClient();
@@ -87,7 +88,8 @@ function Product() {
     });
 
     const handleFollowMerchant = (merchantId: string) => {
-        if (isUserAuthenticated) {
+        const getToken = getCachedAuthData()
+        if (getToken !== undefined) {
             followMutation.mutate(merchantId);
         } else {
             toast.error("Please login to follow this merchant");
@@ -98,7 +100,8 @@ function Product() {
     };
 
     const handleLikeClick = async (productId: string) => {
-        if (isUserAuthenticated) {
+        const getToken = getCachedAuthData()
+        if (getToken !== undefined) {
             const updateLikeProduct = [...allProduct];
             const existingItem = updateLikeProduct.findIndex((product: { _id: string; }) => product._id === productId);
             if (existingItem !== -1 && !updateLikeProduct[existingItem]?.user_likes?.includes(loggedInUserId)) {
@@ -111,8 +114,12 @@ function Product() {
                 mutate(productId);
             }
             setAllProduct(updateLikeProduct);
+        } else {
+            toast.error("Please login to follow this merchant");
+            setTimeout(() => {
+                navigate('/');
+            }, 2000);
         }
-
     };
 
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
@@ -149,7 +156,7 @@ function Product() {
                 iframeRef.current.src = paymentDetails.checkoutURL;
             }
         }
-        
+
     };
     useEffect(() => {
         if (!paymentDetails.checkoutURL) {
@@ -357,8 +364,8 @@ function Product() {
                                     </button>
                                 ) : (
                                     <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails.paymentID)}>
-                                         {
-                                            payLoadingState[paymentDetails.paymentID] ? <Loading/> : 'Continue'
+                                        {
+                                            payLoadingState[paymentDetails.paymentID] ? <Loading /> : 'Continue'
                                         }
                                     </button>
                                 ),

@@ -8,6 +8,7 @@ import { ResetPasswordSchema } from '../../../schema/LoginSchema';
 import { ResetPasswordInterface } from '../../../interface/ResetPasswordInterface';
 import { userResetPassword } from '../../../api/mutation';
 import { IErrorResponse } from '../../../interface/ErrorData';
+import Loading from '../../../loader';
 
 
 function ResetPassword() {
@@ -70,7 +71,7 @@ function ResetPassword() {
                     disabled={isLoading}
                 >
                     {
-                        isLoading ? "Loading..." : " Change Password"
+                        isLoading ? <Loading/>  : " Change Password"
                     }
                 </button>
             </div>

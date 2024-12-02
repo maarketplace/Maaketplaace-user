@@ -1,4 +1,3 @@
-const { VITE_TOKEN_USER } = import.meta.env;
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash, } from "react-icons/fa";
@@ -13,9 +12,10 @@ import Loading from "../../../loader";
 import { IErrorResponse } from "../../../interface/ErrorData";
 import { IResponseData } from "../../../interface/ResponseData";
 import { useAuth } from "../../../context/Auth";
+import { cacheAuthData } from "../../../utils/auth.cache.utility";
 
 function UserLoginForm() {
-    const { setUserToken } = useAuth();
+    const { setIsUserAuthenticated } = useAuth();
     const [showPassword, setShow] = useState<boolean>(false);
     const navigate = useNavigate()
     const form = useForm<LoginInterface>({
@@ -26,14 +26,14 @@ function UserLoginForm() {
 
     const { mutate, isLoading } = useMutation(['userlogin'], userLogin, {
         onSuccess: async (data: IResponseData) => {
-            localStorage.setItem(VITE_TOKEN_USER, data?.data?.data?.token)
+            cacheAuthData(data?.data?.data?.token)
             toast.success(data?.data?.message);
             const redirectPath = localStorage.getItem('redirectPath');
+            setIsUserAuthenticated(true)
             if (redirectPath) {
                 navigate(redirectPath);
                 localStorage.removeItem('redirectPath');
-                localStorage.setItem(VITE_TOKEN_USER, data?.data?.data?.token)
-                setUserToken(data?.data?.data?.token)
+                setIsUserAuthenticated(true)
             } else {
                 navigate('/home');
             }
