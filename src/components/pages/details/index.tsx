@@ -23,8 +23,7 @@ const Details = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { isUserAuthenticated } = useAuth();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const { id: productIdParam } = useParams<{ id?: any }>();
+    const { id: productIdParam } = useParams<{ id?: string | undefined }>();
     const [product, setProduct] = useState<IProduct | null>(null)
     const { data } = useQuery(['getoneproduct', productIdParam], () => getOneProduct(productIdParam), {})
     const [activeTab, setActiveTab] = useState('expect');
