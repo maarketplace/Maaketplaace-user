@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 const ProductReels = () => {
     const navigate = useNavigate();
     const [allProduct, setAllProduct] = useState<IQuicks[]>([]);
+    
     const { data } = useQuery(["getAllQuciks"], getAllQuciks);
 
     useEffect(() => {

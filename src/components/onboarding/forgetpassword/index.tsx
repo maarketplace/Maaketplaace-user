@@ -8,6 +8,7 @@ import { ForgotPasswordSchema } from '../../../schema/LoginSchema';
 import { userForgotPassword } from '../../../api/mutation';
 import { ForgotPasswordInterface } from '../../../interface/LoginInterface';
 import { IErrorResponse } from '../../../interface/ErrorData';
+import Loading from '../../../loader';
 
 function ForgotPassword() {
     const navigate = useNavigate()
@@ -57,7 +58,7 @@ function ForgotPassword() {
                         disabled={isLoading}
                     >
                         {
-                            isLoading ? "Loading..." : " Send Reset Email"
+                            isLoading ? <Loading /> : " Send Reset Email"
                         }
                     </button>
                     <div className="w-[70%] flex items-center justify-center gap-[10px] max-[650px]:w-[90%] max-[650px]:flex-wrap ">

@@ -1,40 +1,30 @@
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { getCachedAuthData } from '../utils/auth.cache.utility';
 
-const { VITE_TOKEN_USER } = import.meta.env;
 
 interface CartContextType {
     isUserAuthenticated: boolean;
-    setUserToken: (token: string | null) => void;
-    loading: boolean;
+    setIsUserAuthenticated: (token: boolean) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [userToken, setUserToken] = useState<string | null>(() => localStorage.getItem(VITE_TOKEN_USER));
-    const [loading, setLoading] = useState(!userToken); // Initial loading depends on token presence
+    const [isUserAuthenticated, setIsUserAuthenticated] = useState<boolean>(false);
 
     useEffect(() => {
-        if (userToken !== null) {
-            setLoading(false);
-        }
-    }, [userToken]);
+        const getToken = getCachedAuthData()
 
-    const contextValue = useMemo(() => ({
-        isUserAuthenticated: !!userToken,
-        setUserToken: (token: string | null) => {
-            if (token) {
-                localStorage.setItem(VITE_TOKEN_USER, token);
-            } else {
-                localStorage.removeItem(VITE_TOKEN_USER);
-            }
-            setUserToken(token);
-        },
-        loading,
-    }), [userToken, loading]);
+        if (getToken !== undefined) {
+            setIsUserAuthenticated(true)
+        } else {
+            setIsUserAuthenticated(false)
+        }
+    }, [isUserAuthenticated]);
+
 
     return (
-        <CartContext.Provider value={contextValue}>
+        <CartContext.Provider value={{isUserAuthenticated, setIsUserAuthenticated}}>
             {children}
         </CartContext.Provider>
     );
