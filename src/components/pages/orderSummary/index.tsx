@@ -21,6 +21,7 @@ const OrderSummary = () => {
     }, [data, orderSummary]);
 
     const product = orderSummary?.products[0]
+    const user = orderSummary?.user_id
 
     const downloadEbook = async (product: IProduct) => {
         if (product?.eBook) {
@@ -39,7 +40,9 @@ const OrderSummary = () => {
     };
     return (
         <div className="w-full h-[90vh] flex flex-col items-center justify-center gap-[20px] ">
-            <h1 className="font-semiBold text-[20px]">Order Summary</h1>
+            <div>
+                <p className="">Hi {user?.fullName} thank you for your purchase </p>
+            </div>
             <div className="w-[400px]  dark:bg-black bg-[#eeeded] p-[10px] max-[650px]:w-[100%] flex flex-col items-center gap-[20px] rounded-lg">
                 <span className="flex w-full justify-between text-[12px] items-center">
                     <p>Product Name:</p>
@@ -66,7 +69,7 @@ const OrderSummary = () => {
                     <p>Status:</p>
                     <p>{orderSummary?.status ? capitalizeFirstLetter(orderSummary.status) : ''}</p>
                 </span>
-                <p className="text-center text-[12px]">Go to your Dashboard to view your your product </p>
+               
             </div>
             <div className="w-[95%] flex flex-col">
                 <span className="flex gap-[10px]">
@@ -83,6 +86,7 @@ const OrderSummary = () => {
                 >
                     {isDownloadLoading === product?._id ? "Loading..." : "Download"}
                 </button>
+                
             </div>
         </div>
     );
