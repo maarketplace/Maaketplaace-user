@@ -17,6 +17,7 @@ import PaymentModal from "../../../utils/PaymentModal";
 import { useAuth } from "../../../context/Auth";
 import Loading from "../../../loader";
 import toast from "react-hot-toast";
+import { getCachedAuthData } from "../../../utils/auth.cache.utility";
 
 const Details = () => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -50,7 +51,8 @@ const Details = () => {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        if (isUserAuthenticated) {
+        const getToken = getCachedAuthData()
+        if (getToken !== undefined) {
             handleBuyNow(
                 id,
                 isUserAuthenticated,
@@ -62,8 +64,8 @@ const Details = () => {
             );
         } else {
             localStorage.setItem("redirectPath", location.pathname);
-            navigate("/");
             toast.error('Please login to complete your purchase')
+            navigate("/");
         }
     };
 
@@ -149,7 +151,6 @@ const Details = () => {
                                 <BsDot className="text-[#FFC300] text-[30px]" />
                                 <IoMdTime />
                                 <p>Duration: {product?.duration}</p>
-                                {/* <BsDot className="text-[#FFC300] text-[30px]" /> */}
                             </span>
                             <span className='flex items-center gap-2'>
                                 <BsDot className="text-[#FFC300] text-[30px]" />
