@@ -5,6 +5,7 @@ const { VITE_ENDPOINT_STAGING } = import.meta.env;
 
 
 const userToken = getCachedAuthData()
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const userSignup = async (data: any) => {
     return await axios.post(`${VITE_ENDPOINT_STAGING}/user`, data)

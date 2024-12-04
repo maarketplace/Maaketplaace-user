@@ -3,12 +3,10 @@ import { getCachedAuthData } from "../utils/auth.cache.utility";
 
 const { VITE_ENDPOINT_STAGING } = import.meta.env;
 
-// Function to get the token directly when needed
 const getToken = getCachedAuthData()
 
 export const getUser = async () => {
-    const usertoken = getToken;
-    if (!usertoken) throw new Error('No user token found'); // Handle missing token case
+    const usertoken = getToken;    
     return await axios.get(`${VITE_ENDPOINT_STAGING}/user`, {
         headers: {
             'Authorization': `Bearer ${usertoken}`,
@@ -29,7 +27,6 @@ export const getAllComment = async () => {
 }
 export const getUserOrders = async () => {
     const usertoken = getToken;
-    if (!usertoken) throw new Error('No user token found');
     return await axios.get(`${VITE_ENDPOINT_STAGING}/orders/users`, {
         headers: {
             'Authorization': `Bearer ${usertoken}`
@@ -38,7 +35,6 @@ export const getUserOrders = async () => {
 };
 export const getUserOrderDetails = async (id: string) => {
     const usertoken = getToken;
-    if (!usertoken) throw new Error('No user token found');
     return await axios.get(`${VITE_ENDPOINT_STAGING}/orders/${id}`, {
         headers: {
             'Authorization': `Bearer ${usertoken}`
