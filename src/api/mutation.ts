@@ -1,9 +1,10 @@
 import axios from "axios";
+import { getCachedAuthData } from "../utils/auth.cache.utility";
 
 const { VITE_ENDPOINT_STAGING } = import.meta.env;
-const { VITE_TOKEN_USER } = import.meta.env;
 
-const userToken = localStorage.getItem(VITE_TOKEN_USER)
+
+const userToken = getCachedAuthData()
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const userSignup = async (data: any) => {
     return await axios.post(`${VITE_ENDPOINT_STAGING}/user`, data)
@@ -23,74 +24,63 @@ export const logOutUser = async (id: string) => {
     return await axios.post(`${VITE_ENDPOINT_STAGING}/user/logout/${id}`)
 }
 export const userLike = async (id: string) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT_STAGING}/product/${id}/like/user`, {}, {
         headers: {
-            'Authorization': `Bearer ${useToken}`
+            'Authorization': `Bearer ${userToken}`
         }
     })
 }
 export const addProductToCart = async ({ id, data }: { id: string, data: number }) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT_STAGING}/carts/product/${id}`, data, {
         headers: {
-            'Authorization': `Bearer ${useToken}`
+            'Authorization': `Bearer ${userToken}`
         }
     })
 }
 export const clearCart = async () => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.delete(`${VITE_ENDPOINT_STAGING}/order`, {
         headers: {
-            'Authorization': `Bearer ${useToken}`
+            'Authorization': `Bearer ${userToken}`
         }
     })
 }
 
 export const userComment = async ({ id, formData }: { id: string | undefined, formData: FormData }) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER);
-
     return await axios.post(`${VITE_ENDPOINT_STAGING}/comment/products/${id}`, formData, {
         headers: {
-            'Authorization': `Bearer ${useToken}`,
+            'Authorization': `Bearer ${userToken}`,
             'Content-Type': 'multipart/form-data',
         },
     });
 };
 export const userQuicksComment = async ({ id, formData }: { id: string | undefined, formData: FormData }) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER);
-
     return await axios.post(`${VITE_ENDPOINT_STAGING}/quicks/comment/${id}`, formData, {
         headers: {
-            'Authorization': `Bearer ${useToken}`,
+            'Authorization': `Bearer ${userToken}`,
             'Content-Type': 'multipart/form-data',
         },
     });
 };
 
 export const userReplyComment = async ({ id, comment }: { id: string | null, comment: string }) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER);
-
     return await axios.post(`${VITE_ENDPOINT_STAGING}/comments/${id}/replies`, comment, {
         headers: {
-            'Authorization': `Bearer ${useToken}`,
+            'Authorization': `Bearer ${userToken}`,
         },
     });
 };
 
 export const userLikeAComment = async (id: string | undefined) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT_STAGING}/comment/${id}/like/user`, {}, {
         headers: {
-            'Authorization': `Bearer ${useToken}`
+            'Authorization': `Bearer ${userToken}`
         }
     })
 }
 export const userLikeAQuicks = async (id: string | undefined) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT_STAGING}/quicks/${id}/like/user`, {}, {
         headers: {
-            'Authorization': `Bearer ${useToken}`
+            'Authorization': `Bearer ${userToken}`
         }
     })
 }

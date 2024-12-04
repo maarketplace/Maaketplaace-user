@@ -1,15 +1,13 @@
 import axios from "axios";
+import { getCachedAuthData } from "../utils/auth.cache.utility";
 
 const { VITE_ENDPOINT_STAGING } = import.meta.env;
-const { VITE_TOKEN_USER } = import.meta.env;
 
 // Function to get the token directly when needed
-const getToken = () => {
-    return localStorage.getItem(VITE_TOKEN_USER);
-};
+const getToken = getCachedAuthData()
 
 export const getUser = async () => {
-    const usertoken = getToken();
+    const usertoken = getToken;
     if (!usertoken) throw new Error('No user token found'); // Handle missing token case
     return await axios.get(`${VITE_ENDPOINT_STAGING}/user`, {
         headers: {
@@ -29,9 +27,8 @@ export const getOneProduct = async (id: string | undefined) => {
 export const getAllComment = async () => {
     return await axios.get(`${VITE_ENDPOINT_STAGING}/comments`);
 }
-
 export const getUserOrders = async () => {
-    const usertoken = getToken();
+    const usertoken = getToken;
     if (!usertoken) throw new Error('No user token found');
     return await axios.get(`${VITE_ENDPOINT_STAGING}/orders/users`, {
         headers: {
@@ -40,7 +37,7 @@ export const getUserOrders = async () => {
     });
 };
 export const getUserOrderDetails = async (id: string) => {
-    const usertoken = getToken();
+    const usertoken = getToken;
     if (!usertoken) throw new Error('No user token found');
     return await axios.get(`${VITE_ENDPOINT_STAGING}/orders/${id}`, {
         headers: {
@@ -70,7 +67,7 @@ export const getOrderSummary = async (reference: string | null) => {
   }
 
   export const getAllQuciks = async () => {
-    const usertoken = getToken();
+    const usertoken = getToken;
     return await axios.get(`${VITE_ENDPOINT_STAGING}/quicks`, {
         headers: {
             'Authorization': `Bearer ${usertoken}`
