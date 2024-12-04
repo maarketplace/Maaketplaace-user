@@ -1,9 +1,11 @@
 import axios from "axios";
 
-const { VITE_ENDPOINT } = import.meta.env;
-const { VITE_TOKEN_USER } = import.meta.env;
+import { getCachedAuthData } from "../utils/auth.cache.utility";
 
-const userToken = localStorage.getItem(VITE_TOKEN_USER)
+const { VITE_ENDPOINT } = import.meta.env;
+
+const getToken = getCachedAuthData()
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const userSignup = async (data: any) => {
     return await axios.post(`${VITE_ENDPOINT}/user`, data)
@@ -23,74 +25,69 @@ export const logOutUser = async (id: string) => {
     return await axios.post(`${VITE_ENDPOINT}/user/logout/${id}`)
 }
 export const userLike = async (id: string) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT}/product/${id}/like/user`, {}, {
         headers: {
-            'Authorization': `Bearer ${useToken}`
+            'Authorization': `Bearer ${getToken}`
         }
     })
 }
 export const addProductToCart = async ({ id, data }: { id: string, data: number }) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT}/carts/product/${id}`, data, {
         headers: {
-            'Authorization': `Bearer ${useToken}`
+            'Authorization': `Bearer ${getToken}`
         }
     })
 }
 export const clearCart = async () => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.delete(`${VITE_ENDPOINT}/order`, {
         headers: {
-            'Authorization': `Bearer ${useToken}`
+            'Authorization': `Bearer ${getToken}`
         }
     })
 }
 
 export const userComment = async ({ id, formData }: { id: string | undefined, formData: FormData }) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER);
+
 
     return await axios.post(`${VITE_ENDPOINT}/comment/products/${id}`, formData, {
         headers: {
-            'Authorization': `Bearer ${useToken}`,
+            'Authorization': `Bearer ${getToken}`,
             'Content-Type': 'multipart/form-data',
         },
     });
 };
 export const userQuicksComment = async ({ id, formData }: { id: string | undefined, formData: FormData }) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER);
+
 
     return await axios.post(`${VITE_ENDPOINT}/quicks/comment/${id}`, formData, {
         headers: {
-            'Authorization': `Bearer ${useToken}`,
+            'Authorization': `Bearer ${getToken}`,
             'Content-Type': 'multipart/form-data',
         },
     });
 };
 
 export const userReplyComment = async ({ id, comment }: { id: string | null, comment: string }) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER);
+
 
     return await axios.post(`${VITE_ENDPOINT}/comments/${id}/replies`, comment, {
         headers: {
-            'Authorization': `Bearer ${useToken}`,
+            'Authorization': `Bearer ${getToken}`,
         },
     });
 };
 
 export const userLikeAComment = async (id: string | undefined) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT}/comment/${id}/like/user`, {}, {
         headers: {
-            'Authorization': `Bearer ${useToken}`
+            'Authorization': `Bearer ${getToken}`
         }
     })
 }
 export const userLikeAQuicks = async (id: string | undefined) => {
-    const useToken = localStorage.getItem(VITE_TOKEN_USER)
     return await axios.post(`${VITE_ENDPOINT}/quicks/${id}/like/user`, {}, {
         headers: {
-            'Authorization': `Bearer ${useToken}`
+            'Authorization': `Bearer ${getToken}`
         }
     })
 }
@@ -106,7 +103,7 @@ export const userResetPassword = async (data: { id: string | undefined, password
 export const userBuyNow = async (id: string) => {
     return await axios.post(`${VITE_ENDPOINT}/orders/products/${id}/buy`, {}, {
         headers: {
-            'Authorization': `Bearer ${userToken}`
+            'Authorization': `Bearer ${getToken}`
         }
     })
 }
@@ -114,7 +111,7 @@ export const userBuyNow = async (id: string) => {
 export const userPayWithKora = async (id: string) => {
     return await axios.post(`${VITE_ENDPOINT}/init-kora/orders/${id}/single`, {}, {
         headers: {
-            'Authorization': `Bearer ${userToken}`
+            'Authorization': `Bearer ${getToken}`
         }
     })
 }
@@ -122,7 +119,7 @@ export const userPayWithKora = async (id: string) => {
 export const userFollowMerchant = async (id: string) => {
     return await axios.post(`${VITE_ENDPOINT}/users/merchants/${id}`, {}, {
         headers: {
-            'Authorization': `Bearer ${userToken}`
+            'Authorization': `Bearer ${getToken}`
         }
     })
 }
@@ -134,7 +131,7 @@ export const resendVerification = async (email: string | null) => {
 export const deleteComment = async (id: string) => {
     return await axios.delete(`${VITE_ENDPOINT}/comments/${id}`, {
         headers: {
-            'Authorization': `Bearer ${userToken}`
+            'Authorization': `Bearer ${getToken}`
         },
         params: {
             type: 'comment'
