@@ -134,7 +134,7 @@ const Store = () => {
                     <div className=" w-[100%] flex items-center gap-5 max-[650px]:flex-col max-[650px]:h-[60%]">
                         <span className="flex w-[40%] flex-col items-center justify-center gap-[10px] relative max-[650px]:w-[100%]">
                             <img src={AdminInfo?.image} alt="" className="w-[150px] h-[150px] rounded-[100%] object-cover max-[650px]:w-[80px] max-[650px]:h-[80px] " />
-                            <p className="text-[15px] font-bold hidden max-[650px]:flex max-[650px]:text-[14px] ">{AdminInfo?.profession}</p>
+                            <p className="text-[15px] font-bold hidden max-[650px]:flex max-[650px]:text-[14px] max-[650px]:text-center ">{AdminInfo?.profession}</p>
                         </span>
                         <span className=" w-[40%] gap-5 max-[650px]:w-[100%] max-[650px]:flex max-[650px]:items-center max-[650px]:flex-col">
                             {
