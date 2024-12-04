@@ -183,12 +183,11 @@ function Product() {
                         navigate('/home/order-failure')
                         break;
 
-                    case 'pending':
-
+                    case 'closed':
+                        navigate('/home/order-failure')
                         break;
 
                     default:
-                        console.log('Unknown result, handling default case...');
                         navigate('/home/order-failure')
                         break;
                 }
@@ -198,7 +197,6 @@ function Product() {
         };
         window.addEventListener('message', handleResponse);
 
-        // Cleanup the event listener when the component unmounts
         return () => {
             window.removeEventListener('message', handleResponse);
         };

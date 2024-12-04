@@ -135,9 +135,7 @@ const Details = () => {
                         <img src={product?.productImage} className='w-[100%] object-cover  aspect-square max-[650px]:h-[90%] ' />
                     </div>
                     <div className="flex w-full items-center gap-[10px] mt-[10px]">
-                        {/* <span className="w-[20%]"> */}
                             <img src={product?.merchant?.image} alt="" className="w-[40px] h-[40px] rounded-full object-cover filter brightness-225 contrast-110 transition-all duration-500 ease-in-out" />
-                        {/* </span> */}
                         <p className=" w-[100%] max-[650px]:w-[80%] text-[12px] text-wrap">{product?.productName}</p>
                     </div>
                     {product?.pages ? (
