@@ -7,7 +7,7 @@ const { VITE_ENDPOINT } = import.meta.env;
 // Function to get the token directly when needed
 const getToken = getCachedAuthData()
 
-export const getUser = async () => {
+export const getUser = async () => {  
     if (!getToken) throw new Error('No user token found');
     return await axios.get(`${VITE_ENDPOINT}/user`, {
         headers: {
