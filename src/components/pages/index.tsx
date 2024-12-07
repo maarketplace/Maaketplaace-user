@@ -24,7 +24,7 @@ const Home = () => {
     };
 
 
-    const isQuicksPage = location.pathname === '/home/quicks';
+    const isQuicksPage = location.pathname === '/quicks';
     return (
 <div className="w-[100%] p-[0px] dark:bg-black max-w-fill no-scrollbar">
 
@@ -49,7 +49,7 @@ const Home = () => {
                 />
                 <IoSearch
                     className="text-[25px] text-[#FFC300] hidden max-[650px]:flex"
-                    onClick={() => navigate("/home/search")}
+                    onClick={() => navigate("/search")}
                 />
             </div>
         </header>

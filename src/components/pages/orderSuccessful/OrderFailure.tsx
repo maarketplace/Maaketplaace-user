@@ -7,7 +7,7 @@ const OrderFailure = () => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            navigate('/home');
+            navigate('/');
         }, 5000);
 
         return () => clearTimeout(timer);

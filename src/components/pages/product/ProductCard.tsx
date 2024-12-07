@@ -56,12 +56,12 @@ const ProductCard = ({ product, loggedInUserId, handleLikeClick, handleEyeClick,
         </span>
 
         <span className='flex items-center gap-[5px] w-[20%]'>
-          <FaRegComment size={20} className='text-[#FFC300]' onClick={() => navigate(`/home/comments/${product._id}`)} />
+          <FaRegComment size={20} className='text-[#FFC300]' onClick={() => navigate(`/comments/${product._id}`)} />
           <p>{product?.comments?.length}</p>
         </span>
 
         <span className='w-[20%]'>
-          <IoLink size={25} className='text-[#FFC300]' onClick={() => copyToClipboard(`https://marketplace.com/#/user_details/${product._id}`)} />
+          <IoLink size={25} className='text-[#FFC300]' onClick={() => copyToClipboard(`https://marketplace.com/#/details/${product._id}`)} />
         </span>
 
         <button className='w-[40%] h-[30px] bg-[#FFC300] rounded-[8px] text-[15px]' onClick={() => handleCartAddingAuth(product._id)} disabled={loadingStates[product._id]}>

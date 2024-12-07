@@ -75,7 +75,7 @@ const Details = () => {
     };
     const handleCheckout = () => {
         if (paymentDetails.amount === '₦0') {
-            navigate('/home/free-order-summary');
+            navigate('/free-order-summary');
             return;
         } else {
             if (iframeRef.current) {
@@ -100,11 +100,11 @@ const Details = () => {
                 switch (result) {
                     case 'success':
                         console.log('Payment successful, redirecting to success page...');
-                        navigate('/home/order-success')
+                        navigate('/order-success')
                         break;
 
                     case 'failued':
-                        navigate('/home/order-failure')
+                        navigate('/order-failure')
                         break;
 
                     case 'pending':
@@ -113,7 +113,7 @@ const Details = () => {
 
                     default:
                         console.log('Unknown result, handling default case...');
-                        navigate('/home/order-failure')
+                        navigate('/order-failure')
                         break;
                 }
             }
@@ -272,7 +272,7 @@ const Details = () => {
                             <SwiperSlide
                                 key={i?._id}
                                 style={{ height: 400 }}
-                                onClick={() => navigate(`/home/details/${i._id}`)}
+                                onClick={() => navigate(`/details/${i._id}`)}
                                 className="h-[450px] border rounded-lg p-[10px] flex flex-col gap-[20px] max-[650px]:border-none max-[650px]:bg-slate-50 dark:bg-black dark:shadow-sm dark:shadow-[lightgrey] max-[650px]:w-[100%] max-[650px]:rounded-none "
                             >
                                 <div className="h-[250px] flex items-center justify-center mb-[10px] max-[650px]:w-full max-[650px]:h-[250px]">

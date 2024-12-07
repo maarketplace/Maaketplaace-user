@@ -20,7 +20,7 @@ const OrderSummaryDetails = () => {
 
     const product = orderSummary?.products[0]
     const handleGoHome = () =>{
-        navigate('/home')
+        navigate('/')
         localStorage.removeItem('orderRefrence')
     }
     return (

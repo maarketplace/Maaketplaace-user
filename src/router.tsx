@@ -15,7 +15,6 @@ import Books from './components/dashboard/books';
 import OrderSuccess from './components/pages/orderSuccessful';
 import OrderSummary from './components/pages/orderSummary';
 import { Suspense, lazy } from 'react';
-import ProtectedRoute from './private-route';
 import ResetPassword from './components/onboarding/resetpassword';
 import ForgotPassword from './components/onboarding/forgetpassword';
 import OrderFailure from './components/pages/orderSuccessful/OrderFailure';
@@ -27,7 +26,7 @@ const LoginLoader = () => import('./components/onboarding/login');
 const ProductPage = lazy(() => import('./components/pages/product'));
 const router = createHashRouter([
   {
-    path: '/',
+    path: '/login',
     element: <LazyImport componentLoader={LoginLoader} />,
     loader: LoginLoader,
   },
@@ -48,59 +47,57 @@ const router = createHashRouter([
     element: <ResetPassword />
   },
   {
-    path: 'home',
+    path: '/',
     element: <Home />,
     children: [
       {
         path: '',
         element:
           <Suspense fallback={<div>Loading...</div>}>
-            <ProtectedRoute>
               <ProductPage />
-            </ProtectedRoute>
           </Suspense>
       },
       {
-        path: '/home/details/:id',
+        path: '/details/:id',
         element: <Details />
       },
       {
-        path: '/home/quicks',
+        path: '/quicks',
         element: <Quicks />
       },
       {
-        path: '/home/comments/:id',
+        path: 'comments/:id',
         element: <Comment productId={''} />
       },
       {
-        path: '/home/dashboard'
+        path: 'dashboard'
       },
       {
-        path: '/home/store/:businessName',
+        path: 'store/:businessName',
         element: <Store />
       },
       {
-        path: '/home/search',
+        path: 'search',
         element: <Search />
       },
       {
-        path: '/home/order-success',
+        path: 'order-success',
         element: <OrderSuccess />
       },
       {
-        path: '/home/order-summary',
+        path: 'order-summary',
         element: <OrderSummary />
       },
       {
-        path: '/home/free-order-summary',
+        path: 'free-order-summary',
         element: <FreeOrderSuccess />
       },
       {
-        path: '/home/order-summary/:refrence',
+        path: 'order-summary/:refrence',
         element: <OrderSummaryDetails />
       },
       {
-        path: '/home/order-failure',
+        path: 'order-failure',
         element: <OrderFailure />
       },
     ]
