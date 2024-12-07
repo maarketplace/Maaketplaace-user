@@ -142,13 +142,13 @@ function Product() {
     };
     const handleMerchantClick = (businessName: string) => {
         const formattedName = businessName.trim().replace(/\s+/g, "-");
-        navigate(`/home/store/${formattedName}`);
+        navigate(`/store/${formattedName}`);
     };
 
 
     const handleCheckout = () => {
         if (paymentDetails.amount === '₦0') {
-            navigate('/home/free-order-summary');
+            navigate('/free-order-summary');
             return;
         } else {
             if (iframeRef.current) {
@@ -176,19 +176,19 @@ function Product() {
                 switch (result) {
                     case 'success':
                         console.log('Payment successful, redirecting to success page...');
-                        navigate('/home/order-success')
+                        navigate('/order-success')
                         break;
 
                     case 'failed':
-                        navigate('/home/order-failure')
+                        navigate('/order-failure')
                         break;
 
                     case 'closed':
-                        navigate('/home/order-failure')
+                        navigate('/order-failure')
                         break;
 
                     default:
-                        navigate('/home/order-failure')
+                        navigate('/order-failure')
                         break;
                 }
 
@@ -303,11 +303,11 @@ function Product() {
                                                 <p >{i?.total_likes}</p>
                                             </span>
                                             <span className='flex items-center gap-[5px] w-[20%]'>
-                                                <FaRegComment size={20} className='text-[#FFC300]' onClick={() => navigate(`/home/comments/${i?._id}`)} />
+                                                <FaRegComment size={20} className='text-[#FFC300]' onClick={() => navigate(`/comments/${i?._id}`)} />
                                                 <p>{i?.comments?.length}</p>
                                             </span>
                                             <span className='w-[20%]'>
-                                                <IoLink size={25} className='text-[#FFC300]' onClick={() => copyToClipboard(`https://maarketplaace.com/#/home/details/${i?._id}`)} />
+                                                <IoLink size={25} className='text-[#FFC300]' onClick={() => copyToClipboard(`https://maarketplaace.com/#/details/${i?._id}`)} />
                                             </span>
                                             <button
                                                 className='w-[40%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[15px]'
@@ -430,7 +430,7 @@ function Product() {
                                     <CiMoneyCheck1 />
                                     <p>Amount: {selectedProduct?.paymentPrice}</p>
                                 </span>
-                                <button className=" bg-[#FFC300] text-black w-[120px] text-[12px] h-[30px] rounded" onClick={() => navigate(`/home/details/${selectedProduct._id}`)}>
+                                <button className=" bg-[#FFC300] text-black w-[120px] text-[12px] h-[30px] rounded" onClick={() => navigate(`/details/${selectedProduct._id}`)}>
                                     View more
                                 </button>
                             </div>

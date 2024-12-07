@@ -7,7 +7,7 @@ const OrderSuccess = () => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            navigate('/home/order-summary');
+            navigate('/order-summary');
         }, 5000);
 
         return () => clearTimeout(timer);

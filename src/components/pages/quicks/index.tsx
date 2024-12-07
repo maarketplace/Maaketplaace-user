@@ -105,7 +105,7 @@ const Quicks = () => {
     };
     const handleCheckout = () => {
         if (paymentDetails.amount === '₦0') {
-            navigate('/home/free-order-summary');
+            navigate('/free-order-summary');
             return;
         } else {
             if (iframeRef.current) {
@@ -133,11 +133,11 @@ const Quicks = () => {
                 switch (result) {
                     case 'success':
                         console.log('Payment successful, redirecting to success page...');
-                        navigate('/home/order-success')
+                        navigate('/order-success')
                         break;
 
                     case 'failed':
-                        navigate('/home/order-failure')
+                        navigate('/order-failure')
                         break;
 
                     case 'pending':
@@ -180,7 +180,7 @@ const Quicks = () => {
     };
 
     const copyToClipboard = (reelId: string) => {
-        const shareUrl = `http://maarketplaace.com/#/home/quicks?reelId=${reelId}`;
+        const shareUrl = `http://maarketplaace.com/#/quicks?reelId=${reelId}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
             toast.success('Link copied successfully!');
         });

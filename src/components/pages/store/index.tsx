@@ -75,7 +75,7 @@ const Store = () => {
     };
     const handleCheckout = () => {
         if (paymentDetails.amount === '₦0') {
-            navigate('/home/free-order-summary');
+            navigate('/free-order-summary');
             return;
         } else {
             if (iframeRef.current) {
@@ -101,11 +101,11 @@ const Store = () => {
                 switch (result) {
                     case 'success':
                         console.log('Payment successful, redirecting to success page...');
-                        navigate('/home/order-success')
+                        navigate('/order-success')
                         break;
 
                     case 'failed':
-                        navigate('/home/order-failure')
+                        navigate('/order-failure')
                         break;
 
                     case 'pending':
@@ -113,7 +113,7 @@ const Store = () => {
                         break;
 
                     default:
-                        navigate('/home/order-failure')
+                        navigate('/order-failure')
                         break;
                 }
 
@@ -147,7 +147,7 @@ const Store = () => {
                             <p className="text-[12px] bg-[#eae7e7] p-1 rounded-[4px] dark:bg-[#2c2c2c]">{allProduct?.length} Product</p>
                             <p
                                 className="text-[12px] bg-[#eae7e7] p-1 rounded-[4px] dark:bg-[#2c2c2c]"
-                                onClick={() => copyToClipboard(`https://maarketplaace.com/#/home/store/${businessName}`)}
+                                onClick={() => copyToClipboard(`https://maarketplaace.com/#/store/${businessName}`)}
                             >
                                 Share store
                             </p>
@@ -218,7 +218,7 @@ const Store = () => {
                                     <CiMoneyCheck1 />
                                     <p>Amount: {selectedProduct?.paymentPrice}</p>
                                 </span>
-                                <button className=" bg-[#FFC300] w-[120px] text-[12px] h-[40px] rounded text-black" onClick={() => navigate(`/home/details/${selectedProduct._id}`)}>
+                                <button className=" bg-[#FFC300] w-[120px] text-[12px] h-[40px] rounded text-black" onClick={() => navigate(`/details/${selectedProduct._id}`)}>
                                     View more Details
                                 </button>
                             </div>

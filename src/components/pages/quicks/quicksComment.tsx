@@ -227,9 +227,9 @@ const QuciksComment = ({quicksId}: CommentProps) => {
     setProductComment((prevComments) => [...prevComments]);
   };
   return (
-    <div className={location.pathname === '/home/quicks' ? ' w-[100%] flex flex-col items-center justify-between h-[100vh] dark:bg-black dark:text-white no-scrollbar ' : 'mt-[20px] w-[100%] flex flex-col items-center justify-between h-[85vh] dark:bg-black dark:text-white no-scrollbar'}>
+    <div className={location.pathname === '/quicks' ? ' w-[100%] flex flex-col items-center justify-between h-[100vh] dark:bg-black dark:text-white no-scrollbar ' : 'mt-[20px] w-[100%] flex flex-col items-center justify-between h-[85vh] dark:bg-black dark:text-white no-scrollbar'}>
       <div className="flex h-[] w-[45%] items-center max-[650px]:w-[100%] justify-between p-2 bg-white dark:bg-black">
-        <IoMdArrowBack onClick={() => navigate('/home')} className={location.pathname === '/home/quicks' ? 'hidden' : ''} />
+        <IoMdArrowBack onClick={() => navigate('/')} className={location.pathname === '/quicks' ? 'hidden' : ''} />
         <p>{productComment?.length} Comments</p>
       </div>
       <div className="w-[45%] h-[80%] max-[650px]:w-[100%] overflow-y-auto justify-center items-center">

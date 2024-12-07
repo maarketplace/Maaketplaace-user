@@ -11,7 +11,7 @@ const SideBar = ({ setShowSidebar }: SideBarProps) => {
 
     const handleLogout = () => {
         localStorage.clear();
-        navigate('/');
+        navigate('/login');
         if (setShowSidebar) {
             setShowSidebar(false);
         }

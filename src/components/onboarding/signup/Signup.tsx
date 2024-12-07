@@ -152,7 +152,7 @@ function UserSignupForm() {
                 <h4 className="">Already have an account?</h4>
                 <h4
                     className="text-[#FFC300] cursor-pointer"
-                    onClick={() => navigate('/')}
+                    onClick={() => navigate('/login')}
                 >
                     Sign in
                 </h4>

@@ -66,7 +66,7 @@ function ForgotPassword() {
                         <h4 className="max-[650px]:text-[13px]">Remember your password?</h4>
                         <h4
                             className="text-[#0c50af] cursor-pointer max-[650px]:text-[13px]"
-                            onClick={() => navigate('/')}
+                            onClick={() => navigate('/login')}
                         >
                             Login
                         </h4>
