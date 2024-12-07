@@ -59,7 +59,7 @@ function UserSignupForm() {
             </div>
             <div className="w-[80%]  flex items-center gap-[10px] max-[650px]:flex-wrap max-[650px]:w-[90%] ">
                 <span className="w-[100%] flex flex-col gap-[10px] max-[650px]:w-[100%] max-[650px]:mt-[10px]">
-                    <label className="text-sm">Your Full Name</label>
+                    <label className="text-sm">Full Name</label>
                     <div className="w-[100%] border-[#999BA1]  border p-2">
                         <input
                             type="text"
@@ -73,7 +73,7 @@ function UserSignupForm() {
             </div>
             <div className="w-[80%]  flex items-center gap-[10px] max-[650px]:flex-wrap max-[650px]:w-[90%]">
                 <span className="w-[50%] flex flex-col gap-[10px] max-[650px]:w-[100%] max-[650px]:mt-[10px]">
-                    <label className="text-sm">Your Phone Number</label>
+                    <label className="text-sm">Phone Number</label>
                     <div className="w-[100%] border-[#999BA1]  border p-2">
                         <input
                             type="number"
@@ -85,7 +85,7 @@ function UserSignupForm() {
                     <b className='w-[100%] text-[red] text-[12px] max-[650px]:w-[90%]'>{errors.phoneNumber?.message}</b>
                 </span>
                 <span className="w-[50%] flex flex-col gap-[10px] max-[650px]:w-[100%] max-[650px]:mt-[10px]">
-                    <label className="text-sm">Your Email</label>
+                    <label className="text-sm">Email</label>
                     <div className="w-[100%] border-[#999BA1] border p-2">
                         <input
                             type="email"
@@ -99,7 +99,7 @@ function UserSignupForm() {
             </div>
             <div className="w-[80%]  flex items-center gap-[10px] max-[650px]:flex-wrap  max-[650px]:w-[90%]">
                 <span className="w-[50%] flex flex-col gap-[10px] max-[650px]:w-[100%] max-[650px]:mt-[10px]">
-                    <label className="text-sm">Your Password</label>
+                    <label className="text-sm">Password</label>
                     <div className="flex w-[100%] border-[#999BA1] items-center  border p-2">
                         <input
                             type={showPassword ? "text" : "password"}
@@ -118,7 +118,7 @@ function UserSignupForm() {
                     <b className='w-[100%] text-[red] text-[12px] max-[650px]:w-[90%]'>{errors.password?.message}</b>
                 </span>
                 <span className="w-[50%] flex flex-col gap-[10px] max-[650px]:w-[100%] max-[650px]:mt-[10px]">
-                    <label className="text-sm">Confirm Your Password</label>
+                    <label className="text-sm">Confirm Password</label>
                     <div className="flex w-[100%] items-center  border-[#999BA1] border p-2">
                         <input
                             type={showConfirmassword ? "text" : "password"}
