@@ -39,7 +39,7 @@ const Verify = () => {
     const { mutate, isLoading } = useMutation(['merchantverify'], userVerify, {
         onSuccess: async (data: IResponseData) => {
             toast.success(data?.data?.data?.message);
-            navigate('/');
+            navigate('/login');
             localStorage.removeItem('userEmail')
         },
         onError: (err: IErrorResponse) => {
