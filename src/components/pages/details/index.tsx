@@ -63,8 +63,8 @@ const Details = () => {
             );
         } else {
             localStorage.setItem("redirectPath", location.pathname);
+            navigate("/login");
             toast.error('Please login to complete your purchase')
-            navigate("/");
         }
     };
 

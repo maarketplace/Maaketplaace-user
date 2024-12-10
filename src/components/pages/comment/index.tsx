@@ -21,7 +21,7 @@ import Skeleton from '@mui/material/Skeleton';
 import Box from '@mui/material/Box';
 
 interface CommentProps {
-  productId: string |  null;
+  productId: string | null;
 }
 const Comment = ({ productId }: CommentProps) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -45,7 +45,7 @@ const Comment = ({ productId }: CommentProps) => {
     resolver: yupResolver(CommentSchema) as any
   });
 
-  const { register, handleSubmit, formState: { errors }} = form;
+  const { register, handleSubmit, formState: { errors } } = form;
 
   const { data: CommentData, isLoading } = useQuery(['getProductComment', productIdParam || productId], () => getProductComment(productIdParam || productId), {});
   const { data: CommentResponse, } = useQuery(
@@ -55,6 +55,12 @@ const Comment = ({ productId }: CommentProps) => {
       enabled: !!selectedCommentId, // This query will run only when selectedCommentId is set
     }
   );
+  const { fetchMerchant } = useUser();
+
+  useEffect(() => {
+    fetchMerchant();
+  }, [fetchMerchant]);
+
   useEffect(() => {
     if (CommentResponse) {
       console.log("Replies for the selected comment:", CommentResponse?.data?.data);
@@ -186,6 +192,7 @@ const Comment = ({ productId }: CommentProps) => {
   };
 
   const loggedInUserId = userData?._id;
+  console.log("Logged in user ID:", loggedInUserId);
 
   const { mutate: likeCommentMutate } = useMutation(['userLikeAComment',], userLikeAComment, {});
 
@@ -292,11 +299,11 @@ const Comment = ({ productId }: CommentProps) => {
                       <p className="text-[12px]">{i?.total_likes}</p>
                     </span>
                     {i.user?._id === loggedInUserId && (
-                         <span>
-                         <MdDeleteOutline onClick={() => handleDeleteComment(i?._id)} className="text-red-500" />
-                       </span>
+                      <span>
+                        <MdDeleteOutline onClick={() => handleDeleteComment(i?._id)} className="text-red-500" />
+                      </span>
                     )}
-               
+
                   </div>
                 </div>
               ))}
@@ -317,7 +324,7 @@ const Comment = ({ productId }: CommentProps) => {
           />
         </div>
       )}
-      { 
+      {
         isModalOpen && modalImageUrl && (
           <ImageModal imageUrl={modalImageUrl} onClose={handleCloseModal} />
         )

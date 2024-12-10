@@ -31,7 +31,7 @@ function Product() {
     const context = useContext(SearchContext);
     const navigate = useNavigate();
     const { isUserAuthenticated } = useAuth();
-    const { data } = useUser();
+    const { data,fetchMerchant } = useUser();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [allProduct, setAllProduct] = useState<any>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,6 +63,11 @@ function Product() {
             setAllProduct(reversedData);
         }
     }, [allProductData]);
+
+
+    useEffect(() => {
+        fetchMerchant();
+    }, [fetchMerchant]);
 
     const { mutate } = useMutation(
         ['userlike'],

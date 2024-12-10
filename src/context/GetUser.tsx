@@ -1,6 +1,6 @@
 // UserContext.tsx
 import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
-import { useQuery } from 'react-query';
+import { QueryObserverResult, useQuery } from 'react-query';
 import { getUser } from '../api/query';
 
 
@@ -10,6 +10,8 @@ interface UserContextType {
     isLoading: boolean;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     error: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    fetchMerchant: () => Promise<QueryObserverResult<any, unknown>>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -20,16 +22,18 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         data,
         isLoading,
         error,
-    } = useQuery(["getUser"], getUser, {});
+        refetch: fetchMerchant,
+    } = useQuery(["getUser"], getUser,  { enabled: false });
     useEffect(() => {
         if (data?.data?.data?.data) {
-            setUser(data?.data?.data?.data); // Adjust based on actual response structure
+            setUser(data?.data?.data?.data);
         }
     }, [data, user]);
     const value: UserContextType = {
         data: user,
         isLoading,
         error,
+        fetchMerchant,
     };
 
     return (
