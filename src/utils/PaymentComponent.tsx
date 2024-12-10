@@ -75,7 +75,7 @@ export const handleBuyNow = (
     });
   } else {
     toast.error('Please login to buy this Product');
-    navigate('/');
+    navigate('/login');
   }
 };
 
