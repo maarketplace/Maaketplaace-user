@@ -66,7 +66,7 @@ function Product() {
 
 
     useEffect(() => {
-        fetchMerchant();
+        fetchMerchant()
     }, [fetchMerchant]);
 
     const { mutate } = useMutation(
@@ -99,7 +99,7 @@ function Product() {
         } else {
             toast.error("Please login to follow this merchant");
             setTimeout(() => {
-                navigate('/');
+                navigate('/login');
             }, 2000);
         }
     };
@@ -120,9 +120,9 @@ function Product() {
             }
             setAllProduct(updateLikeProduct);
         } else {
-            toast.error("Please login to follow this merchant");
+            toast.error("Please login to like this product");
             setTimeout(() => {
-                navigate('/');
+                navigate('/login');
             }, 2000);
         }
     };
