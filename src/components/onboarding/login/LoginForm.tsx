@@ -36,6 +36,7 @@ function UserLoginForm() {
                 setIsUserAuthenticated(true)
             } else {
                 navigate('/');
+                setIsUserAuthenticated(true)
             }
         },
         onError: (err: IErrorResponse) => {
