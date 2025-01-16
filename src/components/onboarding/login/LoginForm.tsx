@@ -28,11 +28,12 @@ function UserLoginForm() {
         onSuccess: async (data: IResponseData) => {
             cacheAuthData(data?.data?.data?.token)
             toast.success(data?.data?.message);
-            const redirectPath = localStorage.getItem('redirectPath');
             setIsUserAuthenticated(true)
+            const redirectPath = localStorage.getItem('redirectPath');
             if (redirectPath) {
                 navigate(redirectPath);
                 localStorage.removeItem('redirectPath');
+                cacheAuthData(data?.data?.data?.token)
                 setIsUserAuthenticated(true)
             } else {
                 navigate('/');

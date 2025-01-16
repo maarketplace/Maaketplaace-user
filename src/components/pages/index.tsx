@@ -3,21 +3,16 @@ import Bottom from "./bottomNav";
 import Layout from "./layout";
 // import Logo from '../../assets/LOGO.svg'
 import { IoSearch } from "react-icons/io5";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { SearchContext } from "../../context/Search";
-import { useUser } from "../../context/GetUser";
+
 
 const Home = () => {
     const navigate = useNavigate()
     const location = useLocation();
 
     const context = useContext(SearchContext);
-    const { fetchMerchant } = useUser();
-
-    useEffect(() => {
-        fetchMerchant();
-    }, [fetchMerchant]);
-
+ 
 
     if (!context) {
         return null;

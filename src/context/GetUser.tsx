@@ -1,53 +1,84 @@
-// UserContext.tsx
-import React, { createContext, useContext, ReactNode, useState, useEffect } from 'react';
+import React, { createContext, useContext, ReactNode } from 'react';
 import { QueryObserverResult, useQuery } from 'react-query';
 import { getUser } from '../api/query';
 
+interface User {
+  _id: string | undefined;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  is_admin: boolean;
+  verified: boolean;
+  verificationCode: number;
+  createdAt: string;
+  updatedAt: string;
+  role_slug: string;
+  followingMerchants: string[];
+  image: string;
+}
+
+interface UserResponse {
+  status: boolean;
+  data: {
+    data: User;
+  };
+}
 
 interface UserContextType {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    data: any;
-    isLoading: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    error: any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fetchMerchant: () => Promise<QueryObserverResult<any, unknown>>;
+  user: User | undefined;
+  isLoading: boolean;
+  error: Error | null;
+  fetchUser: () => Promise<QueryObserverResult<User, Error>>;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState()
-    const {
-        data,
-        isLoading,
-        error,
-        refetch: fetchMerchant,
-    } = useQuery(["getUser"], getUser,  { enabled: false });
-    useEffect(() => {
-        if (data?.data?.data?.data) {
-            setUser(data?.data?.data?.data);
-        }
-    }, [data, user]);
-    const value: UserContextType = {
-        data: user,
-        isLoading,
-        error,
-        fetchMerchant,
-    };
+  const {
+    data: user,
+    isLoading,
+    error,
+    refetch: fetchUser,
+  } = useQuery<User, Error>(
+    ['user'],
+    async () => {
+      const response = await getUser();
+      const userResponse: UserResponse = {
+        status: response.status === 200,
+        data: response.data.data,
+      };
+      console.log(userResponse);
+      return userResponse.data.data;
+    },
+    {
+      enabled: true,
+      staleTime: 5 * 60 * 1000, // Data considered fresh for 5 minutes
+      cacheTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+      retry: 2,
+      refetchOnWindowFocus: false,
+      // Add select transform to handle the nested data structure
+    }
+  );
 
-    return (
-        <UserContext.Provider value={value}>
-            {children}
-        </UserContext.Provider>
-    );
+  const value: UserContextType = {
+    user,
+    isLoading,
+    error,
+    fetchUser,
+  };
+
+  return (
+    <UserContext.Provider value={value}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const useUser = (): UserContextType => {
-    const context = useContext(UserContext);
-    if (!context) {
-        throw new Error('useMerchant must be used within a UserProvider');
-    }
-    return context;
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error('useUser must be used within a UserProvider');
+  }
+  return context;
 };

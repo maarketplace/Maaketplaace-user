@@ -24,14 +24,16 @@ import { handleBuyNow, handlePayNow } from '../../../utils/PaymentComponent';
 import Skeleton from '@mui/material/Skeleton';
 import Box from '@mui/material/Box';
 import { getCachedAuthData } from '../../../utils/auth.cache.utility';
+import { shuffleArray } from '../../../utils/shuffle';
 
 function Product() {
+
     const queryClient = useQueryClient();
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const context = useContext(SearchContext);
     const navigate = useNavigate();
     const { isUserAuthenticated } = useAuth();
-    const { data,fetchMerchant } = useUser();
+    const { user } = useUser();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [allProduct, setAllProduct] = useState<any>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,8 +53,8 @@ function Product() {
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
     const [followingMerchants, setFollowingMerchants] = useState<string[]>([]);
     const [payLoadingState, setPayLoadingStates] = useState<Record<string, boolean>>({});
-    const loggedInUserId = data?._id;
-
+    const loggedInUserId = user?._id;
+    console.log(loggedInUserId)
     const {
         data: allProductData, isLoading
     } = useQuery(["getallproduct"], getAllProduct);
@@ -61,18 +63,16 @@ function Product() {
         if (allProductData?.data?.data?.products) {
             const reversedData = [...allProductData.data.data.products].reverse();
             setAllProduct(reversedData);
+            setAllProduct(shuffleArray([...reversedData]));
         }
     }, [allProductData]);
 
-
-    useEffect(() => {
-        fetchMerchant()
-    }, [fetchMerchant]);
 
     const { mutate } = useMutation(
         ['userlike'],
         userLike,
     );
+    // follow functionality
     const followMutation = useMutation(userFollowMerchant, {
         onMutate: async (merchantId) => {
             await queryClient.cancelQueries(['getallproduct']);
@@ -103,7 +103,7 @@ function Product() {
             }, 2000);
         }
     };
-
+    // Like functionality
     const handleLikeClick = async (productId: string) => {
         const getToken = getCachedAuthData()
         if (getToken !== undefined) {
@@ -127,6 +127,19 @@ function Product() {
         }
     };
 
+    // View Product modal
+    const handleEyeClick = (product: IProduct) => {
+        setSelectedProduct(product);
+        setIsProductModalOpen(true);
+        console.log(selectedProduct);
+    };
+    // Naviagte to merchant store 
+    const handleMerchantClick = (businessName: string) => {
+        const formattedName = businessName.trim().replace(/\s+/g, "-");
+        navigate(`/store/${formattedName}`);
+    };
+    // Buying functionality
+
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
@@ -138,18 +151,6 @@ function Product() {
     const handlePayment = (paymentID: string) => {
         handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen, setPayLoadingStates);
     };
-
-
-    const handleEyeClick = (product: IProduct) => {
-        setSelectedProduct(product);
-        setIsProductModalOpen(true);
-        console.log(selectedProduct);
-    };
-    const handleMerchantClick = (businessName: string) => {
-        const formattedName = businessName.trim().replace(/\s+/g, "-");
-        navigate(`/store/${formattedName}`);
-    };
-
 
     const handleCheckout = () => {
         if (paymentDetails.amount === '₦0') {
@@ -165,11 +166,8 @@ function Product() {
     };
     useEffect(() => {
         if (!paymentDetails.checkoutURL) {
-            console.log("Checkout URL is not set yet.");
             return;
         }
-        console.log("Checkout URL is set");
-
         const handleResponse = (event: { origin: string; data: string }) => {
             if (event.origin === new URL(paymentDetails.checkoutURL).origin) {
                 const parsedData = JSON.parse(event.data);
@@ -207,6 +205,7 @@ function Product() {
         };
     }, [navigate, paymentDetails.checkoutURL, setIsModalOpen]);
 
+    // Search Filtering functionality
 
     if (!context) {
         return null;
@@ -221,7 +220,7 @@ function Product() {
 
             {
                 isLoading ?
-                    <div className='w-[95%] h-[] overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] '>
+                    <div className='w-[95%] h-[] overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] justify-center '>
                         {Array.from(new Array(8)).map((_, index) => (
                             <div key={index} className='w-[280px] h-[500px] shadow-sm rounded-lg p-[10px] flex flex-col gap-[10px] max-[650px]:w-[100%]'>
                                 <Skeleton variant="rectangular" width="100%" height={350} className='dark:bg-[grey]' />
@@ -238,7 +237,6 @@ function Product() {
 
                     filteredProducts?.length !== 0
                         ?
-
                         <div className="w-[100%] h-[] no-scrollbar overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] justify-center ">
                             <ProductReels />
                             {filteredProducts?.map((i: IProduct) => (
@@ -265,7 +263,7 @@ function Product() {
                                             onClick={() => handleFollowMerchant(i?.merchant?._id)}
                                         >
                                             {
-                                                i?.merchant?.followedUsers?.includes(loggedInUserId)
+                                                i?.merchant?.followedUsers?.includes(loggedInUserId ?? '')
                                                     ? "Following"
                                                     : "Follow"
                                             }
@@ -292,7 +290,7 @@ function Product() {
                                     <div className='w-[100%] flex flex-col'>
                                         <div className='flex items-center w-[100%] h-[50px]'>
                                             <span className='flex items-center gap-[5px] w-[20%]'>
-                                                {i?.user_likes && i?.user_likes.includes(loggedInUserId) ?
+                                                {i?.user_likes && loggedInUserId && i?.user_likes.includes(loggedInUserId) ?
                                                     <IoHeart
                                                         size={23}
                                                         className='text-[#FFC300]'
