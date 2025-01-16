@@ -24,7 +24,7 @@ interface CommentProps {
 }
 const QuciksComment = ({quicksId}: CommentProps) => {
 
-  const { data: userData } = useUser();
+  const { user: userData } = useUser();
   const { isUserAuthenticated } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -194,10 +194,12 @@ const QuciksComment = ({quicksId}: CommentProps) => {
 
       if (commentIndex !== -1) {
         const comment = updatedComments[commentIndex];
-        const isLiked = comment.user_likes?.includes(loggedInUserId);
+        const isLiked = loggedInUserId ? comment.user_likes?.includes(loggedInUserId) : false;
         if (!isLiked) {
           comment.total_likes = (comment?.total_likes || 0) + 1;
-          comment.user_likes = [...(comment?.user_likes || []), loggedInUserId];
+          if (loggedInUserId) {
+            comment.user_likes = [...(comment?.user_likes || []), loggedInUserId];
+          }
           likeCommentMutate(commentId);
         } else {
           comment.total_likes = (comment?.total_likes || 0) - 1;
@@ -276,7 +278,7 @@ const QuciksComment = ({quicksId}: CommentProps) => {
                       </p> */}
                     </span>
                     <span className="flex flex-col justify-center items-center">
-                      {i?.user_likes?.includes(loggedInUserId) ? (
+                      {i?.user_likes && loggedInUserId && i?.user_likes?.includes(loggedInUserId) ? (
                         <IoHeart
                           className="text-[#FFC300] text-[15px]"
                           onClick={() => handleCommentLik(i?._id)}

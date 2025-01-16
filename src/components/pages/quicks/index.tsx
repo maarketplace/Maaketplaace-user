@@ -32,7 +32,7 @@ const Quicks = () => {
     const navigate = useNavigate();
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const [allProduct, setAllProduct] = useState<IQuicks[]>([]);
-    const { data } = useUser();
+    const { user } = useUser();
     const queryClient = useQueryClient();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [currentProductId, setCurrentProductId] = useState<string | null>(null);
@@ -58,7 +58,7 @@ const Quicks = () => {
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
     const [payLoadingState, setPayLoadingStates] = useState<Record<string, boolean>>({});
     const { isUserAuthenticated } = useAuth();
-    const loggedInUserId = data?._id;
+    const loggedInUserId = user?._id;
     const {
         data: allQuicksData, isLoading
     } = useQuery(["getAllQuciks"], getAllQuciks);
@@ -167,7 +167,7 @@ const Quicks = () => {
         const updateLikeProduct = [...allProduct];
         const existingItem = updateLikeProduct.findIndex(product => product._id === productId);
         if (existingItem !== -1) {
-            if (!updateLikeProduct[existingItem].user_likes.includes(loggedInUserId)) {
+            if (loggedInUserId && !updateLikeProduct[existingItem].user_likes.includes(loggedInUserId)) {
                 updateLikeProduct[existingItem].total_likes += 1;
                 updateLikeProduct[existingItem].user_likes.push(loggedInUserId);
             } else {
@@ -294,7 +294,7 @@ const Quicks = () => {
                                                     <span className="gap-[10px] w-[40px] flex items-center justify-center relative">
                                                     </span>
                                                     <span className="w-[40px] h-[40px] bg-[white] rounded-full flex items-center justify-center mt-[10px]">
-                                                        {i?.user_likes && i?.user_likes.includes(loggedInUserId) ? (
+                                                        {i?.user_likes && loggedInUserId && i?.user_likes.includes(loggedInUserId) ? (
                                                             <IoHeart size={23} className="text-[#FFc300] text-[25px]" onClick={() => handleLikeClick(i._id)} />
                                                         ) : (
                                                             <IoHeartOutline size={23} className="text-[black] text-[25px]" onClick={() => handleLikeClick(i._id)} />
@@ -344,7 +344,7 @@ const Quicks = () => {
                                     </div>
                                     <div className=" w-[60%] flex items-center justify-between">
                                         <button onClick={() => handleLikeClick(i._id)} className="flex items-center gap-[5px]">
-                                            {i.product_id?.user_likes && i.product_id?.user_likes.includes(loggedInUserId) ? (
+                                            {i.product_id?.user_likes && loggedInUserId && i.product_id?.user_likes.includes(loggedInUserId) ? (
                                                 <IoHeart size={20} className="text-[#FFc300]" />
                                             ) : (
                                                 <IoHeartOutline size={20} />

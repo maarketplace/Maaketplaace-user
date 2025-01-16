@@ -8,7 +8,7 @@ import { useUser } from "../../../context/GetUser";
 import Bottom from "../../pages/bottomNav";
 const Layout = () => {
     // const navigate = useNavigate()
-    const { data } = useUser();
+    const { user } = useUser();
 
     const [showSideBar, setShowSidebar] = useState<boolean>(false)
     const handleResize = () => {
@@ -31,8 +31,8 @@ const Layout = () => {
                     <HiMenuAlt2 className=" text-[30px] hidden max-[650px]:flex text-black" onClick={() => setShowSidebar(!showSideBar)} />
                 </span>
                 <span className="w-[100%] flex justify-end items-center max-[650px]:w-[80%] gap-2 sticky">
-                    <img src={data?.image} alt="" className="w-[40px] h-[40px] rounded-[100%] object-cover " />
-                    <p className="text-black">{data?.fullName}</p>
+                    {/* <img src={user?.image} alt="" className="w-[40px] h-[40px] rounded-[100%] object-cover " /> */}
+                    <p className="text-black">{user?.fullName}</p>
                 </span>
             </div>
             {
