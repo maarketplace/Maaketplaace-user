@@ -33,7 +33,7 @@ function Product() {
     const context = useContext(SearchContext);
     const navigate = useNavigate();
     const { isUserAuthenticated } = useAuth();
-    const { user } = useUser();
+    const { user, fetchUser } = useUser();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [allProduct, setAllProduct] = useState<any>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -67,7 +67,9 @@ function Product() {
         }
     }, [allProductData]);
 
-
+    useEffect(() => {
+        fetchUser()
+    }, [fetchUser])
     const { mutate } = useMutation(
         ['userlike'],
         userLike,
@@ -364,7 +366,7 @@ function Product() {
                                         Pay Now
                                     </button>
                                 ) : (
-                                    <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails.paymentID)}>
+                                    <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails?.paymentID)}>
                                         {
                                             payLoadingState[paymentDetails.paymentID] ? <Loading /> : 'Continue'
                                         }
