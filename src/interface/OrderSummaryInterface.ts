@@ -40,6 +40,9 @@ export interface IOrderSummary {
         productLocation: string;
         createdAt: string;
         updatedAt: string;
+        productType: string;
+        courseUrl: string;
+        
     }[];
     amount: number;
     status: string;
