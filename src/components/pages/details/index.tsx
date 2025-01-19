@@ -27,6 +27,7 @@ const Details = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { id: productIdParam } = useParams<{ id?: any }>();
     const [product, setProduct] = useState<IProduct | null>(null)
+
     const { data } = useQuery(['getoneproduct', productIdParam], () => getOneProduct(productIdParam), {})
     const [activeTab, setActiveTab] = useState('expect');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -135,7 +136,7 @@ const Details = () => {
                         <img src={product?.productImage} className='w-[100%] object-cover  aspect-square max-[650px]:h-[90%] ' />
                     </div>
                     <div className="flex w-full items-center gap-[10px] mt-[10px]">
-                            <img src={product?.merchant?.image} alt="" className="w-[40px] h-[40px] rounded-full object-cover filter brightness-225 contrast-110 transition-all duration-500 ease-in-out" />
+                        <img src={product?.merchant?.image} alt="" className="w-[40px] h-[40px] rounded-full object-cover filter brightness-225 contrast-110 transition-all duration-500 ease-in-out" />
                         <p className=" w-[100%] max-[650px]:w-[80%] text-[12px] text-wrap">{product?.productName}</p>
                     </div>
                     {product?.pages ? (
@@ -351,7 +352,7 @@ const Details = () => {
                                 ) : (
                                     <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails.paymentID)}>
                                         {
-                                            payLoadingState[paymentDetails.paymentID] ? <Loading/> : 'Continue'
+                                            payLoadingState[paymentDetails.paymentID] ? <Loading /> : 'Continue'
                                         }
                                     </button>
                                 ),
