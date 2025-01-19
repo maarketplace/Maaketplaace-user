@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useRef } from 'react';
+import { useContext, useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { IoHeart, IoHeartOutline, IoLink } from "react-icons/io5";
@@ -54,20 +54,30 @@ function Product() {
     const [followingMerchants, setFollowingMerchants] = useState<string[]>([]);
     const [payLoadingState, setPayLoadingStates] = useState<Record<string, boolean>>({});
     const loggedInUserId = user?._id;
-    console.log(loggedInUserId)
+    // console.log(loggedInUserId)
     const {
-        data: allProductData, isLoading
-    } = useQuery(["getallproduct"], getAllProduct);
+        data: allProductData,
+        isLoading,
+    } = useQuery(
+        ["getallproduct"],
+        getAllProduct,
+        {
+            staleTime: 5 * 60 * 1000,
+            cacheTime: 30 * 60 * 1000,
+            refetchOnWindowFocus: false,
+            retry: 3,
+        }
+    );
 
     useEffect(() => {
-        if (allProductData?.data?.data?.products) {
-            const reversedData = [...allProductData.data.data.products].reverse();
-            setAllProduct(reversedData);
-            setAllProduct(shuffleArray([...reversedData]));
-        }
+        // if (allProductData?.data?.data?.products) {
+        const reversedData = allProductData?.data?.data?.products ? [...allProductData.data.data.products].reverse() : [];
+        setAllProduct(reversedData);
+        setAllProduct(shuffleArray([...reversedData]));
+        // }
     }, [allProductData]);
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         fetchUser()
     }, [fetchUser])
     const { mutate } = useMutation(
@@ -244,6 +254,7 @@ function Product() {
                             {filteredProducts?.map((i: IProduct) => (
                                 <div key={i?._id} className='w-[250px] h-[500px] mb-[10px] shadow-sm dark:shadow-[white] rounded-lg p-[10px] flex flex-col gap-[10px] dark:bg-black dark:text-white max-[650px]:border-none max-[650px]:bg-slate-50 max-[650px]:w-[100%] max-[650px]:rounded-none max-[650px]:h-auto' >
                                     <div className='w-[100%] relative flex items-center justify-center mb-[10px]'>
+                                        <p className='absolute top-0 left-0 p-[10px] h-[20px] flex items-center justify-center bg-[#FFc300] rounded-[4px] uppercase text-[12px] text-black'>{i.productType}</p>
                                         <img src={i?.productImage} className='w-[100%] object-cover aspect-square filter brightness-225 contrast-110 transition-all duration-500 ease-in-out' />
                                         <div
                                             className='absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity'
@@ -327,8 +338,18 @@ function Product() {
                             ))}
                         </div>
                         :
-                        <div className='w-[100%] h-[80vh] flex items-center justify-center'>
-                            <p>No product available yet</p>
+                        <div className='w-[95%] h-[] overflow-scroll no-scrollbar p-0 flex flex-wrap gap-[10px] max-[650px]:gap-0 mb-[80px]  max-[650px]:mb-[60px] justify-center '>
+                            {Array.from(new Array(8)).map((_, index) => (
+                                <div key={index} className='w-[280px] h-[500px] shadow-sm rounded-lg p-[10px] flex flex-col gap-[10px] max-[650px]:w-[100%]'>
+                                    <Skeleton variant="rectangular" width="100%" height={350} className='dark:bg-[grey]' />
+                                    <Box style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <Skeleton variant="circular" width="30px" height='30px' className='dark:bg-[grey] mt-[10px]' />
+                                        <Skeleton width="60%" className='dark:bg-[grey] mt-[10px]' />
+                                    </Box>
+                                    <Skeleton width="60%" className='dark:bg-[grey]' />
+                                    <Skeleton width="80%" className='dark:bg-[grey]' />
+                                </div>
+                            ))}
                         </div>
             }
             {

@@ -46,7 +46,8 @@ const Search = () => {
     const filteredProducts = allProduct?.filter((product: IProduct) =>
         product?.productName?.toLowerCase().includes(searchQuery?.trim().toLowerCase()) ||
         product?.merchant?.business_name.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
-        product?.merchant?.fullName.toLowerCase().includes(searchQuery.trim().toLowerCase())
+        product?.merchant?.fullName.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+        product?.productType?.toLowerCase().includes(searchQuery?.trim().toLowerCase())
     );
     const handleEyeClick = (product: IProduct) => {
         setSelectedProduct(product);
@@ -150,7 +151,7 @@ const Search = () => {
                                     <p>Amount: {selectedProduct?.paymentPrice}</p>
                                 </span>
                                 <button className=" bg-[#FFC300] w-[120px] text-[12px] h-[40px] rounded max-[650px]:w-[100px] max-[650px]:h-[30px] text-black " onClick={() => navigate(`/details/${selectedProduct._id}`)}>
-                                    View more 
+                                    View more
                                 </button>
                             </div>
                         </div>
