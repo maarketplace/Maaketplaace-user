@@ -17,7 +17,7 @@ function ForgotPassword() {
         resolver: yupResolver(ForgotPasswordSchema) as any
     });
     const { register, handleSubmit, formState: { errors } } = form;
-    const { isLoading, mutate } = useMutation(['merchantForgotPassword'], userForgotPassword, {
+    const { isLoading, mutate } = useMutation(userForgotPassword, {
         onSuccess: (data) => {
             console.log(data)
             toast.success(data?.data?.data?.message)
@@ -27,8 +27,8 @@ function ForgotPassword() {
         }
     });
 
-    const onSubmit: SubmitHandler<ForgotPasswordInterface> = (data) => {
-        mutate(data.email)
+    const onSubmit: SubmitHandler<ForgotPasswordInterface> = (email) => {
+        mutate(email.email)
     };
     const handleForgotSubmit = () => {
         handleSubmit(onSubmit)();
