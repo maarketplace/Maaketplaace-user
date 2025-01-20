@@ -70,16 +70,15 @@ function Product() {
     );
 
     useEffect(() => {
-        // if (allProductData?.data?.data?.products) {
         const reversedData = allProductData?.data?.data?.products ? [...allProductData.data.data.products].reverse() : [];
         setAllProduct(reversedData);
         setAllProduct(shuffleArray([...reversedData]));
-        // }
     }, [allProductData]);
 
     useLayoutEffect(() => {
         fetchUser()
     }, [fetchUser])
+
     const { mutate } = useMutation(
         ['userlike'],
         userLike,
@@ -106,7 +105,7 @@ function Product() {
 
     const handleFollowMerchant = (merchantId: string) => {
         const getToken = getCachedAuthData()
-        if (getToken !== undefined) {
+        if (getToken !== null) {
             followMutation.mutate(merchantId);
         } else {
             toast.error("Please login to follow this merchant");
@@ -118,7 +117,7 @@ function Product() {
     // Like functionality
     const handleLikeClick = async (productId: string) => {
         const getToken = getCachedAuthData()
-        if (getToken !== undefined) {
+        if (getToken !== null) {
             const updateLikeProduct = [...allProduct];
             const existingItem = updateLikeProduct.findIndex((product: { _id: string; }) => product._id === productId);
             if (existingItem !== -1 && !updateLikeProduct[existingItem]?.user_likes?.includes(loggedInUserId)) {

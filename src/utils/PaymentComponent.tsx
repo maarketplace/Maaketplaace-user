@@ -86,7 +86,6 @@ export const handlePayNow = (
   setIsModalOpen: (value: boolean) => void,
   setPayLoadingStates: React.Dispatch<React.SetStateAction<Record<string, boolean>>>
 ) => {
-  // Set loading state to true for the given payment ID
   setPayLoadingStates((prevState) => ({
     ...prevState,
     [paymentID]: true,
@@ -123,10 +122,7 @@ export const handlePayNow = (
         [paymentID]: false,
       }));
     },
-    onError: (error: unknown) => {
-      console.error('Error:', error);
-
-      // Set loading state to false
+    onError: () => {
       setPayLoadingStates((prevState) => ({
         ...prevState,
         [paymentID]: false,
