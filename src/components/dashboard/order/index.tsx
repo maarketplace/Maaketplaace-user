@@ -40,7 +40,7 @@ const Order = () => {
             setEbookOrders(orders.filter((order: { products: IProduct[]; }) =>
                 order.products.some(product => product.productType === 'ebook')
             ));
-        }        
+        }
     }, [data]);
 
 
@@ -174,6 +174,13 @@ const Order = () => {
                                                             }`}
                                                     >
                                                         {isDownloadLoading === product._id ? "Loading..." : "Download"}
+                                                    </button>
+                                                )}
+                                                {product.productType === 'course' && (
+                                                    <button
+                                                        className="w-[150px] h-[30px] text-[12px] mt-[10px] rounded bg-[#FFC300] text-black"
+                                                    >
+                                                        <a href={product?.courseUrl} className="" target="blank"> Access Course Link</a>
                                                     </button>
                                                 )}
                                             </div>

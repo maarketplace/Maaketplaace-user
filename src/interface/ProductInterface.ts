@@ -29,6 +29,7 @@ export interface IMerchant {
 }
 
 export interface IProduct {
+    courseUrl: string | undefined;
     productType: string;
     _id: string;
     productName: string;
