@@ -52,11 +52,10 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     },
     {
       enabled: true,
-      staleTime: 5 * 60 * 1000, // Data considered fresh for 5 minutes
-      cacheTime: 30 * 60 * 1000, // Keep in cache for 30 minutes
+      staleTime: 5 * 60 * 1000,
+      cacheTime: 30 * 60 * 1000,
       retry: 2,
       refetchOnWindowFocus: false,
-      // Add select transform to handle the nested data structure
     }
   );
 
