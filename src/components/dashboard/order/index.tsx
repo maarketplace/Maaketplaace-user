@@ -21,7 +21,6 @@ const Order = () => {
     const [courseOrders, setCourseOrders] = useState<IOrder[]>([]);
     const [ebookOrders, setEbookOrders] = useState<IOrder[]>([]);
     const [statusFilter, setStatusFilter] = useState<string>("All");
-    // const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [orderDetails, setOrderDetails] = useState<Order | null>(null);
     const [isDetailsLoading, setIsDetailsLoading] = useState(false);
@@ -52,12 +51,15 @@ const Order = () => {
 
     const columns: Array<keyof typeof formattedData[0]> = [
         "Amount",
+        "Name",
         "Status",
         "Date",
+
     ];
 
     const formattedData = displayedOrders.map(transaction => ({
         "Amount": transaction?.amount,
+        "Name": transaction?.products[0]?.productName,
         "Status": capitalizeFirstLetter(transaction?.status),
         "Date": new Date(transaction?.createdAt).toLocaleDateString(),
         "id": transaction._id
@@ -143,7 +145,7 @@ const Order = () => {
                     isOpen={isModalOpen}
                     onRequestClose={closeModal}
                     contentLabel="Order Details"
-                    className="bg-white p-6 rounded-md shadow-lg dark:bg-black dark:text-white"
+                    className="bg-white p-6 rounded-md shadow-lg w-full dark:bg-black dark:text-white"
                     overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center"
                 >
                     <h2 className="text-xl mb-4">Order Details</h2>
@@ -154,7 +156,7 @@ const Order = () => {
                         <p className="text-red-500">{detailsError}</p>
                     ) : (
                         orderDetails && (
-                            <div className="flex flex-col gap-[]">
+                            <div className="flex flex-col gap-[] w-full">
                                 <p className="flex justify-between"><strong className="font-semibold text-[14px]">Amount:</strong> {orderDetails?.payable_amount}</p>
                                 <p className="flex justify-between"><strong className="font-semibold text-[14px]">Status:</strong> {orderDetails?.status}</p>
                                 <p className="flex justify-between"><strong className="font-semibold text-[14px]">Purchase Date:</strong> {new Date(orderDetails.createdAt).toLocaleDateString()}</p>
