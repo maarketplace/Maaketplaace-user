@@ -21,7 +21,7 @@ export interface IMerchant {
     verificationCode: number;
     subscribed: boolean;
     subscriptionType: string;
-    products: IProduct[]; // Adjust the type if you have a specific product type
+    products: IProduct[];
     createdAt: string;
     updatedAt: string;
     accountStatus: string;
