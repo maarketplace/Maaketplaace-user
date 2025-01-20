@@ -86,7 +86,7 @@ export const userLikeAQuicks = async (id: string | undefined) => {
     })
 }
 export const userForgotPassword = async (email: string) => {
-    return await axios.post(`${VITE_ENDPOINT_STAGING}/user/forgot`, email)
+    return await axios.post(`${VITE_ENDPOINT}/user/forgot`, {email})
 }
 
 export const userResetPassword = async (data: { id: string | undefined, password: string }) => {
