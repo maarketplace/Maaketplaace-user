@@ -1,4 +1,4 @@
-import { createHashRouter } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom';
 import LazyImport from './LazyImport';
 import Signup from './components/onboarding/signup';
 import Home from './components/pages';
@@ -24,7 +24,7 @@ import FreeOrderSuccess from './components/pages/orderSuccessful/FreeProductOrde
 const LoginLoader = () => import('./components/onboarding/login');
 // eslint-disable-next-line react-refresh/only-export-components
 const ProductPage = lazy(() => import('./components/pages/product'));
-const router = createHashRouter([
+const router = createBrowserRouter([
   {
     path: '/login',
     element: <LazyImport componentLoader={LoginLoader} />,

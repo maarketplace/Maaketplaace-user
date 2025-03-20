@@ -59,7 +59,7 @@ function UserLoginForm() {
     return (
         <div className="h-[100vh] w-[55%] flex items-center flex-col gap-5 max-[650px]:w-[100%]">
             <span className="w-[100%] p-[10px] max-[650px]:w-[100%] flex gap-[20px] justify-end items-center" >
-                <p className="cursor-pointer bg-[#FFC300] w-[100px] h-[30px] flex items-center justify-center text-[14px] rounded-[8px] "> <a href="http://merchant.maarketplaace.com/#/">Start Selling</a></p>
+                <p className="cursor-pointer bg-[#FFC300] w-[100px] h-[30px] flex items-center justify-center text-[14px] rounded-[8px] "> <a href="http://merchant.maarketplaace.com">Start Selling</a></p>
             </span>
             <div className="w-[70%] flex items-center justify-center flex-col gap-[10px] max-[650px]:w-[100%]" >
                 <img src="MARKET.svg" alt="" className="max-[650px]:w-[80px]" />

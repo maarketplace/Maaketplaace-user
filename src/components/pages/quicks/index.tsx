@@ -180,7 +180,7 @@ const Quicks = () => {
     };
 
     const copyToClipboard = (reelId: string) => {
-        const shareUrl = `http://maarketplaace.com/#/quicks?reelId=${reelId}`;
+        const shareUrl = `http://maarketplaace.com/quicks?reelId=${reelId}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
             toast.success('Link copied successfully!');
         });
