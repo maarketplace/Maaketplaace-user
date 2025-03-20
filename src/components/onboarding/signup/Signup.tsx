@@ -6,7 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { useMutation } from 'react-query'
 import toast from 'react-hot-toast';
 import { UserSignUpInterface } from "../../../interface/Signupinterface";
-import { SignUpSchema } from "../../../schema/SignUpSchema";
+import { SignUpSchema as SignUpValidationSchema } from "../../../schema/SignUpSchema";
 import { userSignup } from "../../../api/mutation";
 import { IErrorResponse } from "../../../interface/ErrorData";
 import Loading from "../../../loader";
@@ -18,7 +18,7 @@ function UserSignupForm() {
 
     const form = useForm<UserSignUpInterface>({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        resolver: yupResolver(SignUpSchema) as any
+        resolver: yupResolver(SignUpValidationSchema) as any
     });
     const { register, handleSubmit, formState: { errors } } = form;
     const navigate = useNavigate()
@@ -31,7 +31,7 @@ function UserSignupForm() {
         },
         onError: (err: IErrorResponse) => {
             toast.error(err?.response?.data?.message || err?.response?.data?.error?.message || err?.message)
-            if(err?.response?.data?.message == "User already exists"){
+            if (err?.response?.data?.message == "User already exists") {
                 navigate('/')
             }
         }
@@ -144,7 +144,7 @@ function UserSignupForm() {
                     onClick={handleButtonClick}
                     disabled={isLoading}
                 >
-                    {isLoading ? <Loading/> : "Create account"}
+                    {isLoading ? <Loading /> : "Create account"}
                 </button>
             </div>
             <div className="w-[70%] flex items-center justify-center gap-[10px] max-[650px]:w-[90%] max-[650px]:flex-wrap max-[650px]:mt-[10px] ">
