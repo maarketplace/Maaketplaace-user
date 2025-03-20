@@ -322,7 +322,7 @@ function Product() {
                                                 <p>{i?.comments?.length}</p>
                                             </span>
                                             <span className='w-[20%]'>
-                                                <IoLink size={25} className='text-[#FFC300]' onClick={() => copyToClipboard(`https://maarketplaace.com/#/details/${i?._id}`)} />
+                                                <IoLink size={25} className='text-[#FFC300]' onClick={() => copyToClipboard(`https://maarketplaace.com/details/${i?._id}`)} />
                                             </span>
                                             <button
                                                 className='w-[40%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[15px]'
