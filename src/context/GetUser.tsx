@@ -47,6 +47,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         status: response.status === 200,
         data: response.data.data,
       };
+      console.log(userResponse)
       return userResponse.data.data;
     },
     {
@@ -57,8 +58,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       onSuccess: (data) => {
         localStorage.setItem('user', JSON.stringify(data));
       },
-      staleTime: 5 * 60 * 1000,
-      cacheTime: 30 * 60 * 1000,
+      staleTime: 0,
+      cacheTime: 0,
       retry: 2,
       refetchOnWindowFocus: true,
     }
