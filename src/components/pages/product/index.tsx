@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState, useRef, useLayoutEffect } from 'react';
+import { useContext, useEffect, useState, useRef} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { IoHeart, IoHeartOutline, IoLink } from "react-icons/io5";
@@ -75,9 +75,15 @@ function Product() {
         setAllProduct(shuffleArray([...reversedData]));
     }, [allProductData]);
 
-    useLayoutEffect(() => {
-        fetchUser()
-    }, [fetchUser])
+    useEffect(() => {
+        const getToken = getCachedAuthData();
+        if (getToken !== null) {
+            fetchUser().then(() => {
+            }).catch(error => {
+                toast.error(error?.message);
+            });
+        }
+    }, [fetchUser]);
 
     const { mutate } = useMutation(
         ['userlike'],

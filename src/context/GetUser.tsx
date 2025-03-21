@@ -1,6 +1,7 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useEffect } from 'react';
 import { QueryObserverResult, useQuery, QueryClient, QueryClientProvider } from 'react-query';
 import { getUser } from '../api/query';
+import { getCachedAuthData } from '../utils/auth.cache.utility';
 
 interface User {
   _id: string | undefined;
@@ -34,20 +35,28 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  // Check if user is authenticated
+  const isAuthenticated = !!getCachedAuthData();
+
   const {
     data: user,
     isLoading,
     error,
     refetch: fetchUser,
   } = useQuery<User, Error>(
-    ['user'],
+    ['USER_DATA'],
     async () => {
+      // Only fetch if authenticated
+      if (!isAuthenticated) {
+        throw new Error('User not authenticated');
+      }
+
       const response = await getUser();
       const userResponse: UserResponse = {
         status: response.status === 200,
         data: response.data.data,
       };
-      console.log(userResponse)
+      console.log('User data fetched successfully:', userResponse);
       return userResponse.data.data;
     },
     {
@@ -58,12 +67,20 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       onSuccess: (data) => {
         localStorage.setItem('user', JSON.stringify(data));
       },
-      staleTime: 0,
-      cacheTime: 0,
+      enabled: isAuthenticated, // Only run the query if authenticated
+      staleTime: 300000, // 5 minutes
+      cacheTime: 600000, // 10 minutes
       retry: 2,
-      refetchOnWindowFocus: true,
+      refetchOnWindowFocus: false,
     }
   );
+
+  // Force refetch when auth state changes
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchUser();
+    }
+  }, [isAuthenticated, fetchUser]);
 
   const value: UserContextType = {
     user,
@@ -88,14 +105,13 @@ export const useUser = (): UserContextType => {
   return context;
 };
 
-const queryClient = new QueryClient();
-queryClient.prefetchQuery(['user'], async () => {
-  const response = await getUser();
-  const userResponse: UserResponse = {
-    status: response.status === 200,
-    data: response.data.data,
-  };
-  return userResponse.data.data;
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
 });
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => (

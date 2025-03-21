@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ children }) => {
+import { ReactNode } from 'react';
+
+const ProtectedRoute = ({ children }: { children: ReactNode }) => {
     const [loading, setLoading] = useState(true);
     const [delayedRedirect, setDelayedRedirect] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('user/maarketplaace');
+        const token = localStorage.getItem('user/marketplace');
         setLoading(false);
         if (!token) {
             const timer = setTimeout(() => {
