@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash, } from "react-icons/fa";
-import { useMutation } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import toast from 'react-hot-toast';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,6 +15,7 @@ import { useAuth } from "../../../context/Auth";
 import { cacheAuthData } from "../../../utils/auth.cache.utility";
 
 function UserLoginForm() {
+    const queryClient = useQueryClient();
     const { setIsUserAuthenticated } = useAuth();
     const [showPassword, setShow] = useState<boolean>(false);
     const navigate = useNavigate()
@@ -27,9 +28,9 @@ function UserLoginForm() {
     const { mutate, isLoading } = useMutation(['userlogin'], userLogin, {
         onSuccess: async (data: IResponseData) => {
             cacheAuthData(data?.data?.data?.token)
-            console.log(cacheAuthData)
             toast.success(data?.data?.message);
             setIsUserAuthenticated(true)
+            queryClient.invalidateQueries('USER_DATA')
             const redirectPath = localStorage.getItem('redirectPath');
             if (redirectPath) {
                 navigate(redirectPath);
