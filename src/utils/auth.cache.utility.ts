@@ -11,9 +11,7 @@ export interface AuthData {
  */
 export const cacheAuthData = (token: string): void => {
   try {
-    const authData: AuthData = { token };
-    const serializedData = JSON.stringify(authData);
-    localStorage.setItem(AUTH_DATA_KEY, serializedData);
+    localStorage.setItem(AUTH_DATA_KEY, token);
   } catch (error) {
     console.error('Failed to cache auth data:', error);
     throw new Error('Failed to store authentication data');
@@ -29,12 +27,10 @@ export const getCachedAuthData = (): string | null => {
   try {
     const serializedData = localStorage.getItem(AUTH_DATA_KEY);
     if (!serializedData) return null;
-    
-    const authData = JSON.parse(serializedData) as AuthData;
-    return authData.token;
-  } catch (error) {
-    console.error('Failed to retrieve auth data:', error);
-    throw new Error('Failed to retrieve authentication data');
+    const token = localStorage.getItem(AUTH_DATA_KEY);
+    return token ? token : null;
+  } catch {
+    return null;
   }
 };
 

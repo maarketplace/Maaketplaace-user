@@ -27,6 +27,7 @@ function UserLoginForm() {
     const { mutate, isLoading } = useMutation(['userlogin'], userLogin, {
         onSuccess: async (data: IResponseData) => {
             cacheAuthData(data?.data?.data?.token)
+            console.log(cacheAuthData)
             toast.success(data?.data?.message);
             setIsUserAuthenticated(true)
             const redirectPath = localStorage.getItem('redirectPath');

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, ReactNode } from 'react';
-import { QueryObserverResult, useQuery } from 'react-query';
+import { QueryObserverResult, useQuery, QueryClient, QueryClientProvider } from 'react-query';
 import { getUser } from '../api/query';
 
 interface User {
@@ -47,15 +47,20 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         status: response.status === 200,
         data: response.data.data,
       };
-      console.log(userResponse);
       return userResponse.data.data;
     },
     {
-      enabled: true,
+      initialData: () => {
+        const cachedUser = localStorage.getItem('user');
+        return cachedUser ? JSON.parse(cachedUser) : undefined;
+      },
+      onSuccess: (data) => {
+        localStorage.setItem('user', JSON.stringify(data));
+      },
       staleTime: 5 * 60 * 1000,
       cacheTime: 30 * 60 * 1000,
       retry: 2,
-      refetchOnWindowFocus: false,
+      refetchOnWindowFocus: true,
     }
   );
 
@@ -81,3 +86,19 @@ export const useUser = (): UserContextType => {
   }
   return context;
 };
+
+const queryClient = new QueryClient();
+queryClient.prefetchQuery(['user'], async () => {
+  const response = await getUser();
+  const userResponse: UserResponse = {
+    status: response.status === 200,
+    data: response.data.data,
+  };
+  return userResponse.data.data;
+});
+
+export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => (
+  <QueryClientProvider client={queryClient}>
+    <UserProvider>{children}</UserProvider>
+  </QueryClientProvider>
+);
