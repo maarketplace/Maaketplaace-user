@@ -1,6 +1,7 @@
 import { FiLogOut } from "react-icons/fi";
 import { IoBagHandleOutline } from "react-icons/io5"
 import { RxDashboard } from "react-icons/rx"
+import { useQueryClient } from "react-query";
 import { useNavigate } from "react-router-dom";
 
 interface SideBarProps {
@@ -8,9 +9,12 @@ interface SideBarProps {
 }
 const SideBar = ({ setShowSidebar }: SideBarProps) => {
     const navigate = useNavigate();
-
+    const queryClient = useQueryClient();
+    
     const handleLogout = () => {
         localStorage.clear();
+        queryClient.invalidateQueries(['USER_DATA']);
+        queryClient.setQueryData(['USER_DATA'], undefined);
         navigate('/login');
         if (setShowSidebar) {
             setShowSidebar(false);

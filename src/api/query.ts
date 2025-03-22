@@ -1,9 +1,11 @@
 import axios from "axios";
-import { getCachedAuthData } from "../utils/auth.cache.utility";
+import { getCachedToken } from "../utils/auth.cache.utility";
 
 const { VITE_ENDPOINT_STAGING } = import.meta.env;
 
-const getToken = getCachedAuthData()
+
+// Function to get the token directly when needed
+const getToken = getCachedToken()
 
 export const getUser = async () => {
     const usertoken = getToken;    

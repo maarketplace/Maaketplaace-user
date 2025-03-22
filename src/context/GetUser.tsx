@@ -1,7 +1,7 @@
 import React, { createContext, useContext, ReactNode, useEffect } from 'react';
 import { QueryObserverResult, useQuery, QueryClient, QueryClientProvider } from 'react-query';
 import { getUser } from '../api/query';
-import { getCachedAuthData } from '../utils/auth.cache.utility';
+import { getCachedToken } from '../utils/auth.cache.utility';
 
 interface User {
   _id: string | undefined;
@@ -35,8 +35,7 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  // Check if user is authenticated
-  const isAuthenticated = !!getCachedAuthData();
+  const isAuthenticated = !!getCachedToken();
 
   const {
     data: user,
@@ -46,30 +45,17 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   } = useQuery<User, Error>(
     ['USER_DATA'],
     async () => {
-      // Only fetch if authenticated
-      if (!isAuthenticated) {
-        throw new Error('User not authenticated');
-      }
-
       const response = await getUser();
       const userResponse: UserResponse = {
         status: response.status === 200,
         data: response.data.data,
       };
-      console.log('User data fetched successfully:', userResponse);
-      return userResponse.data.data;
+      return userResponse?.data?.data;
     },
     {
-      initialData: () => {
-        const cachedUser = localStorage.getItem('user');
-        return cachedUser ? JSON.parse(cachedUser) : undefined;
-      },
-      onSuccess: (data) => {
-        localStorage.setItem('user', JSON.stringify(data));
-      },
-      enabled: isAuthenticated, // Only run the query if authenticated
-      staleTime: 300000, // 5 minutes
-      cacheTime: 600000, // 10 minutes
+      enabled: isAuthenticated,
+      staleTime: 0,
+      cacheTime: 0,
       retry: 2,
       refetchOnWindowFocus: false,
     }
