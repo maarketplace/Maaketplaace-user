@@ -1,10 +1,10 @@
 import axios from "axios";
 
-import { getCachedAuthData } from "../utils/auth.cache.utility";
+import { getCachedToken } from "../utils/auth.cache.utility";
 
 const { VITE_ENDPOINT } = import.meta.env;
 
-const getToken = getCachedAuthData()
+const getToken = getCachedToken()
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const userSignup = async (data: any) => {
