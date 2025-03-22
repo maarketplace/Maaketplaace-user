@@ -4,14 +4,12 @@ import { getCachedToken } from "../utils/auth.cache.utility";
 const { VITE_ENDPOINT } = import.meta.env;
 
 
-// Function to get the token directly when needed
-const getToken = getCachedToken()
-
-export const getUser = async () => {  
-    if (!getToken) throw new Error('No user token found');
+export const getUser = async () => {
+    const token = getCachedToken();
+    if (!token) throw new Error('No user token found');
     return await axios.get(`${VITE_ENDPOINT}/user`, {
         headers: {
-            'Authorization': `Bearer ${getToken}`,
+            'Authorization': `Bearer ${token}`,
         },
     });
 };
@@ -29,18 +27,18 @@ export const getAllComment = async () => {
 }
 
 export const getUserOrders = async () => {
-    if (!getToken) throw new Error('No user token found');
+    const token = getCachedToken();
     return await axios.get(`${VITE_ENDPOINT}/orders/users`, {
         headers: {
-            'Authorization': `Bearer ${getToken}`
+            'Authorization': `Bearer ${token}`
         }
     });
 };
 export const getUserOrderDetails = async (id: string) => {
-    if (!getToken) throw new Error('No user token found');
+    const token = getCachedToken();
     return await axios.get(`${VITE_ENDPOINT}/orders/${id}`, {
         headers: {
-            'Authorization': `Bearer ${getToken}`
+            'Authorization': `Bearer ${token}`
         }
     });
 };
@@ -67,9 +65,10 @@ export const getOrderSummary = async (reference: string | null) => {
   }
 
   export const getAllQuciks = async () => {
+      const token = getCachedToken();
     return await axios.get(`${VITE_ENDPOINT}/quicks`, {
         headers: {
-            'Authorization': `Bearer ${getToken}`
+            'Authorization': `Bearer ${token}`
         }
     });
 };
