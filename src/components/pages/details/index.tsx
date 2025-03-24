@@ -18,6 +18,7 @@ import { useAuth } from "../../../context/Auth";
 import Loading from "../../../loader";
 import toast from "react-hot-toast";
 import { getCachedAuthData } from "../../../utils/auth.cache.utility";
+import { useUser } from '../../../context/GetUser';
 
 const Details = () => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -27,7 +28,7 @@ const Details = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { id: productIdParam } = useParams<{ id?: any }>();
     const [product, setProduct] = useState<IProduct | null>(null)
-
+    const { fetchUser } = useUser();
     const { data } = useQuery(['getoneproduct', productIdParam], () => getOneProduct(productIdParam), {})
     const [activeTab, setActiveTab] = useState('expect');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,11 +50,21 @@ const Details = () => {
         setProduct(data?.data?.data?.data?.product?.[0])
     }, [data])
 
+    useEffect(() => {
+        const getToken = getCachedAuthData();
+        if (getToken !== null) {
+            fetchUser().then(() => {
+            }).catch(error => {
+                toast.error(error?.message);
+            });
+        }
+    }, [fetchUser]);
+
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
         const getToken = getCachedAuthData()
-        if (getToken !== undefined) {
+        if (getToken !== null) {
             handleBuyNow(
                 id,
                 isUserAuthenticated,
@@ -65,8 +76,11 @@ const Details = () => {
             );
         } else {
             localStorage.setItem("redirectPath", location.pathname);
-            navigate("/login");
             toast.error('Please login to complete your purchase')
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000);
+
         }
     };
 
