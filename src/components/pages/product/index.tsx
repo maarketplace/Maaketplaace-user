@@ -54,7 +54,7 @@ function Product() {
     const [followingMerchants, setFollowingMerchants] = useState<string[]>([]);
     const [payLoadingState, setPayLoadingStates] = useState<Record<string, boolean>>({});
     const loggedInUserId = user?._id;
-    // console.log(loggedInUserId)
+
     const {
         data: allProductData,
         isLoading,
@@ -89,7 +89,7 @@ function Product() {
         ['userlike'],
         userLike,
     );
-    // follow functionality
+
     const followMutation = useMutation(userFollowMerchant, {
         onMutate: async (merchantId) => {
             await queryClient.cancelQueries(['getallproduct']);
@@ -120,7 +120,7 @@ function Product() {
             }, 2000);
         }
     };
-    // Like functionality
+
     const handleLikeClick = async (productId: string) => {
         const getToken = getCachedAuthData()
         if (getToken !== null) {
@@ -143,24 +143,39 @@ function Product() {
             }, 2000);
         }
     };
-
-    // View Product modal
     const handleEyeClick = (product: IProduct) => {
         setSelectedProduct(product);
         setIsProductModalOpen(true);
         console.log(selectedProduct);
     };
-    // Naviagte to merchant store 
     const handleMerchantClick = (businessName: string) => {
         const formattedName = businessName.trim().replace(/\s+/g, "-");
         navigate(`/store/${formattedName}`);
     };
-    // Buying functionality
-
+ 
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
+
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
+        const getToken = getCachedAuthData()
+        if (getToken !== null) {
+            handleBuyNow(
+                id,
+                isUserAuthenticated,
+                setLoadingStates,
+                setPaymentDetails,
+                setIsModalOpen,
+                buyMutate,
+                navigate
+            );
+        } else {
+            localStorage.setItem("redirectPath", location.pathname);
+            toast.error('Please login to complete your purchase')
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000);
+
+        }
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
@@ -222,7 +237,6 @@ function Product() {
         };
     }, [navigate, paymentDetails.checkoutURL, setIsModalOpen]);
 
-    // Search Filtering functionality
 
     if (!context) {
         return null;
