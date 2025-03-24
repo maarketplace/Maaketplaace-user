@@ -39,7 +39,7 @@ const Home = () => {
                 >
                     <div className="w-[80%] h-[100%] flex items-center max-w-[650px]:w-[10%]">
                         <img src="/LOGO.svg" alt="image" className="w-[180px] h-[50px] max-[650px]:hidden" />
-                        <img src="MARKET.svg" alt="image" className="w-[30px] h-[30px] hidden max-[650px]:flex" />
+                        <img src="/MARKET.svg" alt="image" className="w-[30px] h-[30px] hidden max-[650px]:flex" />
                     </div>
                     <div className="w-[30%] h-[100%] max-w-[650px]:w-[90%] flex justify-end items-center">
                         <input
