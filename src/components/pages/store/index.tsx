@@ -53,6 +53,7 @@ const Store = () => {
             onSuccess: () => { },
             onError: () => { },
             enabled: !!businessName,
+            refetchOnWindowFocus: false,
         }
     );
 
@@ -166,9 +167,9 @@ const Store = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 mt-20">
+        <div className="min-h-screen bg-gray-50 dark:bg-black py-8 mt-20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden mb-8">
+                <div className="bg-white dark:bg-black rounded-2xl shadow-sm shadow-gray-400 overflow-hidden mb-8">
                     <div className="p-6 md:p-8">
                         <div className="flex flex-col md:flex-row items-center gap-6">
                             <div className="flex-shrink-0">
@@ -270,7 +271,7 @@ const Store = () => {
                                             {product?.productName}
                                         </h3>
                                         <p className="text-lg font-semibold text-[#FFC300] mb-3">
-                                            {product?.paymentPrice}
+                                            ₦{product?.paymentPrice}
                                         </p>
                                         <button
                                             onClick={() => handleCartAddingAuth(product?._id)}
@@ -289,7 +290,7 @@ const Store = () => {
 
             {isProductModalOpen && selectedProduct && (
                 <Modal onClose={() => setIsProductModalOpen(false)}>
-                    <div className="max-w-4xl mx-auto bg-white dark:bg-gray-800 rounded-2xl overflow-hidden">
+                    <div className="max-w-4xl mx-auto bg-white dark:bg-black rounded-2xl overflow-hidden">
                         <div className="flex flex-col lg:flex-row">
                             <div className="lg:w-1/2">
                                 <img
