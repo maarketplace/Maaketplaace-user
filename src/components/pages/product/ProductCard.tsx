@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IoEyeOutline } from "react-icons/io5";
 import { FaUser } from 'react-icons/fa';
-
-import toast from 'react-hot-toast';
 import ProductActions from './ProductActions';
 import { useUser } from '../../../context/GetUser';
 import { IProduct } from '../../../interface/ProductInterface';
@@ -35,7 +33,6 @@ function ProductCard({ product, onLike, onFollow, onBuyNow, onView, loadingState
 
   const handleShareProduct = () => {
     copyToClipboard(`https://www.maarketplaace.com/details/${product._id}`);
-    toast.success('Product link copied!');
   };
 
   const handleImageLoad = () => {
