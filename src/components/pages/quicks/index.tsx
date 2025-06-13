@@ -11,12 +11,10 @@ import { IoHeart, IoHeartOutline, IoShareSocial } from "react-icons/io5";
 import { FaRegComment, FaUser } from "react-icons/fa";
 import { userLikeAQuicks } from "../../../api/mutation";
 import { useUser } from "../../../context/GetUser";
-// import { useAuth } from "../../../context/Auth";
 import toast from "react-hot-toast";
 import { useLocation, useNavigate } from 'react-router-dom';
 import SwiperCore from 'swiper';
 import { Drawer } from "@mui/material";
-// import Comment from "../comment";
 import { userBuyNow, userPayWithKora } from "../../../api/mutation";
 import { handleBuyNow, handlePayNow } from "../../../utils/PaymentComponent";
 import PaymentModal from "../../../utils/PaymentModal";
@@ -95,13 +93,13 @@ const Quicks = () => {
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow,);
 
     const handleCartAddingAuth = (id: string) => {
-        handleBuyNow(id, isUserAuthenticated,setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
+        handleBuyNow(id, isUserAuthenticated, setLoadingStates, setPaymentDetails, setIsModalOpen, buyMutate, navigate);
     };
 
     const { mutate: payNowMutate } = useMutation(['paynow'], userPayWithKora);
 
     const handlePayment = (paymentID: string) => {
-        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen,setPayLoadingStates );
+        handlePayNow(payNowMutate, paymentID, setPaymentDetails, setIsModalOpen, setPayLoadingStates);
     };
     const handleCheckout = () => {
         if (paymentDetails.amount === '₦0') {
@@ -113,7 +111,7 @@ const Quicks = () => {
                 iframeRef.current.src = paymentDetails.checkoutURL;
             }
         }
-        
+
     };
     useEffect(() => {
         if (!paymentDetails.checkoutURL) {
@@ -146,7 +144,6 @@ const Quicks = () => {
 
                     default:
                         console.log('Unknown result, handling default case...');
-                        // Optional: Handle default case or stay on the current page
                         break;
                 }
 
@@ -404,8 +401,8 @@ const Quicks = () => {
                                     </button>
                                 ) : (
                                     <button className="w-[70%] h-[30px] bg-[#FFC300] text-black rounded-[8px] text-[14px]" onClick={() => handlePayment(paymentDetails.paymentID)}>
-                                         {
-                                            payLoadingState[paymentDetails.paymentID] ? <Loading/> : 'Continue'
+                                        {
+                                            payLoadingState[paymentDetails.paymentID] ? <Loading /> : 'Continue'
                                         }
                                     </button>
                                 ),
