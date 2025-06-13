@@ -50,10 +50,6 @@ export const PurchaseButton: React.FC<PurchaseButtonProps> = ({
                     `Buy ${isBook ? 'Book' : 'Course'} Now`
                 )}
             </button>
-
-            <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                30-day money-back guarantee
-            </p>
         </div>
     );
 };

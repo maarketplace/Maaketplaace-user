@@ -34,7 +34,7 @@ function ProductCard({ product, onLike, onFollow, onBuyNow, onView, loadingState
   };
 
   const handleShareProduct = () => {
-    copyToClipboard(`https://maarketplaace.com/details/${product._id}`);
+    copyToClipboard(`https://www.maarketplaace.com/details/${product._id}`);
     toast.success('Product link copied!');
   };
 
@@ -52,7 +52,7 @@ function ProductCard({ product, onLike, onFollow, onBuyNow, onView, loadingState
   const isFollowing = product?.merchant?.followedUsers?.includes(loggedInUserId ?? '');
 
   return (
-    <div className="group dark:bg-gray-800  transition-all duration-300 overflow-hidden border border-t">
+    <div className="group dark:bg-black dark:border-gray-700 transition-all duration-300 overflow-hidden border border-t">
       <div className="relative aspect-square overflow-hidden">
         <div className="absolute top-3 left-3">
           <span className="bg-yellow-400 text-black text-xs font-semibold px-3 py-1 rounded-full uppercase">

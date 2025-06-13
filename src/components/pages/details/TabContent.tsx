@@ -43,7 +43,7 @@ export const TabContent: React.FC<TabContentProps> = ({
                             {tab.content ? (
                                 <div
                                     dangerouslySetInnerHTML={{ __html: tab.content }}
-                                    className="text-gray-700 dark:text-gray-300 leading-relaxed"
+                                    className="text-gray-700 dark:text-gray-300 leading-relaxed text-[20px]"
                                 />
                             ) : (
                                 <p className="text-gray-500 dark:text-gray-400 italic">
