@@ -61,11 +61,9 @@ const Home = () => {
                 <Layout searchQuery={searchQuery} />
             </main>
 
-            {!isQuicksPage && (
-                <nav className="w-full h-[8vh] min-h-[60px] bg-white dark:bg-black text-black dark:text-white fixed bottom-0 left-0 z-50 flex items-center justify-center">
-                    <Bottom />
-                </nav>
-            )}
+            <nav className="w-full h-[8vh] min-h-[60px] bg-white dark:bg-black text-black dark:text-white fixed bottom-0 left-0 z-50 flex items-center justify-center">
+                <Bottom />
+            </nav>
         </div>
     );
 };
