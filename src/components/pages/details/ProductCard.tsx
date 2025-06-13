@@ -16,7 +16,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     onNavigate
 }) => {
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
+        <div className="bg-white dark:bg-black rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
             <div
                 className="aspect-[4/3] bg-gray-100 dark:bg-gray-700 cursor-pointer"
                 onClick={() => onNavigate(product._id)}
@@ -48,13 +48,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                         )}
                     </div>
                 </div>
-
-                <div
-                    className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2"
-                    dangerouslySetInnerHTML={{
-                        __html: product?.productDescription?.slice(0, 100) + '...',
-                    }}
-                />
 
                 <button
                     className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-medium py-2 px-4 rounded-lg transition-colors duration-200"

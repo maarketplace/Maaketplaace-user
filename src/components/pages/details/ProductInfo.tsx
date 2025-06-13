@@ -12,7 +12,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
     const isBook = !!product?.pages;
 
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-black rounded-lg p-6 shadow-sm border border-gray-100 dark:border-gray-700">
             <div className="flex items-center gap-3 mb-4">
                 <img
                     src={product?.merchant?.image}
