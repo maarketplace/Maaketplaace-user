@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
-import { IoMdArrowBack, IoMdClose, IoMdSend } from "react-icons/io";
-import { useMutation, useQuery } from "react-query";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { IoMdClose, IoMdSend } from "react-icons/io";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useNavigate, useParams } from "react-router-dom";
 import { getProductComment, getProductCommentResponse } from "../../../api/query";
 import { useEffect } from "react";
 import { deleteComment, userComment, userLikeAComment, userReplyComment } from "../../../api/mutation";
@@ -15,19 +15,18 @@ import { useUser } from "../../../context/GetUser";
 import { useAuth } from "../../../context/Auth";
 import toast from "react-hot-toast";
 import ImageModal from "../../../utils/ImageModal";
-import { MdDeleteOutline, MdReply } from "react-icons/md";
 import Skeleton from '@mui/material/Skeleton';
+import { MdDeleteOutline } from "react-icons/md";
 
 interface CommentProps {
   productId: string | null;
 }
 
 const Comment = ({ productId }: CommentProps) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { id: productIdParam } = useParams<{ id?: any }>();
+  const { id: productIdParam } = useParams<{ id?: string | undefined }>();
   const { user: userData } = useUser();
   const { isUserAuthenticated } = useAuth();
-  const location = useLocation();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
@@ -47,20 +46,23 @@ const Comment = ({ productId }: CommentProps) => {
   const { register, handleSubmit, formState: { errors }, watch } = form;
   const commentText = watch('comment');
 
-  const { data: CommentData, isLoading } = useQuery(['getProductComment', productIdParam || productId], () => getProductComment(productIdParam || productId), {});
-  const { data: CommentResponse } = useQuery(
+  const productCommentId = (productIdParam || productId) as string;
+  const { data: CommentData, isLoading } = useQuery(
+    ['getProductComment', productCommentId],
+    () => getProductComment(productCommentId),
+    {
+      enabled: !!productCommentId,
+    }
+  );
+  useQuery(
     ['getProductCommentResponse', selectedCommentId],
     () => getProductCommentResponse(selectedCommentId),
     {
-      enabled: !!selectedCommentId,
+      refetchOnWindowFocus: false,
+      refetchOnMount: false,
+      staleTime: 5 * 60 * 1000
     }
   );
-
-  useEffect(() => {
-    if (CommentResponse) {
-      console.log("Replies for the selected comment:", CommentResponse?.data?.data);
-    }
-  }, [CommentResponse]);
 
   useEffect(() => {
     if (CommentData) {
@@ -74,9 +76,9 @@ const Comment = ({ productId }: CommentProps) => {
       setSelectedImage(null);
       setIsSubmitting(false);
       toast.success("Comment posted successfully!");
+      queryClient.invalidateQueries(['getProductComment', productIdParam || productId]);
     },
-    onError: (err) => {
-      console.log(err);
+    onError: () => {
       setIsSubmitting(false);
       toast.error("Failed to post comment");
     }
@@ -105,7 +107,6 @@ const Comment = ({ productId }: CommentProps) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // Validate file size (max 5MB)
       if (file.size > 5 * 1024 * 1024) {
         toast.error("Image size should be less than 5MB");
         return;
@@ -279,30 +280,12 @@ const Comment = ({ productId }: CommentProps) => {
   };
 
   return (
-    <div className="w-full flex flex-col h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200">
-      {/* Header */}
-      <div className="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-        <div className="flex items-center justify-between p-4 max-w-4xl mx-auto">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate('/')}
-              className={`p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${location.pathname === '/quicks' ? 'hidden' : ''}`}
-            >
-              <IoMdArrowBack className="text-xl text-gray-600 dark:text-gray-300" />
-            </button>
-            <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Comments ({productComment?.length || 0})
-            </h1>
-          </div>
-        </div>
-      </div>
-
-      {/* Comments List */}
+    <div className="w-full flex flex-col h-screen bg-gray-50 dark:bg-black transition-colors duration-200 mt-20">
       <div className="flex-1 overflow-y-auto px-4 py-6 max-w-4xl mx-auto w-full">
         {isLoading ? (
           <div className="space-y-6">
             {Array.from(new Array(5)).map((_, index) => (
-              <div key={index} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+              <div key={index} className="bg-white dark:bg-black rounded-lg p-4 shadow-sm">
                 <div className="flex items-start gap-3">
                   <Skeleton variant="circular" width={40} height={40} className="dark:bg-gray-700" />
                   <div className="flex-1 space-y-2">
@@ -315,77 +298,73 @@ const Comment = ({ productId }: CommentProps) => {
             ))}
           </div>
         ) : productComment.length !== 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {productComment
               .filter((comment) => comment !== null && comment?.comment !== '' && comment?.user !== null)
               .map((comment: IAddComment) => (
-                <div key={comment?._id} className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow duration-200">
-                  <div className="p-4">
-                    <div className="flex items-start gap-3">
-                      {/* Avatar */}
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm ${getRandomColor(comment?.user?.fullName || 'User')}`}>
-                        {comment?.user?.fullName?.charAt(0)?.toUpperCase() || 'U'}
+                <div key={comment?._id} className="flex items-start gap-3 py-2">
+                  <div className={`w-4 h-4 rounded-full max-[650px]:mt-1.5 flex items-center justify-center text-white font-medium text-xs flex-shrink-0 ${getRandomColor(comment?.user?.fullName || 'User')}`}>
+                    {comment?.user?.fullName?.charAt(0)?.toUpperCase() || 'U'}
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-gray-900 dark:text-white text-xs">
+                          {comment?.user?.fullName}
+                        </span>
+                        <span className="text-[10px] text-gray-500 dark:text-gray-400">
+                          {formatTime(comment?.createdTime)}
+                        </span>
                       </div>
 
-                      {/* Comment Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-medium text-gray-900 dark:text-white text-sm">
-                            {comment?.user?.fullName}
-                          </h3>
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
-                            {formatTime(comment?.createdTime)}
-                          </span>
-                        </div>
-
-                        <p className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-3">
-                          {comment?.comment}
-                        </p>
-
-                        {comment?.image && (
-                          <div className="mb-3">
-                            <img
-                              src={comment?.image}
-                              alt="Comment attachment"
-                              className="rounded-lg max-w-xs h-auto cursor-pointer hover:opacity-90 transition-opacity"
-                              onClick={() => handleImageClick(comment?.image)}
-                            />
-                          </div>
-                        )}
-
-                        {/* Action Buttons */}
-                        <div className="flex items-center gap-4 pt-2">
-                          <button
-                            onClick={() => handleCommentLike(comment?._id)}
-                            className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors"
-                          >
-                            {loggedInUserId && comment?.user_likes?.includes(loggedInUserId) ? (
-                              <IoHeart className="text-red-500" />
-                            ) : (
-                              <IoHeartOutline />
-                            )}
-                            <span>{comment?.total_likes || 0}</span>
-                          </button>
-
-                          <button
-                            onClick={() => handleReplyClick(comment?._id, comment?.user?.fullName || '')}
-                            className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-blue-500 transition-colors"
-                          >
-                            <MdReply />
-                            <span>Reply</span>
-                          </button>
-
-                          {comment.user?._id === loggedInUserId && (
-                            <button
-                              onClick={() => handleDeleteComment(comment?._id)}
-                              className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors ml-auto"
-                            >
-                              <MdDeleteOutline />
-                              <span>Delete</span>
-                            </button>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => handleCommentLike(comment?._id)}
+                          className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors"
+                        >
+                          {loggedInUserId && comment?.user_likes?.includes(loggedInUserId) ? (
+                            <IoHeart className="text-red-500 text-sm" />
+                          ) : (
+                            <IoHeartOutline className="text-sm" />
                           )}
-                        </div>
+                          {comment?.total_likes > 0 && <span>{comment?.total_likes}</span>}
+                        </button>
+
+                        {comment.user?._id === loggedInUserId && (
+                          <button
+                            onClick={() => handleDeleteComment(comment?._id)}
+                            className="text-xs text-gray-500 dark:text-gray-400 hover:text-red-500 transition-colors"
+                          >
+                            <MdDeleteOutline className="text-sm" />
+                          </button>
+                        )}
                       </div>
+                    </div>
+
+                    <div className="text-xs text-gray-700 dark:text-gray-300 mt-1 break-words">
+                      {comment?.comment}
+                    </div>
+
+                    {comment?.image && (
+                      <div className="mt-2">
+                        <img
+                          src={comment?.image || ''}
+                          alt="Comment attachment"
+                          className="rounded-lg max-w-48 h-auto cursor-pointer hover:opacity-90 transition-opacity"
+                          onClick={() => handleImageClick(comment?.image)}
+                        />
+                      </div>
+                    )}
+
+                    {/* Reply action */}
+                    <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                      <button
+                        onClick={() => handleReplyClick(comment?._id, comment?.user?.fullName || '')}
+                        className="hover:text-blue-500 transition-colors"
+                      >
+                        Reply
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -393,7 +372,7 @@ const Comment = ({ productId }: CommentProps) => {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
+            <div className="w-16 h-16 bg-gray-100 dark:bg-black rounded-full flex items-center justify-center mb-4">
               <IoImageOutline className="text-2xl text-gray-400" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No comments yet</h3>
@@ -402,7 +381,6 @@ const Comment = ({ productId }: CommentProps) => {
         )}
       </div>
 
-      {/* Image Preview */}
       {imagePreviewUrl && (
         <div className="px-4 pb-2">
           <div className="max-w-4xl mx-auto">
@@ -423,7 +401,6 @@ const Comment = ({ productId }: CommentProps) => {
         </div>
       )}
 
-      {/* Reply Indicator */}
       {replyTo && (
         <div className="px-4 pb-2">
           <div className="max-w-4xl mx-auto">
@@ -442,10 +419,9 @@ const Comment = ({ productId }: CommentProps) => {
         </div>
       )}
 
-      {/* Comment Input */}
-      <div className="sticky bottom-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 p-4">
+      <div className="sticky bottom-0 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-700 p-4">
         <div className="max-w-4xl mx-auto">
-          <div className="flex items-end gap-3">
+          <div className="flex items-center gap-3">
             <input
               ref={fileInputRef}
               type="file"
@@ -466,7 +442,7 @@ const Comment = ({ productId }: CommentProps) => {
               <textarea
                 {...register('comment')}
                 placeholder={replyTo ? `Replying to ${replyTo}...` : "Write a comment..."}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg resize-none bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                className="w-full mt-2 p-2 border text-xs border-gray-300 dark:border-gray-600 rounded-lg resize-none bg-white dark:bg-black text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 transition-colors"
                 rows={1}
                 style={{
                   minHeight: '44px',
@@ -501,7 +477,6 @@ const Comment = ({ productId }: CommentProps) => {
         </div>
       </div>
 
-      {/* Image Modal */}
       {isModalOpen && modalImageUrl && (
         <ImageModal imageUrl={modalImageUrl} onClose={handleCloseModal} />
       )}
