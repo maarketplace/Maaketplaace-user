@@ -15,11 +15,11 @@ export const getUser = async () => {
 };
 
 export const getAllProduct = async () => {
-    return await axios.get(`${VITE_ENDPOINT}/product`);
+    return await axios.get(`${VITE_ENDPOINT}/products`);
 }
 
 export const getOneProduct = async (id: string) => {
-    return await axios.get(`${VITE_ENDPOINT}/product/${id}`);
+    return await axios.get(`${VITE_ENDPOINT}/products/${id}`);
 }
 
 export const getAllComment = async () => {
@@ -62,10 +62,10 @@ export const getOrderSummary = async (reference: string | null) => {
             reference
         }
     })
-  }
+}
 
-  export const getAllQuciks = async () => {
-      const token = getCachedToken();
+export const getAllQuciks = async () => {
+    const token = getCachedToken();
     return await axios.get(`${VITE_ENDPOINT}/quicks`, {
         headers: {
             'Authorization': `Bearer ${token}`
