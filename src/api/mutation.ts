@@ -26,14 +26,14 @@ export const logOutUser = async (id: string) => {
     return await axios.post(`${VITE_ENDPOINT_STAGING}/user/logout/${id}`)
 }
 export const userLike = async (id: string) => {
-    return await axios.post(`${VITE_ENDPOINT_STAGING}/product/${id}/like/user`, {}, {
+    return await axios.post(`${VITE_ENDPOINT_STAGING}/products/${id}/like/user`, {}, {
         headers: {
             'Authorization': `Bearer ${userToken}`
         }
     })
 }
 export const addProductToCart = async ({ id, data }: { id: string, data: number }) => {
-    return await axios.post(`${VITE_ENDPOINT_STAGING}/carts/product/${id}`, data, {
+    return await axios.post(`${VITE_ENDPOINT_STAGING}/carts/products/${id}`, data, {
         headers: {
             'Authorization': `Bearer ${userToken}`
         }
@@ -87,7 +87,7 @@ export const userLikeAQuicks = async (id: string | undefined) => {
     })
 }
 export const userForgotPassword = async (email: string) => {
-    return await axios.post(`${VITE_ENDPOINT_STAGING}/user/forgot`, {email})
+    return await axios.post(`${VITE_ENDPOINT_STAGING}/user/forgot`, { email })
 }
 
 export const userResetPassword = async (data: { id: string | undefined, password: string }) => {

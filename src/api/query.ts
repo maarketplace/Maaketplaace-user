@@ -5,7 +5,7 @@ const { VITE_ENDPOINT_STAGING } = import.meta.env;
 
 
 export const getUser = async () => {
-    const usertoken = getCachedToken()    
+    const usertoken = getCachedToken()
     return await axios.get(`${VITE_ENDPOINT_STAGING}/user`, {
         headers: {
             'Authorization': `Bearer ${usertoken}`,
@@ -14,11 +14,11 @@ export const getUser = async () => {
 };
 
 export const getAllProduct = async () => {
-    return await axios.get(`${VITE_ENDPOINT_STAGING}/product`);
+    return await axios.get(`${VITE_ENDPOINT_STAGING}/products`);
 }
 
 export const getOneProduct = async (id: string | undefined) => {
-    return await axios.get(`${VITE_ENDPOINT_STAGING}/product/${id}`);
+    return await axios.get(`${VITE_ENDPOINT_STAGING}/products/${id}`);
 }
 
 export const getAllComment = async () => {
@@ -59,10 +59,10 @@ export const getOrderSummary = async (reference: string | null) => {
             reference
         }
     })
-  }
+}
 
-  export const getAllQuciks = async () => {
-      const usertoken = getCachedToken()
+export const getAllQuciks = async () => {
+    const usertoken = getCachedToken()
     return await axios.get(`${VITE_ENDPOINT_STAGING}/quicks`, {
         headers: {
             'Authorization': `Bearer ${usertoken}`
