@@ -26,8 +26,8 @@ const Details: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { isUserAuthenticated } = useAuth();
-    const { id: productIdParam } = useParams<{ id?: string | undefined }>();
-    const [product, setProduct] = useState<IProduct | null>(null)
+    const { id: productIdParam } = useParams<{ id?: string }>();
+    const [product, setProduct] = useState<IProduct | null>(null);
     const { fetchUser } = useUser();
     const [activeTab, setActiveTab] = useState('expect');
     const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
