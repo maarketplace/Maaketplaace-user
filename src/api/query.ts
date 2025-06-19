@@ -1,77 +1,51 @@
-import axios from "axios";
-import { getCachedToken } from "../utils/auth.cache.utility";
-
-const { VITE_ENDPOINT } = import.meta.env;
-
+import axiosInstance from "./axiosInstance";
 
 export const getUser = async () => {
-    const token = getCachedToken();
-    if (!token) throw new Error('No user token found');
-    return await axios.get(`${VITE_ENDPOINT}/user`, {
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        },
-    });
+    return await axiosInstance.get("/user");
 };
 
-export const getAllProduct = async () => {
-    return await axios.get(`${VITE_ENDPOINT}/products`);
-}
+export const getAllProduct = async (params?: { page?: number; limit?: number; random?: boolean }) => {
+    return await axiosInstance.get("/products", { params });
+};
 
 export const getOneProduct = async (id: string) => {
-    return await axios.get(`${VITE_ENDPOINT}/products/${id}`);
-}
+    return await axiosInstance.get(`/products/${id}`);
+};
 
 export const getAllComment = async () => {
-    return await axios.get(`${VITE_ENDPOINT}/comments`);
-}
+    return await axiosInstance.get("/comments");
+};
 
 export const getUserOrders = async () => {
-    const token = getCachedToken();
-    return await axios.get(`${VITE_ENDPOINT}/orders/users`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
-};
-export const getUserOrderDetails = async (id: string) => {
-    const token = getCachedToken();
-    return await axios.get(`${VITE_ENDPOINT}/orders/${id}`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
+    return await axiosInstance.get("/orders/users");
 };
 
+export const getUserOrderDetails = async (id: string) => {
+    return await axiosInstance.get(`/orders/${id}`);
+};
 
 export const getOneMerchantStoreProduct = async (businessName: string | null) => {
-    return await axios.get(`${VITE_ENDPOINT}/merchants/products/${businessName}`, {
-
-    });
-}
+    return await axiosInstance.get(`/merchants/products/${businessName}`);
+};
 
 export const getProductComment = async (id: string) => {
-    return await axios.get(`${VITE_ENDPOINT}/comments/products/${id}`);
-}
-export const getProductCommentResponse = async (id: string | null) => {
-    return await axios.post(`${VITE_ENDPOINT}/comments/${id}/replies`,);
+    return await axiosInstance.get(`/comments/products/${id}`);
 };
-export const getOrderSummary = async (reference: string | null) => {
-    return await axios.get(`${VITE_ENDPOINT}/payment`, {
-        params: {
-            reference
-        }
-    })
-}
 
-export const getAllQuciks = async () => {
-    const token = getCachedToken();
-    return await axios.get(`${VITE_ENDPOINT}/quicks`, {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
+export const getProductCommentResponse = async (id: string | null) => {
+    return await axiosInstance.post(`/comments/${id}/replies`);
+};
+
+export const getOrderSummary = async (reference: string | null) => {
+    return await axiosInstance.get("/payment", {
+        params: { reference }
     });
 };
+
+export const getAllQuciks = async () => {
+    return await axiosInstance.get("/quicks");
+};
+
 export const getQuicksComment = async (id: string) => {
-    return await axios.get(`${VITE_ENDPOINT}/quicks/comments/${id}`);
-}
+    return await axiosInstance.get(`/quicks/comments/${id}`);
+};

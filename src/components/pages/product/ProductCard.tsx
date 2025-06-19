@@ -112,7 +112,7 @@ function ProductCard({ product, onLike, onFollow, onBuyNow, onView, loadingState
               </div>
             )}
             <p className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">
-              {product?.merchant?.business_name.slice(0, 20) || product?.merchant?.fullName}
+              {product?.merchant?.business_name?.slice(0, 20) || product?.merchant?.fullName}
             </p>
           </div>
 
