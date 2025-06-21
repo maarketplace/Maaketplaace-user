@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem(import.meta.env.VITE_TOKEN);
+        const token = localStorage.getItem(import.meta.env.VITE_TOKEN_USER);
         if (token) config.headers.Authorization = `Bearer ${token}`;
         return config;
     },
