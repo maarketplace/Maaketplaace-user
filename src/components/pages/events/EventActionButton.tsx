@@ -1,0 +1,94 @@
+import React from 'react';
+import { Calendar, Bookmark, Share2 } from 'lucide-react';
+import Loading from "../../../loader";
+import { EventApiResponse } from '../../../interface/ProductInterface';
+
+interface EventActionButtonProps {
+    event: EventApiResponse;
+    loadingStates: { [key: string]: boolean };
+    onAction: (id: string, action: 'register' | 'bookmark' | 'share') => void;
+}
+
+export const EventActionButton: React.FC<EventActionButtonProps> = ({
+    event,
+    loadingStates,
+    onAction,
+}) => {
+    const eventDetails = event.data?.data?.event;
+
+    if (!eventDetails) {
+        return null;
+    }
+
+    const {
+        _id,
+        id,
+        startDate,
+        endDate,
+        totalTickets,
+        ticketsSold,
+        price,
+    } = eventDetails;
+
+    const eventCapacity = totalTickets;
+    const registeredCount = ticketsSold;
+    const isActive = true; 
+    const eventPrice = price;
+    const eventDate = endDate || startDate; 
+    const isEventFull = typeof eventCapacity === 'number' && typeof registeredCount === 'number' && registeredCount >= eventCapacity;
+    const isEventPast = eventDate ? new Date(eventDate) < new Date() : false;
+
+    return (
+        <div className="space-y-4">
+            <button
+                onClick={() => onAction(id || _id, 'register')}
+                disabled={loadingStates[id || _id] || isEventFull || isEventPast || !isActive}
+                className={`w-full py-4 px-6 rounded-lg font-light text-lg transition-all ${isEventFull || isEventPast || !isActive
+                        ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
+                        : 'bg-[#ffc300] hover:bg-[#e0a800] text-black shadow-lg hover:shadow-xl'
+                    }`}
+            >
+                {loadingStates[id || _id] ? (
+                    <div className="flex items-center justify-center gap-3">
+                        <Loading />
+                        <span>Processing...</span>
+                    </div>
+                ) : (
+                    <div className="flex items-center justify-center gap-3">
+                        <Calendar className="w-6 h-6" />
+                        <span>
+                            {isEventPast
+                                ? 'Event Ended'
+                                : isEventFull
+                                    ? 'Event Full'
+                                    : !isActive
+                                        ? 'Event Inactive'
+                                        : eventPrice
+                                            ? `Register - ${eventPrice}`
+                                            : 'Register for Free'
+                            }
+                        </span>
+                    </div>
+                )}
+            </button>
+
+            <div className="flex space-x-3">
+                <button
+                    onClick={() => onAction(id || _id, 'bookmark')}
+                    className="flex-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                    <Bookmark className="w-5 h-5" />
+                    <span>Save</span>
+                </button>
+
+                <button
+                    onClick={() => onAction(id || _id, 'share')}
+                    className="flex-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                    <Share2 className="w-5 h-5" />
+                    <span>Share</span>
+                </button>
+            </div>
+        </div>
+    );
+};

@@ -20,6 +20,8 @@ import ForgotPassword from './components/onboarding/forgetpassword';
 import OrderFailure from './components/pages/orderSuccessful/OrderFailure';
 import OrderSummaryDetails from './components/pages/orderSummary/OrderSummary';
 import FreeOrderSuccess from './components/pages/orderSuccessful/FreeProductOrderSuccess';
+import Event from './components/pages/events';
+import EventDetails from './components/pages/events/index[id]';
 // eslint-disable-next-line react-refresh/only-export-components
 const LoginLoader = () => import('./components/onboarding/login');
 // eslint-disable-next-line react-refresh/only-export-components
@@ -100,6 +102,14 @@ const router = createBrowserRouter([
         path: 'order-failure',
         element: <OrderFailure />
       },
+      {
+        path: 'events',
+        element: <Event />
+      },
+      {
+        path: 'event-details/:id',
+        element: <EventDetails />
+      }
     ]
   },
   {

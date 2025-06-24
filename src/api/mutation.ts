@@ -1,35 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axiosInstance from "./axiosInstance";
 
-const { VITE_ENDPOINT } = import.meta.env;
 
 
 export const userSignup = async (data: any) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/user`, data)
+    return await axiosInstance.post(`/user`, data)
 };
 
 export const userVerify = async (data: any) => {
-    return await axiosInstance.patch(`${VITE_ENDPOINT}/user/verify`, data)
+    return await axiosInstance.patch(`/user/verify`, data)
 };
 
 export const userLogin = async (data: any) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/user/login`, data)
+    return await axiosInstance.post(`/user/login`, data)
 };
 export const logOutUser = async (id: string) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/user/logout/${id}`)
+    return await axiosInstance.post(`/user/logout/${id}`)
 }
 export const userLike = async (id: string) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/products/${id}/like/user`, {})
+    return await axiosInstance.post(`/products/${id}/like/user`, {})
 }
 export const addProductToCart = async ({ id, data }: { id: string, data: number }) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/carts/products/${id}`, data,)
+    return await axiosInstance.post(`/carts/products/${id}`, data,)
 }
 export const clearCart = async () => {
-    return await axiosInstance.delete(`${VITE_ENDPOINT}/order`)
+    return await axiosInstance.delete(`/order`)
 }
 
 export const userComment = async ({ id, formData }: { id: string | undefined, formData: FormData }) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/comment/products/${id}`, formData, {
+    return await axiosInstance.post(`/comment/products/${id}`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
@@ -38,7 +37,7 @@ export const userComment = async ({ id, formData }: { id: string | undefined, fo
 export const userQuicksComment = async ({ id, formData }: { id: string | undefined, formData: FormData }) => {
 
 
-    return await axiosInstance.post(`${VITE_ENDPOINT}/quicks/comment/${id}`, formData, {
+    return await axiosInstance.post(`/quicks/comment/${id}`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
@@ -48,44 +47,46 @@ export const userQuicksComment = async ({ id, formData }: { id: string | undefin
 export const userReplyComment = async ({ id, comment }: { id: string | null, comment: string }) => {
 
 
-    return await axiosInstance.post(`${VITE_ENDPOINT}/comments/${id}/replies`, comment);
+    return await axiosInstance.post(`/comments/${id}/replies`, comment);
 };
 
 export const userLikeAComment = async (id: string | undefined) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/comment/${id}/like/user`, {})
+    return await axiosInstance.post(`/comment/${id}/like/user`, {})
 }
 export const userLikeAQuicks = async (id: string | undefined) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/quicks/${id}/like/user`, {})
+    return await axiosInstance.post(`/quicks/${id}/like/user`, {})
 }
 export const userForgotPassword = async (email: string) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/user/forgot`, { email })
+    return await axiosInstance.post(`/user/forgot`, { email })
 }
 
 export const userResetPassword = async (data: { id: string | undefined, password: string }) => {
     const { id, password } = data
-    return await axiosInstance.patch(`${VITE_ENDPOINT}/user/ps-change/${id}`, { password })
+    return await axiosInstance.patch(`/user/ps-change/${id}`, { password })
 }
 
 export const userBuyNow = async (id: string) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/orders/products/${id}/buy`, {})
+    return await axiosInstance.post(`/orders/products/${id}/buy`, {})
 }
 
 export const userPayWithKora = async (id: string) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/init-kora/orders/${id}/single`, {})
+    return await axiosInstance.post(`/init-kora/orders/${id}/single`, {})
 }
 
 export const userFollowMerchant = async (id: string) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/users/merchants/${id}`, {})
+    return await axiosInstance.post(`/users/merchants/${id}`, {})
 }
 
 export const resendVerification = async (email: string | null) => {
-    return await axiosInstance.post(`${VITE_ENDPOINT}/email?email=${email}&type=user`,);
+    return await axiosInstance.post(`/email?email=${email}&type=user`,);
 };
 
 export const deleteComment = async (id: string) => {
-    return await axiosInstance.delete(`${VITE_ENDPOINT}/comments/${id}`, {
+    return await axiosInstance.delete(`/comments/${id}`, {
         params: {
             type: 'comment'
         }
     });
 };
+
+
