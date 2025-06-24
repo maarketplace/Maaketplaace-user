@@ -61,7 +61,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   );
 
-  // Force refetch when auth state changes
   useEffect(() => {
     if (isAuthenticated) {
       fetchUser();

@@ -27,7 +27,7 @@ const Store = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [shareSuccess, setShareSuccess] = useState(false);
     const { businessName } = useParams<{ businessName?: string }>()
-    const decodedName = businessName?.replace(/-/g, " ");
+    
     const [paymentDetails, setPaymentDetails] = useState(
         {
             amount: '',
@@ -47,8 +47,8 @@ const Store = () => {
         isLoading,
         error
     } = useQuery(
-        ["getOneMerchantStoreProduct", decodedName],
-        () => getOneMerchantStoreProduct(decodedName || null),
+        ["getOneMerchantStoreProduct", businessName],
+        () => getOneMerchantStoreProduct(businessName || null),
         {
             onSuccess: () => { },
             onError: () => { },

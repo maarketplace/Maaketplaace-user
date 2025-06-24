@@ -1,6 +1,6 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
-
+import { getCachedToken } from '../utils/auth.cache.utility';
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_ENDPOINT,
     headers: {
@@ -10,7 +10,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem(import.meta.env.VITE_TOKEN_USER);
+        const token = getCachedToken();
         if (token) config.headers.Authorization = `Bearer ${token}`;
         return config;
     },

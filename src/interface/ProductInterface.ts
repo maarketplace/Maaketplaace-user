@@ -157,3 +157,64 @@ interface Merchant {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface EventMerchant {
+    _id: string;
+    fullName: string;
+    email: string;
+    business_name: string;
+    password: string;
+    phoneNumber: string;
+    is_admin: boolean;
+    bio: string;
+    profession: string;
+    image: string;
+    imageCloudUrl: string;
+    verified: boolean;
+    verificationCode: number;
+    subscribed: boolean;
+    subscriptionType: string;
+    products: string[];
+    followedUsers: string[];
+    createdAt: string;
+    updatedAt: string;
+    account_status: string;
+    role_slug: string;
+}
+
+export interface EventDetails {
+    _id: string;
+    id: string;
+    name: string;
+    description: string;
+    startDate: string;
+    endDate: string;
+    location: string;
+    bannerImage: string;
+    eventType: string;
+    category: string;
+    merchant: Merchant;
+    totalTickets: number;
+    ticketsSold: number;
+    price: string;
+    createdAt: string;
+    updatedAt: string;
+    remainingTickets: number;
+}
+
+export interface EventData {
+    event: EventDetails;
+    similarType: EventDetails[]
+    similarCategory: EventDetails[];
+}
+
+export interface EventInnerData {
+    message: string;
+    data: EventData;
+}
+
+export interface EventApiResponse {
+    status: boolean;
+    message: string;
+    data: EventInnerData;
+}

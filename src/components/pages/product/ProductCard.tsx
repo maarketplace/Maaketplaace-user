@@ -53,7 +53,7 @@ function ProductCard({ product, onLike, onFollow, onBuyNow, onView, loadingState
       <div className="relative aspect-square overflow-hidden">
         <div className="absolute top-3 left-3">
           <span className="bg-yellow-400 text-black text-xs font-semibold px-3 py-1 rounded-full uppercase">
-            {product.productType}
+            {product?.productType}
           </span>
         </div>
 
@@ -73,8 +73,8 @@ function ProductCard({ product, onLike, onFollow, onBuyNow, onView, loadingState
         )}
 
         <img
-          src={product.productImage}
-          alt={product.productName}
+          src={product?.productImage}
+          alt={product?.productName}
           className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 ${imageLoaded ? 'opacity-100' : 'opacity-0'
             }`}
           onLoad={handleImageLoad}
@@ -102,7 +102,7 @@ function ProductCard({ product, onLike, onFollow, onBuyNow, onView, loadingState
           >
             {product?.merchant?.image ? (
               <img
-                src={product.merchant.image}
+                src={product?.merchant?.image}
                 alt="Merchant"
                 className="w-8 h-8 rounded-full object-cover"
               />
@@ -128,21 +128,21 @@ function ProductCard({ product, onLike, onFollow, onBuyNow, onView, loadingState
         </div>
 
         <h3 className="font-semibold text-gray-900 dark:text-white text-lg leading-tight line-clamp-2">
-          {product.productName}
+          {product?.productName}
         </h3>
 
         <div className="flex items-center gap-2">
-          {product.paymentPrice === 0 ? (
+          {product?.paymentPrice === 0 ? (
             <span className="text-lg font-semibold text-green-600">Free</span>
           ) : (
             <>
-              {product.productPrice !== product.paymentPrice && (
+              {product?.productPrice !== product?.paymentPrice && (
                 <span className="text-sm text-gray-400 line-through">
-                  ₦{product.productPrice.toLocaleString()}
+                  ₦{product?.productPrice?.toLocaleString()}
                 </span>
               )}
               <span className="text-lg font-semibold text-gray-900 dark:text-white">
-                ₦{product.paymentPrice.toLocaleString()}
+                ₦{product?.paymentPrice?.toLocaleString()}
               </span>
             </>
           )}

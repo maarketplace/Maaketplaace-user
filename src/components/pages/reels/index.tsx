@@ -1,13 +1,19 @@
 import { useQuery } from "react-query";
 import { getAllQuciks } from "../../../api/query";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { IQuicks } from "../../../interface/ProductInterface";
 import { useNavigate } from "react-router-dom";
 
 const ProductReels = () => {
     const navigate = useNavigate();
     const [allProduct, setAllProduct] = useState<IQuicks[]>([]);
-    const { data } = useQuery(["getAllQuciks"], getAllQuciks);
+    const { data } = useQuery(["getAllQuciks"], getAllQuciks, {
+        staleTime: 5 * 60 * 1000,
+        cacheTime: 30 * 60 * 1000,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchOnReconnect: false,
+    });
     useEffect(() => {
         if (data?.data?.data?.data) {
             const reversedData = [...data.data.data.data].reverse();
@@ -16,7 +22,7 @@ const ProductReels = () => {
     }, [data]);
 
     return (
-        <div className={`w-[100%] ${allProduct.length === 0 ? 'h-0' : 'h-[180px] mt-20 '} max-[650px]:w-[100%] transition-height duration-300`}>
+        <div className={`w-[100%] ${allProduct.length === 0 ? 'h-0' : 'h-[180px] mt-4'} max-[650px]:w-[100%] transition-height duration-300`}>
             <div className='w-[100%] h-[95%] flex gap-[20px] p-[10px] overflow-x-auto whitespace-nowrap no-scrollbar'>
                 {allProduct.map((i) => (
                     <div key={i?._id} className="w-[150px] h-[150px] max-w-[150px] flex-shrink-0 inline-block" onClick={() => navigate(`/quicks?reelId=${i?._id}`)}>
