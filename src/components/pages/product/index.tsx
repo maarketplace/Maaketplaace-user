@@ -155,7 +155,7 @@ function Product() {
         { key: 'all', label: 'All Products', count: tabCounts.all },
         { key: 'course', label: 'Courses', count: tabCounts.course },
         { key: 'ebook', label: 'E-books', count: tabCounts.ebook },
-        { key: 'ticket', label: 'Tickets' },
+        // { key: 'ticket', label: 'Tickets' },
     ];
 
     const handleProductView = (product: IProduct) => {
