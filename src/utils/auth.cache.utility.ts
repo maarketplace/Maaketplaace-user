@@ -1,4 +1,4 @@
-const AUTH_DATA_KEY = "user/marketplace";
+const AUTH_DATA_KEY = import.meta.env.VITE_TOKEN_USER;
 
 export interface AuthData {
   token: string;

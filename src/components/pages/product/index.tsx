@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useInfiniteQuery, useQuery } from 'react-query';
 import { getAllProduct, searchByQuery, searchProduct } from '../../../api/query';
 import { SearchContext } from '../../../context/Search';
@@ -46,25 +46,27 @@ function Product() {
         window.scrollTo(0, 0);
     }, []);
 
-    const buildQueryString = () => {
-        const params = new URLSearchParams();
+    const buildQueryParams = (page: number = 1) => {
+        const params: Record<string, string> = {
+            page: page.toString(),
+            limit: LIMIT.toString(),
+        };
 
         if (activeTab === 'course') {
-            params.append('productType', 'course');
+            params.productType = 'course';
         } else if (activeTab === 'ebook') {
-            params.append('productType', 'ebook');
+            params.productType = 'ebook';
         }
 
         Object.entries(filterParams).forEach(([key, value]) => {
             if (value !== undefined && value !== '') {
-                params.append(key, value.toString());
+                params[key] = String(value);
             }
         });
 
-        return params.toString();
+        return params;
     };
 
-    // Regular infinite query for all products (no search, no filters)
     const {
         data: infiniteData,
         fetchNextPage,
@@ -76,7 +78,7 @@ function Product() {
         ({ pageParam = 1 }) => getAllProduct({
             page: pageParam,
             limit: LIMIT,
-            random: false
+            random: true
         }),
         {
             getNextPageParam: (lastPage, allPages) => {
@@ -91,26 +93,33 @@ function Product() {
             staleTime: 5 * 60 * 1000,
             cacheTime: 30 * 60 * 1000,
             refetchOnWindowFocus: false,
-            enabled: !hasSearchQuery && !hasFilters,
+            enabled: activeTab === 'all' && !hasFilters && !hasSearchQuery,
         }
     );
 
-    // Backend filtering query
     const {
-        data: filteredData,
-        isLoading: isLoadingFiltered,
-        error: filteredError,
-    } = useQuery(
-        ['searchByQuery', buildQueryString()],
-        () => searchByQuery(buildQueryString()),
+        data: filteredInfiniteData,
+        fetchNextPage: fetchNextFilteredPage,
+        hasNextPage: hasNextFilteredPage,
+        isFetchingNextPage: isFetchingNextFilteredPage,
+        isLoading: isLoadingFilteredInfinite,
+        error: filteredInfiniteError,
+    } = useInfiniteQuery(
+        ['searchByQuery', activeTab, filterParams],
+        ({ pageParam = 1 }) => searchByQuery(buildQueryParams(pageParam)),
         {
-            enabled: hasFilters && !hasSearchQuery,
+            getNextPageParam: (lastPage, allPages) => {
+                const lastFetchedCount = lastPage?.data?.data?.length || 0;
+                if (lastFetchedCount < LIMIT) return undefined;
+                return allPages.length + 1;
+            },
+            enabled: (activeTab !== 'all') || hasFilters,
             staleTime: 2 * 60 * 1000,
             cacheTime: 10 * 60 * 1000,
+            refetchOnWindowFocus: false,
         }
     );
 
-    // Search query - always called but only enabled when searching
     const {
         data: searchData,
         isLoading: isLoadingSearch,
@@ -125,16 +134,26 @@ function Product() {
         }
     );
 
-    const isLoading = hasSearchQuery ? isLoadingSearch : hasFilters ? isLoadingFiltered : isLoadingInfinite;
-    const error = hasSearchQuery ? searchError : hasFilters ? filteredError : null;
+    const isLoading = hasSearchQuery ? isLoadingSearch : hasFilters ? isLoadingFilteredInfinite : isLoadingInfinite;
+    const error = hasSearchQuery ? searchError : hasFilters ? filteredInfiniteError : null;
 
     let allProducts: IProduct[] = [];
+    let loadMoreFn = () => { };
+    let hasMore = false;
+    let isLoadingMore = false;
+
     if (hasSearchQuery) {
         allProducts = searchData?.data?.data?.data?.data || [];
-    } else if (hasFilters) {
-        allProducts = filteredData?.data?.data || [];
+    } else if (activeTab !== 'all' || hasFilters) {
+        allProducts = filteredInfiniteData?.pages?.flatMap((page) => page.data?.data) || [];
+        loadMoreFn = fetchNextFilteredPage;
+        hasMore = !!hasNextFilteredPage;
+        isLoadingMore = isFetchingNextFilteredPage;
     } else {
         allProducts = infiniteData?.pages?.flatMap((page) => page.data?.data?.products) || [];
+        loadMoreFn = fetchNextPage;
+        hasMore = !!hasNextPage;
+        isLoadingMore = isFetchingNextPage;
     }
 
     const filteredProducts = hasFilters ? allProducts : allProducts?.filter((product: IProduct) => {
@@ -144,18 +163,11 @@ function Product() {
         return true;
     });
 
-    const tabCounts = {
-        all: allProducts?.length || 0,
-        course: allProducts?.filter(p => !p.pages)?.length || 0,
-        ebook: allProducts?.filter(p => p.pages)?.length || 0,
-        ticket: null,
-    };
-
     const tabs: TabOption[] = [
-        { key: 'all', label: 'All Products', count: tabCounts.all },
-        { key: 'course', label: 'Courses', count: tabCounts.course },
-        { key: 'ebook', label: 'E-books', count: tabCounts.ebook },
-        { key: 'ticket', label: 'Tickets' },
+        { key: 'all', label: 'All Products' },
+        { key: 'course', label: 'Courses' },
+        { key: 'ebook', label: 'E-books' },
+        // { key: 'ticket', label: 'Tickets' },
     ];
 
     const handleProductView = (product: IProduct) => {
@@ -164,22 +176,21 @@ function Product() {
     };
 
     const handleLoadMore = () => {
-        if (hasNextPage && !isFetchingNextPage && !hasSearchQuery && !hasFilters) {
-            fetchNextPage();
+        if (hasMore && !isLoadingMore) {
+            loadMoreFn();
         }
     };
 
-    const handleTabChange = (tabKey: ProductType) => {
+    const handleTabChange = useCallback((tabKey: ProductType) => {
         if (tabKey === 'ticket') {
             navigate('/events');
             return;
         }
-
         setActiveTab(tabKey);
         if (hasFilters) {
             setFilterParams({});
         }
-    };
+    }, [hasFilters, navigate]);
 
     const clearAllFilters = () => {
         setFilterParams({});
@@ -235,39 +246,38 @@ function Product() {
             }
         }
     };
+    if (error) {
+        return (
+            <div className="w-full h-screen flex items-center justify-center">
+                <p className="text-xl text-red-500">Error loading products. Please try again later.</p>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-black dark:to-gray-800 p-4">
             <div className="max-w-7xl mx-auto">
                 <div className="mt-20">
-                    <div className="flex items-center justify-center mb-4 w-full">
-                        <div className="bg-white dark:bg-black  p-1 shadow-md rounded-lg dark:border-gray-700 w-full md:w-[60%]">
-                            <div className="flex items-center justify-between px-2 py-1 overflow-x-scroll no-scrollbar w-full">
+                    <div className="flex items-center justify-center">
+                        <div className="bg-white dark:bg-gray-800 rounded-xl p-1 shadow-md border border-gray-200 dark:border-gray-700">
+                            <div className="flex space-x-3" role="tablist" aria-label="Product type filter">
                                 {tabs.map((tab) => (
                                     <button
                                         key={tab.key}
                                         onClick={() => handleTabChange(tab.key)}
+                                        role="tab"
+                                        aria-selected={activeTab === tab.key}
+                                        aria-controls={`${tab.key}-panel`}
                                         className={`
-                                            relative px-4 py-1 rounded-lg font-medium text-sm max-[650px]:text-xs transition-all duration-200 ease-in-out
+                                            relative px-4 py-1 rounded-lg font-medium text-sm max-[650px]:text-xs transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#FFC300] focus:ring-offset-2
                                             ${activeTab === tab.key
                                                 ? 'bg-[#FFC300] text-black shadow-md'
                                                 : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
                                             }
                                         `}
                                     >
-                                        <span className="flex items-center gap-1 w-[100px] md:w-[150px] justify-center">
+                                        <span className="flex items-center gap-1">
                                             {tab.label}
-                                            {tab.count !== undefined && (
-                                                <span className={`
-                                                    w-5 h-5 rounded-full text-[10px] font-semibold flex items-center justify-center
-                                                    ${activeTab === tab.key
-                                                        ? 'bg-black bg-opacity-20 text-black'
-                                                        : 'bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300'
-                                                    }
-                                                `}>
-                                                    {tab.count}
-                                                </span>
-                                            )}
                                         </span>
                                     </button>
                                 ))}
@@ -306,12 +316,6 @@ function Product() {
 
                 {isLoading ? (
                     <ProductSkeleton />
-                ) : error ? (
-                    <div className="text-center py-20">
-                        <p className="text-xl text-red-500">
-                            {hasSearchQuery ? 'Error searching products.' : 'Error loading products.'} Please try again.
-                        </p>
-                    </div>
                 ) : filteredProducts?.length !== 0 ? (
                     <>
                         <ProductGrid
@@ -319,36 +323,27 @@ function Product() {
                             onProductView={handleProductView}
                         />
 
-                        {/* Show different pagination based on mode */}
-                        {hasSearchQuery || hasFilters ? (
-                            // Search/Filter mode: Show simple results count
+                        {hasSearchQuery ? (
                             <div className="flex flex-col items-center py-8 gap-4">
                                 <div className="text-center">
                                     <p className="text-lg text-gray-500 dark:text-gray-400">
                                         Found {filteredProducts.length} {activeTab === 'all' ? 'products' : activeTab === 'course' ? 'courses' : 'e-books'}
                                     </p>
-                                    {hasSearchQuery && (
-                                        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-                                            for "{debouncedSearchQuery}"
-                                        </p>
-                                    )}
-                                    {hasFilters && !hasSearchQuery && (
-                                        <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
-                                            with applied filters
-                                        </p>
-                                    )}
+                                    <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+                                        for "{debouncedSearchQuery}"
+                                    </p>
                                 </div>
                             </div>
                         ) : (
                             <>
                                 <div className="flex md:hidden flex-col items-center py-8 gap-4">
-                                    {hasNextPage && (
+                                    {hasMore ? (
                                         <button
                                             onClick={handleLoadMore}
-                                            disabled={isFetchingNextPage}
+                                            disabled={isFetchingNextPage || isFetchingNextFilteredPage}
                                             className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#FFC300] hover:bg-[#E6AF00] disabled:bg-gray-300 disabled:cursor-not-allowed text-black font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
                                         >
-                                            {isFetchingNextPage ? (
+                                            {isFetchingNextPage || isFetchingNextFilteredPage ? (
                                                 <>
                                                     <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
                                                     Loading...
@@ -360,15 +355,14 @@ function Product() {
                                                 </>
                                             )}
                                         </button>
-                                    )}
-
-                                    {!hasNextPage && filteredProducts.length > 0 && (
+                                    ) : filteredProducts.length > 0 && (
                                         <div className="text-center">
                                             <p className="text-lg text-gray-500 dark:text-gray-400">
                                                 🎉 You've seen all {activeTab === 'all' ? 'products' : activeTab === 'course' ? 'courses' : 'e-books'}!
                                             </p>
                                             <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
                                                 Total: {filteredProducts.length} {activeTab === 'all' ? 'products' : activeTab === 'course' ? 'courses' : 'e-books'}
+                                                {hasFilters && ' with applied filters'}
                                             </p>
                                         </div>
                                     )}
@@ -442,6 +436,7 @@ function Product() {
                                             Showing {filteredProducts.length} {activeTab === 'all' ? 'products' : activeTab === 'course' ? 'courses' : 'e-books'}
                                             {totalPages > 0 && ` • Page ${currentPage} of ${totalPages}`}
                                             {!hasNextPage && totalPages > 0 && " • All pages loaded"}
+                                            {hasFilters && !hasSearchQuery && " • Filtered results"}
                                         </p>
                                     </div>
                                 </div>

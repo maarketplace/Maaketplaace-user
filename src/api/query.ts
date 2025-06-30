@@ -50,11 +50,9 @@ export const getQuicksComment = async (id: string) => {
     return await axiosInstance.get(`/quicks/comments/${id}`);
 };
 
-export const searchByQuery = async (query: string) => {
-    return await axiosInstance.get("/products/search-by-fields", {
-        params: { query }
-    });
-}
+export const searchByQuery = async (params: Record<string, string>) => {
+    return await axiosInstance.get('/products/search-by-fields', { params });
+};
 
 export const searchProduct = async (page: number, limit: number, search: string) => {
  const trimmedSearch = search.trim();
@@ -62,6 +60,7 @@ export const searchProduct = async (page: number, limit: number, search: string)
         params: { search: trimmedSearch, page, limit }
     });
 };
+
 export const getAllEvents = async (params?: { page?: number; limit?: number }) => {
     return await axiosInstance.get("/events", { params });
 }
