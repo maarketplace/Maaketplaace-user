@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Calendar, Bookmark, Share2 } from 'lucide-react';
 import Loading from "../../../loader";
 import { EventApiResponse } from '../../../interface/ProductInterface';
+import RegistrationModal from './RegistrationModal';
 
 interface EventActionButtonProps {
     event: EventApiResponse;
@@ -14,6 +15,9 @@ export const EventActionButton: React.FC<EventActionButtonProps> = ({
     loadingStates,
     onAction,
 }) => {
+    const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+    const [registrationLoading, setRegistrationLoading] = useState(false);
+
     const eventDetails = event.data?.data?.event;
 
     if (!eventDetails) {
@@ -38,10 +42,35 @@ export const EventActionButton: React.FC<EventActionButtonProps> = ({
     const isEventFull = typeof eventCapacity === 'number' && typeof registeredCount === 'number' && registeredCount >= eventCapacity;
     const isEventPast = eventDate ? new Date(eventDate) < new Date() : false;
 
+    const handleRegisterClick = () => {
+        if (!isEventFull && !isEventPast && isActive) {
+            setShowRegistrationModal(true);
+        }
+      };
+    const handleRegistrationSubmit = async (registrationData: { quantity: number; attendees: string[] }) => {
+        setRegistrationLoading(true);
+        try {
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            console.log('Registration Data:', registrationData);
+            console.log('Event ID:', id || _id);
+
+            // Close modal after successful registration
+            setShowRegistrationModal(false);
+
+            // You can also call the original onAction here if needed
+            onAction(id || _id, 'register');
+        } catch (error) {
+            console.error('Registration failed:', error);
+        } finally {
+            setRegistrationLoading(false);
+        }
+      };
     return (
         <div className="space-y-4">
             <button
-                onClick={() => onAction(id || _id, 'register')}
+                onClick={handleRegisterClick}
                 disabled={loadingStates[id || _id] || isEventFull || isEventPast || !isActive}
                 className={`w-full py-4 px-6 rounded-lg font-light text-lg transition-all ${isEventFull || isEventPast || !isActive
                         ? 'bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed'
@@ -89,6 +118,13 @@ export const EventActionButton: React.FC<EventActionButtonProps> = ({
                     <span>Share</span>
                 </button>
             </div>
+            <RegistrationModal
+                isOpen={showRegistrationModal}
+                onClose={() => setShowRegistrationModal(false)}
+                event={event}
+                onSubmit={handleRegistrationSubmit}
+                isLoading={registrationLoading}
+            />
         </div>
     );
 };
