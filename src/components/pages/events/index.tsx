@@ -195,9 +195,7 @@ const Event = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br bg-white dark:bg-black p-4">
-            <div className="max-w-7xl mx-auto mt-20" >
-
-                <p className='p-2'>Upcoming event</p>
+            <div className="max-w-7xl mx-auto mt-20">
                 <UpcomingEvents />
                 {hasSearchQuery && (
                     <div className="mt-4 text-center">

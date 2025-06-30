@@ -6,7 +6,7 @@ import { IEvent } from ".";
 
 const UpcomingEvents = () => {
     const navigate = useNavigate();
-    const [allProduct, setAllProduct] = useState<IEvent[]>([]);
+    const [allEvents, setAllEvents] = useState<IEvent[]>([]);
 
     const {
         data: eventData,
@@ -27,7 +27,7 @@ const UpcomingEvents = () => {
         const upcomingEvents = eventData?.data?.data?.data?.upcoming;
         if (upcomingEvents && Array.isArray(upcomingEvents)) {
             const reversedData = [...upcomingEvents].reverse();
-            setAllProduct(reversedData);
+            setAllEvents(reversedData);
         }
     }, [eventData]);
 
@@ -46,9 +46,12 @@ const UpcomingEvents = () => {
     }
 
     return (
-        <div className={`w-[100%] ${allProduct.length === 0 ? 'h-0' : 'h-[180px] mt-4'} max-[650px]:w-[100%] transition-height duration-300`}>
+        <div className={`w-[100%] ${allEvents.length === 0 ? 'h-0' : 'h-[180px] mt-4'} max-[650px]:w-[100%] transition-height duration-300`}>
+            {
+                allEvents.length === 0 ? null : <p className="mt-4 mb-6 w-full">Upcoming Events</p>
+            }
             <div className='w-[100%] h-[95%] flex gap-[20px] p-[10px] overflow-x-auto whitespace-nowrap no-scrollbar'>
-                {allProduct.map((i) => (
+                {allEvents.map((i) => (
                     <div
                         key={i?._id}
                         className="w-[150px] h-[150px] max-w-[150px] flex-shrink-0 inline-block cursor-pointer"
