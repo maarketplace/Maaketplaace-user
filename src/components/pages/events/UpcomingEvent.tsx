@@ -46,11 +46,11 @@ const UpcomingEvents = () => {
     }
 
     return (
-        <div className={`w-[100%] ${allEvents.length === 0 ? 'h-0' : 'h-[180px] mt-4'} max-[650px]:w-[100%] transition-height duration-300`}>
+        <div className={`w-[100%] ${allEvents.length === 0 ? 'h-0' : 'h-[180px] mt-4 '} max-[650px]:w-[100%] transition-height duration-300`}>
             {
                 allEvents.length === 0 ? null : <p className="mt-4 mb-6 w-full">Upcoming Events</p>
             }
-            <div className='w-[100%] h-[95%] flex gap-[20px] p-[10px] overflow-x-auto whitespace-nowrap no-scrollbar'>
+            <div className='w-[100%] h-[95%] flex gap-[20px] p-[10px] mb-[40px] overflow-x-auto whitespace-nowrap no-scrollbar'>
                 {allEvents.map((i) => (
                     <div
                         key={i?._id}
