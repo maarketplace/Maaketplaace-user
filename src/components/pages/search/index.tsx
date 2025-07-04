@@ -80,7 +80,7 @@ const Search = () => {
         isLoading: isLoadingInfinite,
         error: infiniteError
     } = useInfiniteQuery(
-        ['getAllProducts'],
+        ['getAllSearchableProducts', activeTab, filterParams],
         ({ pageParam = 1 }) => getAllProduct({
             page: pageParam,
             limit: LIMIT,
@@ -111,7 +111,7 @@ const Search = () => {
         isLoading: isLoadingFilteredInfinite,
         error: filteredInfiniteError,
     } = useInfiniteQuery(
-        ['searchByQuery', activeTab, filterParams],
+        ['searchBySearchableQuery', activeTab, filterParams],
         ({ pageParam = 1 }) => searchByQuery(buildQueryParams(pageParam)),
         {
             getNextPageParam: (lastPage, allPages) => {
@@ -339,7 +339,7 @@ const Search = () => {
                                 >
                                     <div className="relative">
                                         <img
-                                            src={product.productImage}
+                                            src={product.productImage }
                                             alt={product.productName}
                                             className="w-full object-cover aspect-square filter brightness-225 contrast-110 transition-all duration-500 ease-in-out"
                                             loading="lazy"
@@ -358,12 +358,10 @@ const Search = () => {
                                         </h3>
                                         <div className="flex items-center justify-between">
                                             <div className="flex gap-2 items-end">
-                                                <span className="text-sm text-gray-400 line-through" aria-label="Original price">
+                                                <span className="text-sm text-gray-400" aria-label="Original price">
                                                     ₦{product.productPrice?.toLocaleString()}
                                                 </span>
-                                                <span className="text-base font-medium text-gray-900 dark:text-gray-100" aria-label="Current price">
-                                                    ₦{product.paymentPrice?.toLocaleString()}
-                                                </span>
+                                               
                                             </div>
                                             <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">
                                                 {product.pages ? 'E-book' : 'Course'}

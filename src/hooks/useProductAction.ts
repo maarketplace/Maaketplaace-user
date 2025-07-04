@@ -95,8 +95,8 @@ export const useProductActions = (
 
             setAllProduct(updateLikeProduct);
         } else {
-            toast.error("Please login to like this product");
-            setTimeout(() => navigate('/login'), 2000);
+            toast.error('Please login to like this Product');
+            navigate('/login');
         }
     };
 
@@ -105,8 +105,8 @@ export const useProductActions = (
         if (token) {
             followMutation.mutate(merchantId);
         } else {
-            toast.error("Please login to follow this merchant");
-            setTimeout(() => navigate('/login'), 2000);
+            toast.error('Please login to follow this merchant');
+            navigate('/login');
         }
     };
     const handleBuyNowAction = (productId: string) => {

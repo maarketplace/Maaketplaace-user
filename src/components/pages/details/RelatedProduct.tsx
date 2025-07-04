@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Mousewheel, Pagination } from 'swiper/modules';
 import { ProductCard } from './ProductCard';
 import { IProduct } from "../../../interface/ProductInterface";
+import { ArrowRightIcon } from 'lucide-react';
 
 interface RelatedProductsProps {
     products: IProduct[];
@@ -21,8 +22,9 @@ export const RelatedProducts: React.FC<RelatedProductsProps> = ({
 
     return (
         <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 flex items-center justify-between">
                 Recommended Products
+                <p className='flex items-center font-semibold gap-2 text-lg animate-bounce text-[#ffc300]'>swipe <ArrowRightIcon className='' /></p>
             </h2>
             <Swiper
                 spaceBetween={24}
