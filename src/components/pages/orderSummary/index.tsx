@@ -145,7 +145,6 @@ const OrderSummary = () => {
                         {productInfo.data.attendees && (
                             <p>👥 Attendees: {productInfo.data.attendees.join(', ')}</p>
                         )}
-                        <p>🎫 Tickets Sold: {productInfo.data.ticketsSold}/{productInfo.data.totalTickets}</p>
                     </div>
                 );
             default:
