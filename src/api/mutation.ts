@@ -92,5 +92,3 @@ export const deleteComment = async (id: string) => {
         }
     });
 };
-
-

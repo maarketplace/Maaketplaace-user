@@ -36,17 +36,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     {product?.productName}
                 </h3>
 
-                <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                        <span className="text-lg font-bold text-gray-900 dark:text-white">
-                            ₦{product?.paymentPrice}
-                        </span>
-                        {product?.productPrice !== product?.paymentPrice && (
-                            <span className="text-sm text-gray-500 line-through">
-                                ₦{product?.productPrice}
+                <div className="flex items-center gap-2">
+                    {product?.paymentPrice === 0 ? (
+                        <span className="text-lg font-semibold text-green-600">Free</span>
+                    ) : (
+                        <>
+                            {product?.productPrice !== product?.paymentPrice && (
+                                <span className="text-sm text-gray-400 line-through">
+                                    ₦{product?.productPrice?.toLocaleString()}
+                                </span>
+                            )}
+                            <span className="text-lg font-semibold text-gray-900 dark:text-white">
+                                ₦{product?.paymentPrice?.toLocaleString()}
                             </span>
-                        )}
-                    </div>
+                        </>
+                    )}
                 </div>
 
                 <button
@@ -56,7 +60,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                         onPurchase(product._id);
                     }}
                 >
-                    {loadingStates[product._id] ? <Loading /> : 'Buy Now'}
+                    {loadingStates[product._id] ? <Loading /> : `${product?.paymentPrice === 0 ? 'Get' : 'Buy'} Now`}
                 </button>
             </div>
         </div>

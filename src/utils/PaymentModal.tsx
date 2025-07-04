@@ -46,7 +46,7 @@ const PaymentModal: React.FC<ModalProps> = ({
 
     return (
         <div className="fixed inset-0 z-10 flex items-end justify-center bg-black bg-opacity-50">
-            <div className={`bg-white dark:bg-black mb-[60px] overflow-hidden shadow-lg max-w-sm w-[100%] transition-transform transform ${isOpen ? 'translate-y-0' : 'translate-y-full'} duration-300 ease-in-out absolute bottom-0`}>
+            <div className={`bg-white dark:bg-gray-900 mb-[60px] overflow-hidden shadow-lg max-w-md w-[100%] transition-transform transform ${isOpen ? 'translate-y-0' : 'translate-y-full'} duration-300 ease-in-out absolute bottom-0`}>
                 <div className="p-4 border-b flex items-center">
                     <h2 className="text-xl font-semibold mr-2">{title}</h2>
                 </div>
@@ -83,7 +83,7 @@ const PaymentModal: React.FC<ModalProps> = ({
                 <div className="p-4 border-t flex justify-between">
                     {secondaryButton?.display && (
                         <button
-                            className={`py-1 px-1 rounded ${secondaryButton.primary ? 'border border-gray-300 w-[40%]' : 'bg-gray-500 hover:bg-gray-700 text-white'}`}
+                            className={`h-12 px-6 rounded ${secondaryButton.primary ? 'border border-gray-300 w-[40%]' : 'bg-gray-500 hover:bg-gray-700 text-white'}`}
                             onClick={secondaryButton.onClick}
                         >
                             {secondaryButton.text}

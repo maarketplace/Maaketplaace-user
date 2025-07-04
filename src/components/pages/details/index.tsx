@@ -72,11 +72,20 @@ const Details: React.FC = () => {
 
     const { mutate: buyMutate } = useMutation(['buynow'], userBuyNow);
 
-    const handleCartAddingAuth = (id: string) => {
-        const getToken = getCachedAuthData();
-        if (getToken !== null) {
+
+    const handleBuyNowAction = (productId: string) => {
+        const token = getCachedAuthData();
+
+        if (!token) {
+            localStorage.setItem("redirectPath", location.pathname);
+            toast.error('Please login to complete your purchase');
+            setTimeout(() => navigate('/login'), 2000);
+            return;
+        }
+
+        if (setPaymentDetails && setIsModalOpen && isUserAuthenticated !== undefined) {
             handleBuyNow(
-                id,
+                productId,
                 isUserAuthenticated,
                 setLoadingStates,
                 setPaymentDetails,
@@ -85,11 +94,7 @@ const Details: React.FC = () => {
                 navigate
             );
         } else {
-            localStorage.setItem("redirectPath", location.pathname);
-            toast.error('Please login to complete your purchase');
-            setTimeout(() => {
-                navigate('/login');
-            }, 2000);
+            buyMutate(productId);
         }
     };
 
@@ -115,7 +120,6 @@ const Details: React.FC = () => {
                     onNavigateHome={() => navigate('/')}
                     onNavigateProducts={() => navigate('/')}
                 />
-
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
                     <div className="space-y-6">
                         <ProductImage product={product} />
@@ -123,7 +127,7 @@ const Details: React.FC = () => {
                         <PurchaseButton
                             product={product}
                             loadingStates={loadingStates}
-                            onPurchase={handleCartAddingAuth}
+                            onPurchase={handleBuyNowAction}
                         />
                     </div>
 
@@ -153,7 +157,7 @@ const Details: React.FC = () => {
                 <RelatedProducts
                     products={relatedProduct}
                     loadingStates={loadingStates}
-                    onPurchase={handleCartAddingAuth}
+                    onPurchase={handleBuyNowAction}
                     onNavigate={(id) => navigate(`/details/${id}`)}
                 />
             </div>
@@ -193,7 +197,7 @@ const Details: React.FC = () => {
                                 </button>
                             ) : (
                                 <button
-                                    className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold py-3 px-6 rounded-lg transition-colors disabled:opacity-50"
+                                    className="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-semibold h-8 px-6 rounded-lg transition-colors disabled:opacity-50"
                                     onClick={() => handlePayment(paymentDetails.paymentID)}
                                     disabled={payLoadingState[paymentDetails.paymentID]}
                                 >
