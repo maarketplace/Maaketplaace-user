@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Bookmark, Share2 } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import Loading from "../../../loader";
 import { EventApiResponse } from '../../../interface/ProductInterface';
 import RegistrationModal from './RegistrationModal';
@@ -20,7 +20,6 @@ export const EventActionButton: React.FC<EventActionButtonProps> = ({
     onAction,
 }) => {
     const { user } = useUser();
-    // const loggedInUserId = user?._id;
     const isUserAuthenticated = !!user;
     const [showRegistrationModal, setShowRegistrationModal] = useState(false);
     const [registrationLoading, setRegistrationLoading] = useState(false);
@@ -38,7 +37,6 @@ export const EventActionButton: React.FC<EventActionButtonProps> = ({
         handlePayment
     } = usePaymentActions();
 
-    // Now call useTicketActions after eventDetails is defined
     const { handleBuyTicket } = useTicketActions(
         setPaymentDetails,
         setIsModalOpen,
@@ -69,20 +67,13 @@ export const EventActionButton: React.FC<EventActionButtonProps> = ({
 
     const handleRegisterClick = () => {
         if (!isEventFull && !isEventPast && isActive) {
-            if (eventPrice && parseFloat(eventPrice.replace(/[^\d.]/g, '')) > 0) {
-                // Paid event - show registration modal to collect attendee info first
                 setShowRegistrationModal(true);
-            } else {
-                // Free event - direct registration
-                handleBuyTicket(id || _id, []);
-            }
         }
     };
 
     const handleRegistrationSubmit = async (registrationData: { quantity: number; attendees: string[] }) => {
         setRegistrationLoading(true);
         try {
-            // For paid events, proceed with ticket purchase using the attendees data
             await handleBuyTicket(id || _id, registrationData.attendees);
             setShowRegistrationModal(false);
             onAction(id || _id, 'register');
@@ -118,7 +109,7 @@ export const EventActionButton: React.FC<EventActionButtonProps> = ({
                                     ? 'Event Full'
                                     : !isActive
                                         ? 'Event Inactive'
-                                        : eventPrice
+                                        : (eventPrice && Number(eventPrice) != 0)
                                             ? `Register - ${eventPrice}`
                                             : 'Register for Free'
                             }
@@ -126,24 +117,6 @@ export const EventActionButton: React.FC<EventActionButtonProps> = ({
                     </div>
                 )}
             </button>
-
-            <div className="flex space-x-3">
-                <button
-                    onClick={() => onAction(id || _id, 'bookmark')}
-                    className="flex-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-                >
-                    <Bookmark className="w-5 h-5" />
-                    <span>Save</span>
-                </button>
-
-                <button
-                    onClick={() => onAction(id || _id, 'share')}
-                    className="flex-1 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
-                >
-                    <Share2 className="w-5 h-5" />
-                    <span>Share</span>
-                </button>
-            </div>
 
             <RegistrationModal
                 isOpen={showRegistrationModal}

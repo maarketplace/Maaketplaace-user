@@ -422,8 +422,14 @@ const Event = () => {
                         </span>
                         <div className="w-[50%] flex flex-col gap-2 max-[650px]:w-full mt-[20px]">
                             <div className="w-full h-[20%] gap-2 flex flex-col justify-end max-[650px]:h-auto">
-                                <h2 className="text-[14px] mb-1 pb-2 flex items-center border-b border-lightgrey">
+                                <h2 className="text-[14px] mb-1 pb-2 flex justify-between items-center border-b border-lightgrey">
                                     Event Ticket
+                                    <button
+                                        className="bg-[#FFC300] text-black w-[120px] text-[12px] h-[30px] rounded"
+                                        onClick={() => navigate(`/event-details/${selectedEvent._id}`)}
+                                    >
+                                        View  Ticket
+                                    </button>
                                 </h2>
                                 <h2 className="text-[20px] w-full max-[650px]:text-[15px]">
                                     {selectedEvent?.name}
@@ -475,12 +481,7 @@ const Event = () => {
                                     <CiMoneyCheck1 />
                                     <p>Price: {selectedEvent?.price}</p>
                                 </span>
-                                <button
-                                    className="bg-[#FFC300] text-black w-[120px] text-[12px] h-[30px] rounded"
-                                    onClick={() => navigate(`/event-details/${selectedEvent._id}`)}
-                                >
-                                    View  Ticket
-                                </button>
+
                             </div>
                         </div>
                     </div>
