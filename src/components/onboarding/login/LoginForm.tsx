@@ -30,7 +30,7 @@ function UserLoginForm() {
             cacheAuthData(data?.data?.data?.token)
             toast.success(data?.data?.message);
             setIsUserAuthenticated(true)
-            queryClient.invalidateQueries('userlogin')
+            queryClient.invalidateQueries('USER_DATA')
             const redirectPath = localStorage.getItem('redirectPath');
             if (redirectPath) {
                 navigate(redirectPath);

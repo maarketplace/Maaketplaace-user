@@ -12,6 +12,7 @@ import { RiPagesLine } from 'react-icons/ri';
 import { FiChevronDown, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import Modal from '../../../utils/ProductModal';
+import { useUser } from '../../../context/GetUser';
 
 type ProductType = 'all' | 'course' | 'ebook' | 'ticket';
 
@@ -31,6 +32,7 @@ interface FilterParams {
 
 function Product() {
     const context = useContext(SearchContext);
+    const { fetchUser } = useUser()
     const navigate = useNavigate();
     const [selectedProduct, setSelectedProduct] = useState<IProduct | null>(null);
     const [isProductModalOpen, setIsProductModalOpen] = useState(false);
@@ -44,7 +46,8 @@ function Product() {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-    }, []);
+        fetchUser();
+    }, [fetchUser]);
 
     const buildQueryParams = (page: number = 1) => {
         const params: Record<string, string> = {
@@ -167,7 +170,7 @@ function Product() {
         { key: 'all', label: 'All Products' },
         { key: 'course', label: 'Courses' },
         { key: 'ebook', label: 'E-books' },
-        // { key: 'ticket', label: 'Tickets' },
+        { key: 'ticket', label: 'Tickets' },
     ];
 
     const handleProductView = (product: IProduct) => {
@@ -369,76 +372,107 @@ function Product() {
                                 </div>
 
                                 <div className="hidden md:flex flex-col items-center py-8 gap-4">
-                                    {totalPages > 0 && (
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                disabled={currentPage === 1}
-                                                className="flex items-center gap-1 px-3 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                                            >
-                                                <FiChevronLeft className="w-4 h-4" />
-                                                Previous
-                                            </button>
-
-                                            <div className="flex items-center gap-1">
-                                                {getPageNumbers().map((page, index) => {
-                                                    if (page === '...') {
-                                                        return (
-                                                            <span
-                                                                key={`ellipsis-${index}`}
-                                                                className="px-3 py-2 text-gray-500 dark:text-gray-400"
-                                                            >
-                                                                ...
-                                                            </span>
-                                                        );
-                                                    }
-
-                                                    const pageNumber = page as number;
-                                                    const isActive = pageNumber === currentPage;
-
-                                                    return (
-                                                        <button
-                                                            key={pageNumber}
-                                                            onClick={() => handlePageClick(pageNumber)}
-                                                            disabled={pageNumber > currentPage && !hasNextPage}
-                                                            className={`px-3 py-2 rounded-lg transition-colors duration-200 ${isActive
-                                                                ? 'bg-[#FFC300] text-black font-medium'
-                                                                : 'bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed'
-                                                                }`}
-                                                        >
-                                                            {pageNumber}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
-
+                                    {!hasFilters && !hasSearchQuery && totalPages > 0 ? (
+                                        <>
                                             <button
                                                 onClick={handleLoadMore}
-                                                disabled={!hasNextPage || isFetchingNextPage}
-                                                className="flex items-center gap-1 px-3 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                                                disabled={isFetchingNextPage || isFetchingNextFilteredPage}
+                                                className="flex items-center gap-2 px-6 py-3 rounded-full bg-[#FFC300] hover:bg-[#E6AF00] disabled:bg-gray-300 disabled:cursor-not-allowed text-black font-medium transition-colors duration-200 shadow-md hover:shadow-lg"
                                             >
-                                                {isFetchingNextPage ? (
+                                                {isFetchingNextPage || isFetchingNextFilteredPage ? (
                                                     <>
-                                                        <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                                                        <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
                                                         Loading...
                                                     </>
                                                 ) : (
                                                     <>
-                                                        Next
-                                                        <FiChevronRight className="w-4 h-4" />
+                                                        <FiChevronDown className="w-4 h-4" />
+                                                        Load More
                                                     </>
                                                 )}
                                             </button>
-                                        </div>
-                                    )}
+                                            <div className="text-center">
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    Showing {filteredProducts.length} {activeTab === 'all' ? 'products' : activeTab === 'course' ? 'courses' : 'e-books'}
+                                                    {totalPages > 0 && ` • Page ${currentPage} of ${totalPages}`}
+                                                    {!hasNextPage && totalPages > 0 && " • All pages loaded"}
+                                                    {hasFilters && !hasSearchQuery && " • Filtered results"}
+                                                </p>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        hasMore ? (
+                                            <div className="flex items-center gap-2">
+                                                <button
+                                                    disabled={currentPage === 1}
+                                                    className="flex items-center gap-1 px-3 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                                                >
+                                                    <FiChevronLeft className="w-4 h-4" />
+                                                    Previous
+                                                </button>
 
-                                    <div className="text-center">
-                                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                                            Showing {filteredProducts.length} {activeTab === 'all' ? 'products' : activeTab === 'course' ? 'courses' : 'e-books'}
-                                            {totalPages > 0 && ` • Page ${currentPage} of ${totalPages}`}
-                                            {!hasNextPage && totalPages > 0 && " • All pages loaded"}
-                                            {hasFilters && !hasSearchQuery && " • Filtered results"}
-                                        </p>
-                                    </div>
+                                                <div className="flex items-center gap-1">
+                                                    {getPageNumbers().map((page, index) => {
+                                                        if (page === '...') {
+                                                            return (
+                                                                <span
+                                                                    key={`ellipsis-${index}`}
+                                                                    className="px-3 py-2 text-gray-500 dark:text-gray-400"
+                                                                >
+                                                                    ...
+                                                                </span>
+                                                            );
+                                                        }
+
+                                                        const pageNumber = page as number;
+                                                        const isActive = pageNumber === currentPage;
+
+                                                        return (
+                                                            <button
+                                                                key={pageNumber}
+                                                                onClick={() => handlePageClick(pageNumber)}
+                                                                disabled={pageNumber > currentPage && !hasNextPage}
+                                                                className={`px-3 py-2 rounded-lg transition-colors duration-200 ${isActive
+                                                                    ? 'bg-[#FFC300] text-black font-medium'
+                                                                    : 'bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed'
+                                                                    }`}
+                                                            >
+                                                                {pageNumber}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
+
+                                                <button
+                                                    onClick={handleLoadMore}
+                                                    disabled={!hasNextPage || isFetchingNextPage}
+                                                    className="flex items-center gap-1 px-3 py-2 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                                                >
+                                                    {isFetchingNextPage ? (
+                                                        <>
+                                                            <div className="w-4 h-4 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                                                            Loading...
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            Next
+                                                            <FiChevronRight className="w-4 h-4" />
+                                                        </>
+                                                    )}
+                                                </button>
+                                            </div>
+                                        ) : filteredProducts.length > 0 && (
+                                            <div className="text-center">
+                                                <p className="text-lg text-gray-500 dark:text-gray-400">
+                                                    🎉 You've seen all {activeTab === 'all' ? 'products' : activeTab === 'course' ? 'courses' : 'e-books'}!
+                                                </p>
+                                                <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+                                                    Total: {filteredProducts.length} {activeTab === 'all' ? 'products' : activeTab === 'course' ? 'courses' : 'e-books'}
+                                                    {hasFilters && ' with applied filters'}
+                                                </p>
+                                            </div>
+                                        )
+                                    )}
                                 </div>
                             </>
                         )}

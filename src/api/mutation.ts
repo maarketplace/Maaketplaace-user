@@ -66,9 +66,13 @@ export const userResetPassword = async (data: { id: string | undefined, password
 }
 
 export const userBuyNow = async (id: string) => {
-    return await axiosInstance.post(`/orders/products/${id}/buy`, {})
+    return await axiosInstance.post(`/orders/products/${id}/buy?type=product`, {})
 }
-
+export const userBuyTicket = async (id: string, attendees: string[]) => {
+    return await axiosInstance.post(`/orders/products/${id}/buy?type=ticket`, {
+        attendees
+    })
+}
 export const userPayWithKora = async (id: string) => {
     return await axiosInstance.post(`/init-kora/orders/${id}/single`, {})
 }

@@ -29,6 +29,7 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
     const eventDetails = event.data?.data?.event;
     const maxTickets = Math.min(10, (eventDetails?.totalTickets || 0) - (eventDetails?.ticketsSold || 0));
 
+
     useEffect(() => {
         if (isOpen) {
             setQuantity(1);
@@ -211,6 +212,7 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
                     </button>
                 </div>
             </div>
+  
         </div>
     );
 };
