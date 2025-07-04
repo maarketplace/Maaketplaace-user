@@ -199,7 +199,7 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
                     <button
                         onClick={handleSubmit}
                         disabled={isLoading || attendees.filter(name => name.trim()).length !== quantity}
-                        className="flex-1 px-4 py-3 bg-[#ffc300] hover:bg-[#e0a800] text-black rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="px-4 py-3 bg-[#ffc300] hover:bg-[#e0a800] text-black rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {isLoading ? (
                             <>

@@ -515,8 +515,14 @@ function Product() {
                         </span>
                         <div className="w-[50%] flex flex-col gap-2 max-[650px]:w-full mt-[20px]">
                             <div className="w-full h-[20%] gap-2 flex flex-col justify-end max-[650px]:h-auto">
-                                <h2 className="text-[14px] mb-1 pb-2 flex items-center border-b border-lightgrey">
+                                <h2 className="text-[14px] mb-1 pb-2 flex justify-between items-center border-b border-lightgrey">
                                     {selectedProduct.pages ? <p>E-book</p> : <p>Course</p>}
+                                    <button
+                                        className="bg-[#FFC300] text-black w-[120px] text-[12px] h-[30px] rounded"
+                                        onClick={() => navigate(`/details/${selectedProduct._id}`)}
+                                    >
+                                        View more
+                                    </button>
                                 </h2>
                                 <h2 className="text-[20px] w-full max-[650px]:text-[15px]">{selectedProduct?.productName}</h2>
                             </div>
@@ -555,12 +561,6 @@ function Product() {
                                     <CiMoneyCheck1 />
                                     <p>Amount: {selectedProduct?.paymentPrice}</p>
                                 </span>
-                                <button
-                                    className="bg-[#FFC300] text-black w-[120px] text-[12px] h-[30px] rounded"
-                                    onClick={() => navigate(`/details/${selectedProduct._id}`)}
-                                >
-                                    View more
-                                </button>
                             </div>
                         </div>
                     </div>

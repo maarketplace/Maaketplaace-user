@@ -87,7 +87,6 @@ export const useTicketActions = (
                                 setIsModalOpen(true);
                             }, 1000);
                         } else {
-                            toast.success('Ticket purchased successfully!');
                             queryClient.invalidateQueries(['events']); 
                         }
 
