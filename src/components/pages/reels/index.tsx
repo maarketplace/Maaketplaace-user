@@ -22,7 +22,7 @@ const ProductReels = () => {
     }, [data]);
 
     return (
-        <div className={`w-[100%] ${allProduct.length === 0 ? 'h-0' : 'h-[180px] mt-4'} max-[650px]:w-[100%] transition-height duration-300`}>
+        <div className={`w-[100%] ${allProduct.length === 0 ? 'h-0' : 'h-[180px] mt-4'} max-[650px]:w-[100%] transition-height duration-300  border border-gray-800 rounded-lg`}>
             <div className='w-[100%] h-[95%] flex gap-[20px] p-[10px] overflow-x-auto whitespace-nowrap no-scrollbar'>
                 {allProduct.map((i) => (
                     <div key={i?._id} className="w-[150px] h-[150px] max-w-[150px] flex-shrink-0 inline-block" onClick={() => navigate(`/quicks?reelId=${i?._id}`)}>

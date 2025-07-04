@@ -45,7 +45,11 @@ function ProductGrid({ products, onProductView }: ProductGridProps) {
 
     return (
         <div className="space-y-8">
+            <p className="mt-4 mb-6 w-full text-lg text-[#ffc300] font-semibold">Quicks</p>
+
             <ProductReels />
+
+            <p className="mt-4 mb-6 w-full text-lg text-[#ffc300] font-semibold">All Products</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {products.map((product: IProduct) => (

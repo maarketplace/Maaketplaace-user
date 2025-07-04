@@ -102,10 +102,10 @@ const Event = () => {
         // Extract events from pages
         allEvents = eventData?.pages?.flatMap(page => {
             // Check for different possible structures
-            const events = page?.data?.data?.Events || 
-                          page?.data?.data?.events || 
-                          (page?.data?.data?.data && (page?.data?.data?.data?.Events || page?.data?.data?.data?.events)) ||
-                          [];
+            const events = page?.data?.data?.Events ||
+                page?.data?.data?.events ||
+                (page?.data?.data?.data && (page?.data?.data?.data?.Events || page?.data?.data?.data?.events)) ||
+                [];
             return events;
         }) || [];
     }
@@ -221,6 +221,7 @@ const Event = () => {
                     </div>
                 ) : allEvents?.length !== 0 ? (
                     <>
+                        
                         <EventGrid
                             events={allEvents}
                             onEventView={handleEventView}
@@ -349,7 +350,7 @@ const Event = () => {
                 ) : (
                     <div className="text-center py-20">
                         <p className="text-xl text-gray-500 dark:text-gray-400">
-                          Oops  No events found 
+                            Oops  No events found
                         </p>
                         {hasSearchQuery && (
                             <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
