@@ -349,7 +349,7 @@ const Event = () => {
                 ) : (
                     <div className="text-center py-20">
                         <p className="text-xl text-gray-500 dark:text-gray-400">
-                            No events found
+                          Oops  No events found 
                         </p>
                         {hasSearchQuery && (
                             <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
