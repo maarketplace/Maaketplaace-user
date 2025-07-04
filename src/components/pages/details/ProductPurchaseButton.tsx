@@ -13,20 +13,25 @@ export const PurchaseButton: React.FC<PurchaseButtonProps> = ({
     loadingStates,
     onPurchase
 }) => {
-    const isBook = !!product?.pages;
     const isLoading = loadingStates[product?._id];
 
     return (
         <div className="space-y-3">
             <div className="flex items-center justify-between">
-                <div>
-                    <p className="text-lg font-bold text-gray-900 dark:text-white">
-                        ₦{product?.paymentPrice}
-                    </p>
-                    {product?.productPrice !== product?.paymentPrice && (
-                        <p className="text-sm text-gray-500 line-through">
-                            ₦{product?.productPrice}
-                        </p>
+                <div className="flex items-center gap-2">
+                    {product?.paymentPrice === 0 ? (
+                        <span className="text-lg font-semibold text-green-600">Free</span>
+                    ) : (
+                        <>
+                            {product?.productPrice !== product?.paymentPrice && (
+                                <span className="text-sm text-gray-400 line-through">
+                                    ₦{product?.productPrice?.toLocaleString()}
+                                </span>
+                            )}
+                            <span className="text-lg font-semibold text-gray-900 dark:text-white">
+                                ₦{product?.paymentPrice?.toLocaleString()}
+                            </span>
+                        </>
                     )}
                 </div>
                 <div className="text-right">
@@ -44,10 +49,9 @@ export const PurchaseButton: React.FC<PurchaseButtonProps> = ({
                 {isLoading ? (
                     <div className="flex items-center justify-center gap-2">
                         <Loading />
-                        <span>Processing...</span>
                     </div>
                 ) : (
-                    `Buy ${isBook ? 'Book' : 'Course'} Now`
+                        `${product?.paymentPrice === 0 ? 'Get' : 'Buy'} Now`
                 )}
             </button>
         </div>

@@ -50,7 +50,7 @@ const UpcomingEvents = () => {
             {
                 allEvents.length === 0 ? null : <p className="mt-4 mb-6 w-full text-lg text-[#ffc300] font-semibold">Upcoming Events</p>
             }
-            <div className='w-[100%] h-[95%] flex gap-[20px] p-[10px] mb-[40px] overflow-x-auto whitespace-nowrap no-scrollbar border rounded-lg'>
+            <div className={`w-[100%] h-[95%] flex gap-[20px] p-[10px] mb-[40px] overflow-x-auto whitespace-nowrap no-scrollbar border border-gray-800 rounded-lg ${allEvents.length === 0 ? 'hidden' : 'block'}`}>
                 {allEvents.map((i) => (
                     <div
                         key={i?._id}
