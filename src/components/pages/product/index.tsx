@@ -16,7 +16,7 @@ import { useUser } from '../../../context/GetUser';
 
 type ProductType = 'all' | 'course' | 'ebook' | 'ticket';
 
-interface TabOption {
+export interface TabOption {
     key: ProductType;
     label: string;
     count?: number;

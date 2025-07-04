@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useInfiniteQuery, useQuery } from 'react-query';
 import { getAllEvents, searchProduct } from '../../../api/query';
 import { SearchContext } from '../../../context/Search';
@@ -40,12 +40,18 @@ export interface IEvent {
     createdAt: string;
     updatedAt: string;
 }
-
+type ProductType = 'all' | 'ticket';
+interface TabOption {
+    key: ProductType;
+    label: string;
+    count?: number;
+}
 const Event = () => {
     const context = useContext(SearchContext);
     const navigate = useNavigate();
     const [selectedEvent, setSelectedEvent] = useState<IEvent | null>(null);
     const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState<ProductType>('ticket');
     const LIMIT = 8;
 
     const { debouncedSearchQuery = '', isSearching = false, clearSearch = () => { } } = context || {};
@@ -192,10 +198,53 @@ const Event = () => {
         tempDiv.innerHTML = htmlDescription;
         return tempDiv.textContent || tempDiv.innerText || '';
     };
+    const tabs: TabOption[] = [
+        { key: 'all', label: 'All Products' },
+        { key: 'ticket', label: 'Tickets' },
+    ];
+    const handleTabChange = useCallback((tabKey: ProductType) => {
+        if (tabKey === 'ticket') {
+            navigate('/events');
+            return;
+        }
+        if (tabKey === 'all') {
+            navigate('/');
+            return;
+        }
+        setActiveTab(tabKey);
+    }, [navigate]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br bg-white dark:bg-black p-4">
             <div className="max-w-7xl mx-auto mt-20">
+                <div className="mt-20">
+                    <div className="flex items-center justify-center">
+                        <div className="bg-white dark:bg-gray-800 rounded-xl p-1 shadow-md border border-gray-200 dark:border-gray-700">
+                            <div className="flex space-x-3" role="tablist" aria-label="Product type filter">
+                                {tabs.map((tab) => (
+                                    <button
+                                        key={tab.key}
+                                        onClick={() => handleTabChange(tab.key)}
+                                        role="tab"
+                                        aria-selected={activeTab === tab.key}
+                                        aria-controls={`${tab.key}-panel`}
+                                        className={`
+                                            relative px-4 py-1 rounded-lg font-medium text-sm max-[650px]:text-xs transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#FFC300] focus:ring-offset-2
+                                            ${activeTab === tab.key
+                                                ? 'bg-[#FFC300] text-black shadow-md'
+                                                : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-700'
+                                            }
+                                        `}
+                                    >
+                                        <span className="flex items-center gap-1">
+                                            {tab.label}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <UpcomingEvents />
                 {hasSearchQuery && (
                     <div className="mt-4 text-center">
