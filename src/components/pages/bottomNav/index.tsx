@@ -24,8 +24,8 @@ const Bottom = () => {
         navigate('/dashboard')
     };
     return (
-        <div className="w-[100%] h-[100%] flex items-center ">
-            <div className="w-[80%] h-[100%] ml-[20px] max-w-[650px]:ml-[20px] flex items-center justify-between ">
+        <div className="w-[90%] h-[100%] max-[650px]:w-[85%] max-[650px]:justify-center flex items-center justify-between">
+            <div className="w-[100%]  max-w-[650px]:ml-[20px] flex items-center justify-between p-2">
                 <span className={(location.pathname === '/' || location.pathname.startsWith('/details')) ? 'text-[#FFC300] text-[20px]' : 'text-[20px]'}>
                     <FiHome
                         className=''

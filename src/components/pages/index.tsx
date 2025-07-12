@@ -24,7 +24,7 @@ const Home = () => {
         <div className="w-full h-screen flex flex-col dark:bg-black">
             {!isQuicksPage && (
                 <header className="w-full h-[10vh] min-h-[60px] bg-white dark:bg-black shadow flex items-center justify-between px-4 fixed top-0 left-0 z-50">
-                    <div className="flex items-center justify-between w-[90%]  mx-auto">
+                    <div className="flex items-center justify-between w-[90%] mx-auto">
                         <div className="flex items-center gap-2">
                             <img
                                 src="/LOGO.svg"
@@ -40,7 +40,7 @@ const Home = () => {
 
                         <div className="flex items-center justify-end gap-2 w-[30%] max-w-[650px]:w-auto">
                             <input
-                                className="w-[70%] py-1 px-2 border border-gray-400 text-sm rounded bg-transparent dark:text-white outline-none  max-[650px]:hidden"
+                                className="w-[70%] py-1 px-2 border border-gray-400 text-sm rounded bg-transparent dark:text-white outline-none max-[650px]:hidden"
                                 placeholder="Search here"
                                 value={searchQuery}
                                 onChange={handleSearchChange}
@@ -55,13 +55,13 @@ const Home = () => {
             )}
 
             <main
-                className={`flex-1 overflow-y-auto no-scrollbar pt-${isQuicksPage ? "0" : "[10vh]"
-                    } pb-[8vh]`}
+                className={`flex-1 overflow-y-auto no-scrollbar ${isQuicksPage ? "pt-0" : "pt-[10vh]"
+                    } pb-[80px]`}
             >
                 <Layout searchQuery={searchQuery} />
             </main>
 
-            <nav className="w-full h-[8vh] min-h-[60px] bg-white dark:bg-black text-black dark:text-white fixed bottom-0 left-0 z-50 flex items-center justify-center">
+            <nav className="w-full h-[70px] bg-white dark:bg-black text-black dark:text-white fixed bottom-0 left-0 z-50 flex items-center justify-center border-t border-gray-200 dark:border-gray-700">
                 <Bottom />
             </nav>
         </div>
